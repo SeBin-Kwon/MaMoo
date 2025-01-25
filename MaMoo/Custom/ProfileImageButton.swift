@@ -37,8 +37,8 @@ final class ProfileImageButton: UIButton {
         return view
     }()
     
-    init(num: Int) {
-        self.num = num
+    init(num: Int?) {
+        self.num = num ?? 0
         super.init(frame: .zero)
         configureHierarchy()
         configureLayout()
@@ -66,7 +66,7 @@ final class ProfileImageButton: UIButton {
         }
     }
     
-    func configureView() {
+    override func layoutSubviews() {
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
         cameraBackgroundView.layer.cornerRadius = cameraBackgroundView.frame.height / 2
     }

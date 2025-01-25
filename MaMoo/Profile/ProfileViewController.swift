@@ -10,9 +10,8 @@ import SnapKit
 
 final class ProfileViewController: BaseViewController {
     
-    private let num = Int.random(in: 0...11)
-    
-    private lazy var profileImageButton = ProfileImageButton(num: 7)
+    private var num = Int.random(in: 0...11)
+    private lazy var profileImageButton = ProfileImageButton(num: num)
     
     private let textField = {
         let textfield = UITextField()
@@ -30,11 +29,9 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc private func profileImageButtonTapped() {
-        print(#function)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        profileImageButton.configureView()
+        let vc = ProfileImageViewController()
+        vc.num = num
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     override func configureView() {
