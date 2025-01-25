@@ -8,7 +8,7 @@
 import UIKit
 
 final class MaMooButton: UIButton {
-    let title: String
+    private let title: String
     
     init(title: String) {
         self.title = title
