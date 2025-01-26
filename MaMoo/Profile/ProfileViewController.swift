@@ -31,6 +31,11 @@ final class ProfileViewController: BaseViewController {
     @objc private func profileImageButtonTapped() {
         let vc = ProfileImageViewController()
         vc.num = num
+        vc.contents = { value in
+            guard let value else { return }
+            self.profileImageButton.profileImageView.image = UIImage(named: "profile_\(value)")
+            self.num = value
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
     

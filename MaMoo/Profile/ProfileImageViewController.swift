@@ -11,6 +11,7 @@ import SnapKit
 class ProfileImageViewController: BaseViewController {
     
     var num: Int?
+    var contents: ((Int?) -> Void)?
     private lazy var profileImageButton = ProfileImageButton(num: num)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureFlowLayout())
     private let profileList = Array(0...11)
@@ -18,10 +19,18 @@ class ProfileImageViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "프로필 이미지 설정"
+        let leftItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftItemTapped))
+        leftItem.tintColor = .maMooPoint
+        navigationItem.leftBarButtonItem = leftItem
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .black
         collectionView.register(ProfileImageCollectionViewCell.self, forCellWithReuseIdentifier: ProfileImageCollectionViewCell.identifier)
+    }
+    
+    @objc private func leftItemTapped() {
+        contents?(num)
+        navigationController?.popViewController(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,6 +80,8 @@ extension ProfileImageViewController: UICollectionViewDelegate, UICollectionView
         guard let cell = collectionView.cellForItem(at: indexPath) as? ProfileImageCollectionViewCell else { return }
         cell.updateSelectedCell(true)
         profileImageButton.profileImageView.image = UIImage(named: "profile_\(indexPath.item)")
+        num = indexPath.item
+        collectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -81,6 +92,11 @@ extension ProfileImageViewController: UICollectionViewDelegate, UICollectionView
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileImageCollectionViewCell.identifier, for: indexPath) as? ProfileImageCollectionViewCell else { return UICollectionViewCell() }
         
         cell.configureImageView(index: indexPath.item)
+        if num == indexPath.item {
+            cell.updateSelectedCell(true)
+        } else {
+            cell.updateSelectedCell(false)
+        }
         DispatchQueue.main.async {
             cell.profileImageView.layer.cornerRadius = cell.profileImageView.frame.height / 2
         }
