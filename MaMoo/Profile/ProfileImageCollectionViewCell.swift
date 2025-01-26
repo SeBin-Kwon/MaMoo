@@ -15,6 +15,7 @@ class ProfileImageCollectionViewCell: BaseCollectionViewCell {
         image.clipsToBounds = true
         image.layer.borderWidth = 1
         image.layer.borderColor = UIColor.maMooGray.cgColor
+        image.alpha = 0.5
         return image
     }()
     
@@ -26,6 +27,12 @@ class ProfileImageCollectionViewCell: BaseCollectionViewCell {
         profileImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    
+    func updateSelectedCell(_ isSelected: Bool) {
+        profileImageView.alpha = isSelected ? 1.0 : 0.5
+        profileImageView.layer.borderColor = isSelected ? UIColor.maMooPoint.cgColor : UIColor.maMooGray.cgColor
+        profileImageView.layer.borderWidth = isSelected ? 3 : 1
     }
     
     func configureImageView(index: Int) {

@@ -60,6 +60,19 @@ class ProfileImageViewController: BaseViewController {
 
 extension ProfileImageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        print(#function)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ProfileImageCollectionViewCell else { return }
+        cell.updateSelectedCell(false)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(#function)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ProfileImageCollectionViewCell else { return }
+        cell.updateSelectedCell(true)
+        profileImageButton.profileImageView.image = UIImage(named: "profile_\(indexPath.item)")
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         profileList.count
     }
