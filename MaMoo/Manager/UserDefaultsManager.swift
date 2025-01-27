@@ -38,7 +38,7 @@ class UserDefaultsManager {
     
     var nickname: String {
         get {
-            getter(key: .nickname, defaultValue: "")
+            getter(key: .nickname, defaultValue: "No Name")
         }
         set {
             setter(value: newValue, key: .nickname)

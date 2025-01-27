@@ -46,7 +46,10 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc private func completeButtonTapped() {
+        guard let text = textField.text else { return }
         UserDefaultsManager.shared.isDisplayedOnboarding = true
+        UserDefaultsManager.shared.nickname = text
+        UserDefaultsManager.shared.profileImage = num
         ProfileViewController.changeRootViewController(rootView: MainViewController())
     }
     
