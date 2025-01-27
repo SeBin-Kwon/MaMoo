@@ -16,8 +16,8 @@ final class MaMooButton: UIButton {
         var config = UIButton.Configuration.plain()
         var attributedTitle = AttributedString(title)
         attributedTitle.font = .systemFont(ofSize: 16, weight: .bold)
+        attributedTitle.foregroundColor = UIColor.maMooPoint
         config.attributedTitle = attributedTitle
-        config.baseForegroundColor = .maMooPoint
         config.cornerStyle = .capsule
         config.background.strokeColor = .maMooPoint
         config.background.strokeWidth = 2

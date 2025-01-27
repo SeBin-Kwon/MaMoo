@@ -63,7 +63,7 @@ final class OnboardingViewController: BaseViewController {
             make.top.equalTo(titleLabel.snp.bottom).offset(30)
         }
         button.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview()
+            make.horizontalEdges.equalToSuperview().inset(10)
             make.top.equalTo(contentLabel.snp.bottom).offset(30)
         }
     }
