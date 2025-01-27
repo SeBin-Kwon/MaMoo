@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIViewController {
-    func changeRootViewController(rootView: UIViewController) {
+    static func changeRootViewController(rootView: UIViewController) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first else { return }
         window.rootViewController = UINavigationController(rootViewController: rootView)

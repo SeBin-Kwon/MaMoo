@@ -46,7 +46,8 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc private func completeButtonTapped() {
-        self.changeRootViewController(rootView: MainViewController())
+        UserDefaultsManager.shared.isDisplayedOnboarding = true
+        ProfileViewController.changeRootViewController(rootView: MainViewController())
     }
     
     @objc private func profileImageButtonTapped() {
