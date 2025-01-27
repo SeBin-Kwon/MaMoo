@@ -13,7 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        UIViewController.changeRootViewController(rootView: UserDefaultsManager.shared.isDisplayedOnboarding ? MainViewController() : OnboardingViewController())
+        UIViewController.changeRootViewController(rootView: UserDefaultsManager.shared.isDisplayedOnboarding ? TabBarController() : OnboardingViewController())
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

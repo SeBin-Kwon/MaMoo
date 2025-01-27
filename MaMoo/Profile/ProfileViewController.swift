@@ -50,7 +50,7 @@ final class ProfileViewController: BaseViewController {
         UserDefaultsManager.shared.isDisplayedOnboarding = true
         UserDefaultsManager.shared.nickname = text
         UserDefaultsManager.shared.profileImage = num
-        ProfileViewController.changeRootViewController(rootView: MainViewController())
+        ProfileViewController.changeRootViewController(rootView: TabBarController())
     }
     
     @objc private func profileImageButtonTapped() {

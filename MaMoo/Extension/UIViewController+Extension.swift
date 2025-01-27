@@ -11,7 +11,11 @@ extension UIViewController {
     static func changeRootViewController(rootView: UIViewController) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first else { return }
-        window.rootViewController = UINavigationController(rootViewController: rootView)
+        if let tabBar = rootView as? TabBarController {
+            window.rootViewController = tabBar
+        } else {
+            window.rootViewController = UINavigationController(rootViewController: rootView)
+        }
         window.makeKeyAndVisible()
     }
 }
