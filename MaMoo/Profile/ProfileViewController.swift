@@ -46,7 +46,7 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc private func completeButtonTapped() {
-        print(#function)
+        self.changeRootViewController(rootView: MainViewController())
     }
     
     @objc private func profileImageButtonTapped() {
