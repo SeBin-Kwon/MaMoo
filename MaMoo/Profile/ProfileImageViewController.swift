@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ProfileImageViewController: BaseViewController {
+final class ProfileImageViewController: BaseViewController {
     
     var num: Int?
     var contents: ((Int?) -> Void)?
@@ -49,24 +49,11 @@ class ProfileImageViewController: BaseViewController {
             make.horizontalEdges.bottom.equalToSuperview()
         }
     }
-    
-    private func configureFlowLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewFlowLayout()
-        let width = UIScreen.main.bounds.width
-        let cellCount: CGFloat = 4
-        let itemSpacing: CGFloat = 20
-        let insetSpacing: CGFloat = 30
-        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
-        layout.minimumLineSpacing = itemSpacing
-        layout.minimumInteritemSpacing = itemSpacing
-        layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
-        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth / cellCount)
-        layout.scrollDirection = .vertical
-        return layout
-    }
 
 }
 
+
+// MARK: CollectionView
 extension ProfileImageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -104,5 +91,18 @@ extension ProfileImageViewController: UICollectionViewDelegate, UICollectionView
         return cell
     }
     
-    
+    private func configureFlowLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        let width = UIScreen.main.bounds.width
+        let cellCount: CGFloat = 4
+        let itemSpacing: CGFloat = 20
+        let insetSpacing: CGFloat = 30
+        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
+        layout.minimumLineSpacing = itemSpacing
+        layout.minimumInteritemSpacing = itemSpacing
+        layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth / cellCount)
+        layout.scrollDirection = .vertical
+        return layout
+    }
 }
