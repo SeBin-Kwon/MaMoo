@@ -38,6 +38,12 @@ class MainViewController: BaseViewController {
         button.setTitle("탈퇴", for: .normal)
         button.backgroundColor = .systemBlue
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { value in
+            print(value)
+            print(value.results.count)
+        } failHandler: {
+            print("fail")
+        }
     }
     
     @objc func buttonTapped() {
