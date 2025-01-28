@@ -24,7 +24,7 @@ final class TabBarController: UITabBarController {
         secondNav.view.backgroundColor = .black
         secondNav.tabBarItem = UITabBarItem(title: "UPCOMING", image: UIImage(systemName: "film.stack"), selectedImage: UIImage(systemName: "film.stack"))
         
-        let settingNav = UINavigationController(rootViewController: UIViewController())
+        let settingNav = UINavigationController(rootViewController: SettingViewController())
         settingNav.view.backgroundColor = .black
         settingNav.tabBarItem = UITabBarItem(title: "PROFILE", image: UIImage(systemName: "person.crop.circle"), selectedImage: UIImage(systemName: "person.crop.circle"))
         
