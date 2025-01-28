@@ -31,19 +31,37 @@ class MainViewController: BaseViewController {
         return image
     }()
     
+    private let profileEditButton = ProfileEditButton()
+//    private let mainView = MainView()
+//    override func loadView() {
+//        view = mainView
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "MAMOO"
         configureView()
+        let rightItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(rightItemTapped))
+        rightItem.tintColor = .maMooPoint
+        navigationItem.rightBarButtonItem = rightItem
+        
+        
+        profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
+        profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
+        
         button.setTitle("탈퇴", for: .normal)
         button.backgroundColor = .systemBlue
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { value in
-            print(value)
+//            print(value)
             print(value.results.count)
         } failHandler: {
             print("fail")
         }
+    }
+    
+    @objc func rightItemTapped() {
+        print(#function)
     }
     
     @objc func buttonTapped() {
@@ -57,6 +75,7 @@ class MainViewController: BaseViewController {
     override func configureView() {
         view.addSubview(nickname)
         view.addSubview(profileImageView)
+        view.addSubview(profileEditButton)
         view.addSubview(button)
         
         nickname.snp.makeConstraints { make in
@@ -68,6 +87,11 @@ class MainViewController: BaseViewController {
             make.top.equalTo(nickname.snp.bottom).offset(30)
             make.centerX.equalToSuperview()
             make.size.equalTo(50)
+        }
+        profileEditButton.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(30)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(100)
         }
         button.snp.makeConstraints { make in
             make.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
