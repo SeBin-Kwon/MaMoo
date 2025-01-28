@@ -12,6 +12,7 @@ import Alamofire
 class MainViewController: BaseViewController {
 
     private let mainView = MainView()
+    private var movieList = [MovieResults]()
     
     override func loadView() {
         view = mainView
@@ -25,6 +26,9 @@ class MainViewController: BaseViewController {
         navigationItem.rightBarButtonItem = rightItem
         configureData()
         callRequest()
+        mainView.collectionView.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: MainCollectionViewCell.identifier)
+        mainView.collectionView.delegate = self
+        mainView.collectionView.dataSource = self
     }
     
     @objc func rightItemTapped() {
@@ -58,10 +62,19 @@ class MainViewController: BaseViewController {
     }
     
     private func callRequest() {
+        let group = DispatchGroup()
+        group.enter()
         NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { value in
             print(value.results.count)
+            self.movieList = value.results
+            group.leave()
         } failHandler: {
             print("fail")
+            group.leave()
+        }
+        group.notify(queue: .main) {
+            print(#function, "-END-")
+            self.mainView.collectionView.reloadData()
         }
     }
     
@@ -75,4 +88,20 @@ class MainViewController: BaseViewController {
             btn.backgroundView.layer.cornerRadius = mainView.searchStackView.frame.height / 2
         }
     }
+}
+
+
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        movieList.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.identifier, for: indexPath) as? MainCollectionViewCell else { return UICollectionViewCell() }
+        cell.backgroundColor = .brown
+        return cell
+    }
+    
+    
 }

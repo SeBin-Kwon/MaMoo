@@ -40,7 +40,7 @@ class MainView: BaseView {
         return scroll
     }()
     private lazy var todayTitleLabel = configureTitleLabel("오늘의 영화")
-//    let collectionView = UICollectionView()
+    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureFlowLayout())
     
     override func configureHierarchy() {
         addSubview(profileEditButton)
@@ -49,7 +49,7 @@ class MainView: BaseView {
         scrollView.addSubview(searchStackView)
         addSubview(scrollView)
         addSubview(todayTitleLabel)
-//        addSubview(collectionView)
+        addSubview(collectionView)
     }
     
     override func configureLayout() {
@@ -69,7 +69,6 @@ class MainView: BaseView {
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(searchTitleLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalTo(safeAreaLayoutGuide)
-//            make.height.equalTo(30)
         }
         searchStackView.snp.makeConstraints { make in
             make.horizontalEdges.equalTo(scrollView)
@@ -79,6 +78,25 @@ class MainView: BaseView {
             make.top.equalTo(scrollView.snp.bottom).offset(10)
             make.leading.equalTo(safeAreaLayoutGuide).offset(10)
         }
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(todayTitleLabel.snp.bottom)
+            make.horizontalEdges.bottom.equalTo(safeAreaLayoutGuide)
+        }
+    }
+    
+    private func configureFlowLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        let width = UIScreen.main.bounds.width
+        let cellCount: CGFloat = 1.6
+        let itemSpacing: CGFloat = 10
+        let insetSpacing: CGFloat = 10
+        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
+        layout.minimumLineSpacing = itemSpacing
+        layout.minimumInteritemSpacing = itemSpacing
+        layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth*1.5 / cellCount)
+        layout.scrollDirection = .horizontal
+        return layout
     }
     
     private func configureTitleLabel(_ title: String) -> UILabel {
