@@ -12,7 +12,7 @@ final class ProfileEditButton: BaseButton {
     private let backgroundView = {
        let view = UIView()
         view.backgroundColor = .darkGray
-        view.layer.cornerRadius = 20
+        view.layer.cornerRadius = 10
         return view
     }()
     
@@ -49,7 +49,7 @@ final class ProfileEditButton: BaseButton {
     private let movieBoxBackgroundView = {
         let view = UIView()
         view.backgroundColor = .maMooPoint
-         view.layer.cornerRadius = 20
+         view.layer.cornerRadius = 8
          return view
      }()
     
@@ -59,6 +59,11 @@ final class ProfileEditButton: BaseButton {
         label.text = "0개의 무비박스 보관중"
         label.font = .systemFont(ofSize: 15, weight: .bold)
         return label
+    }()
+    
+    let uiView = {
+        let view = UIView()
+         return view
     }()
     
     init() {
@@ -74,27 +79,44 @@ final class ProfileEditButton: BaseButton {
     private func configureHierarchy() {
         addSubview(backgroundView)
         backgroundView.addSubview(profileImage)
-        backgroundView.addSubview(nicknameLabel)
-        backgroundView.addSubview(dateLabel)
-
+        uiView.addSubview(nicknameLabel)
+        uiView.addSubview(dateLabel)
+        backgroundView.addSubview(uiView)
+        backgroundView.addSubview(chevron)
+        movieBoxBackgroundView.addSubview(movieBoxLabel)
+        backgroundView.addSubview(movieBoxBackgroundView)
+        
     }
     private func configureLayout() {
         backgroundView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         profileImage.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(10)
+            make.top.leading.equalToSuperview().inset(15)
             make.size.equalTo(50)
         }
-        nicknameLabel.snp.makeConstraints { make in
+        uiView.snp.makeConstraints { make in
             make.centerY.equalTo(profileImage)
             make.leading.equalTo(profileImage.snp.trailing).offset(10)
-            make.bottom.equalTo(dateLabel.snp.top).offset(10)
+            make.height.equalTo(profileImage).inset(6)
+            make.trailing.equalToSuperview().inset(15)
+        }
+        nicknameLabel.snp.makeConstraints { make in
+            make.top.leading.equalTo(uiView)
         }
         dateLabel.snp.makeConstraints { make in
+            make.bottom.leading.equalTo(uiView)
+        }
+        chevron.snp.makeConstraints { make in
             make.centerY.equalTo(profileImage)
-            make.leading.equalTo(profileImage.snp.trailing).offset(10)
-            make.top.equalTo(nicknameLabel.snp.bottom).offset(10)
+            make.trailing.equalToSuperview().inset(15)
+        }
+        movieBoxBackgroundView.snp.makeConstraints { make in
+            make.horizontalEdges.bottom.equalToSuperview().inset(15)
+            make.height.equalTo(40)
+        }
+        movieBoxLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     
