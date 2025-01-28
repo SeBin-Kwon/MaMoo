@@ -13,6 +13,7 @@ final class ProfileEditButton: BaseButton {
        let view = UIView()
         view.backgroundColor = .darkGray
         view.layer.cornerRadius = 10
+        view.isUserInteractionEnabled = false
         return view
     }()
     
