@@ -33,6 +33,8 @@ class MainViewController: BaseViewController {
     
     @objc func rightItemTapped() {
         print(#function)
+        let vc = SearchViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     private func configureData() {
