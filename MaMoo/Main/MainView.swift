@@ -40,7 +40,7 @@ class MainView: BaseView {
         return scroll
     }()
     private lazy var todayTitleLabel = configureTitleLabel("오늘의 영화")
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureFlowLayout())
+    lazy var collectionView = configureCollectionView()
     
     override func configureHierarchy() {
         addSubview(profileEditButton)
@@ -54,7 +54,7 @@ class MainView: BaseView {
     
     override func configureLayout() {
         profileEditButton.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(30)
+            make.top.equalTo(safeAreaLayoutGuide).offset(10)
             make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(10)
             make.height.equalTo(140)
         }
@@ -84,7 +84,7 @@ class MainView: BaseView {
         }
     }
     
-    private func configureFlowLayout() -> UICollectionViewLayout {
+    private func configureCollectionView() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
         let cellCount: CGFloat = 1.6
@@ -94,9 +94,12 @@ class MainView: BaseView {
         layout.minimumLineSpacing = itemSpacing
         layout.minimumInteritemSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
-        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth*1.5 / cellCount)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth*1.7 / cellCount)
         layout.scrollDirection = .horizontal
-        return layout
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.showsHorizontalScrollIndicator = false
+        view.backgroundColor = .black
+        return view
     }
     
     private func configureTitleLabel(_ title: String) -> UILabel {
