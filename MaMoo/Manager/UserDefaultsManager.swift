@@ -16,6 +16,7 @@ class UserDefaultsManager {
         case isDisplayedOnboarding
         case nickname
         case profileImage
+        case signUpDate
         case like
     }
     
@@ -51,6 +52,15 @@ class UserDefaultsManager {
         }
         set {
             setter(value: newValue, key: .profileImage)
+        }
+    }
+    
+    var signUpDate: String {
+        get {
+            getter(key: .signUpDate, defaultValue: "No Date")
+        }
+        set {
+            setter(value: newValue, key: .signUpDate)
         }
     }
     
