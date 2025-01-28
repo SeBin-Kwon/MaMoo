@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class ProfileImageButton: UIButton {
+final class ProfileImageButton: BaseButton {
     private let num: Int
     
     lazy var profileImageView = {
@@ -69,11 +69,6 @@ final class ProfileImageButton: UIButton {
     override func layoutSubviews() {
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
         cameraBackgroundView.layer.cornerRadius = cameraBackgroundView.frame.height / 2
-    }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
 }

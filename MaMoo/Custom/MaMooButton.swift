@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MaMooButton: UIButton {
+final class MaMooButton: BaseButton {
     private let title: String
     
     init(title: String) {
@@ -23,10 +23,5 @@ final class MaMooButton: UIButton {
         config.background.strokeWidth = 2
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
         self.configuration = config
-    }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
