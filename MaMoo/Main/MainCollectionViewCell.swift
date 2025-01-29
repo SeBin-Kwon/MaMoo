@@ -39,7 +39,7 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         btn.setImage(UIImage(systemName: "heart"), for: .normal)
         btn.tintColor = .maMooPoint
         return btn
-    }
+    }()
     
     override func configureHierarchy() {
         addSubview(imageView)

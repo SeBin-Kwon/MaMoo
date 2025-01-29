@@ -28,7 +28,6 @@ class MainView: BaseView {
         stack.alignment = .center
         stack.distribution = .fillProportionally
         stack.spacing = 10
-        stack.isUserInteractionEnabled = true
         return stack
     }()
     private let scrollView = {
@@ -36,7 +35,6 @@ class MainView: BaseView {
         scroll.showsHorizontalScrollIndicator = false
         scroll.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         scroll.backgroundColor = .blue
-        scroll.isUserInteractionEnabled = true
         return scroll
     }()
     private lazy var todayTitleLabel = configureTitleLabel("오늘의 영화")

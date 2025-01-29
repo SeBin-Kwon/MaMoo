@@ -10,6 +10,8 @@ import Foundation
 struct Movie: Decodable {
     let page: Int
     let results: [MovieResults]
+    let total_pages: Int
+    let total_results: Int
 }
 
 struct MovieResults: Decodable {
