@@ -11,8 +11,8 @@ import Alamofire
 enum TMDBRequest {
     case trending
     case search(value: SearchRequest)
-//    case detail(id: String)
-//    case topic(value: TopicRequest)
+    case detailImage(id: Int)
+    case Credit(id: Int)
     
     var baseURL: String {
         return "https://api.themoviedb.org/3/"
@@ -32,24 +32,23 @@ enum TMDBRequest {
             return URL(string: baseURL + "trending/movie/day?language=ko-KR&page=1")!
         case .search:
             return URL(string: baseURL + "search/movie")!
-//        case .detail(let id):
-//            return URL(string: baseURL + "photos/\(id)/statistics")!
-//        case .topic(let value):
-//            return URL(string: baseURL + "topics/\(value.topic)/photos")!
+        case .detailImage(let id):
+            return URL(string: baseURL + "movie/\(id)/images")!
+        case .Credit(let id):
+            return URL(string: baseURL + "movie/\(id)/credits")!
         }
     }
     
     var parameter: Parameters? {
         switch self {
         case .search(let value):
-            var parameters = ["query": value.query, "page": String(value.page), "include_adult": "false", "language": "ko-KR"]
+            let parameters = ["query": value.query, "page": String(value.page), "include_adult": "false", "language": "ko-KR"]
+            return parameters
+        case .Credit(let id):
+            let parameters = ["language": "ko-KR"]
             return parameters
         default:
             return nil
-//        case .detail:
-//            return nil
-//        case .topic(let value):
-//            return ["page": String(value.page)]
         }
     }
 }

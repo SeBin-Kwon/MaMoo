@@ -24,3 +24,22 @@ struct MovieResults: Decodable {
     let release_date: String?
     let vote_average: Double?
 }
+
+struct MovieImage: Decodable {
+    let backdrops: [Backdrops]
+    let posters: [Posters]
+}
+
+struct Backdrops: Decodable {
+    let file_path: String
+}
+
+struct Posters: Decodable {
+    let file_path: String
+}
+
+struct Cast: Decodable {
+    let name: String
+    let character: String
+    let profile_path: String
+}
