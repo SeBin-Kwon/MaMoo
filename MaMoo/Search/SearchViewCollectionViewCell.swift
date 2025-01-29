@@ -57,7 +57,17 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
     
+    private let genreDictionary: [Int: String] = [
+        28: "액션", 16: "애니메이션", 80: "범죄", 18: "드라마", 14: "판타지",
+        27: "공포", 9648: "미스터리", 878: "SF", 53: "스릴러", 37: "서부",
+        12: "모험", 35: "코미디", 99: "다큐멘터리", 10751: "가족", 36: "역사",
+        10402: "음악", 10749: "로맨스", 10770: "TV 영화", 10752: "전쟁"
+    ]
+    
     func configureData(_ item: MovieResults) {
+        if !genreStackView.arrangedSubviews.isEmpty {
+            genreStackView.removeAll()
+        }
         if let poster = item.poster_path {
             let newUrl = "https://image.tmdb.org/t/p/w500" + poster
             guard let url = URL(string: newUrl) else { return }
@@ -67,6 +77,28 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
         }
         titleLabel.text = item.title
         dateLabel.text = DateFormatterManager.shared.dateChanged(item.release_date ?? "")
+        guard let genreList = item.genre_ids else { return }
+        guard !genreList.isEmpty else { return }
+        let count = genreList.count > 1 ? 2 : 1
+        for i in 0..<count {
+            guard let genre = genreDictionary[genreList[i]] else { break }
+            genreStackView.addArrangedSubview(configureTag(genre))
+        }
+    }
+    
+    private func configureTag(_ str: String) -> UIButton {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .mini
+        config.cornerStyle = .small
+        var attributedTitle = AttributedString(str)
+        attributedTitle.font = .systemFont(ofSize: 12)
+        attributedTitle.foregroundColor = .white
+        config.attributedTitle = attributedTitle
+        config.baseBackgroundColor = .darkGray
+        config.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
+        btn.configuration = config
+        return btn
     }
     
     override func configureHierarchy() {
@@ -75,7 +107,6 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
         addSubview(dateLabel)
         addSubview(likeButton)
         addSubview(lineView)
-//        genreStackView.addArrangedSubview(genreTag)
         addSubview(genreStackView)
     }
     

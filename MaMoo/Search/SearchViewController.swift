@@ -16,7 +16,6 @@ final class SearchViewController: BaseViewController {
     private var isEnd = false
     private var searchText: String?
     private var previousSearchText: String?
-    private var isLatest = false
     
     override func loadView() {
         view = searchView
@@ -58,22 +57,7 @@ final class SearchViewController: BaseViewController {
     
     override func configureView() {
         print(#function)
-    }
-    
-    func configureTag() -> UIButton {
-        let btn = UIButton()
-        var config = UIButton.Configuration.filled()
-        config.buttonSize = .mini
-        config.cornerStyle = .small
-        var attributedTitle = AttributedString("장르")
-        attributedTitle.font = .systemFont(ofSize: 12)
-        attributedTitle.foregroundColor = .white
-        config.attributedTitle = attributedTitle
-        config.baseBackgroundColor = .darkGray
-        config.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
-        btn.configuration = config
-        return btn
-    }
+    }    
 
 }
 
@@ -123,11 +107,6 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchViewCollectionViewCell.identifier, for: indexPath) as? SearchViewCollectionViewCell else { return UICollectionViewCell() }
         cell.configureData(movieList[indexPath.item])
-//        for _ in 0..<2 {
-//            cell.genreStackView.addArrangedSubview(configureTag())
-//        }
         return cell
     }
-    
-    
 }
