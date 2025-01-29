@@ -46,11 +46,13 @@ class MainViewController: BaseViewController {
             mainView.searchStackView.removeAll()
         }
         for i in 0..<searchList.count {
-            let tag = SearchTagButton()
-            tag.searchLabel.text = searchList[i]
-            tag.addTarget(self, action: #selector(tagtapped), for: .touchUpInside)
-            tag.removeButton.addTarget(self, action: #selector(removeButtontapped), for: .touchUpInside)
-            mainView.searchStackView.addArrangedSubview(tag)
+            let tagBtn = SearchTagButton()
+            tagBtn.searchLabel.text = searchList[i]
+            tagBtn.addTarget(self, action: #selector(tagtapped), for: .touchUpInside)
+//            tagBtn.removeButton.tag = i
+            tagBtn.removeButton.addTarget(self, action: #selector(removeButtontapped), for: .touchUpInside)
+            mainView.searchStackView.addArrangedSubview(tagBtn)
+            mainView.searchStackView.arrangedSubviews[i].tag = i
         }
     }
     
@@ -66,8 +68,19 @@ class MainViewController: BaseViewController {
         print(#function)
     }
     
-    @objc private func removeButtontapped() {
-        print(#function)
+    @objc private func removeButtontapped(_ sender: UIView) {
+        let removeView = mainView.searchStackView.arrangedSubviews[sender.tag]
+        print(sender.tag)
+        UIView.animate(withDuration: 0.3) {
+            removeView.isHidden = true
+        } completion: { _ in
+            self.mainView.searchStackView.removeArrangedSubview(removeView)
+            removeView.removeFromSuperview()
+        }
+        UserDefaultsManager.shared.searchResults.remove(at: sender.tag)
+        for i in 0..<mainView.searchStackView.arrangedSubviews.count {
+            mainView.searchStackView.arrangedSubviews[i].tag = i
+        }
     }
     
     @objc private func tagtapped() {
@@ -105,6 +118,12 @@ class MainViewController: BaseViewController {
 
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = DetailViewController()
+        vc.movie = movieList[indexPath.item]
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         movieList.count
