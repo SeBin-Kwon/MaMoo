@@ -31,7 +31,6 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     private let dateLabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13)
-        label.text = "2024.04.25"
         label.textColor = .white
         return label
     }()
@@ -59,7 +58,11 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     }()
     
     func configureData(_ item: MovieResults) {
+        let newUrl = "https://image.tmdb.org/t/p/w500" + item.poster_path
+        guard let url = URL(string: newUrl) else { return }
+        imageView.kf.setImage(with: url)
         titleLabel.text = item.title
+        dateLabel.text = DateFormatterManager.shared.dateChanged(item.release_date)
     }
     
     override func configureHierarchy() {

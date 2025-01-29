@@ -50,7 +50,7 @@ final class ProfileViewController: BaseViewController {
         UserDefaultsManager.shared.isDisplayedOnboarding = true
         UserDefaultsManager.shared.nickname = text
         UserDefaultsManager.shared.profileImage = num
-        UserDefaultsManager.shared.signUpDate = DateFormatterManager.shared.dateFormatted(Date())
+        UserDefaultsManager.shared.signUpDate = DateFormatterManager.shared.dateFormatted(Date()) + " 가입"
         ProfileViewController.changeRootViewController(rootView: TabBarController())
     }
     
