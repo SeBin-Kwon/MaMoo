@@ -28,25 +28,32 @@ final class SearchViewController: BaseViewController {
         searchView.searchBar.delegate = self
         searchView.collectionView.delegate = self
         searchView.collectionView.dataSource = self
+        searchView.collectionView.prefetchDataSource = self
         searchView.collectionView.register(SearchViewCollectionViewCell.self, forCellWithReuseIdentifier: SearchViewCollectionViewCell.identifier)
     }
     
     private func callRequest(query: String, page: Int) {
-//        let group = DispatchGroup()
-//        group.enter()
+        print("search", #function)
         NetworkManager.shared.fetchResults(api: TMDBRequest.search(value: SearchRequest(query: query, page: page)), type: Movie.self) { value in
-            print(value.results.count)
-            self.movieList = value.results
+            if page == 1 {
+                self.movieList = value.results
+            } else {
+                self.movieList.append(contentsOf: value.results)
+            }
+            if value.total_pages == page {
+                self.isEnd = true
+            }
+            
             self.searchView.collectionView.reloadData()
-//            group.leave()
+            if page == 1 && !self.movieList.isEmpty {
+                self.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+            }
+            print("현재 페이지", page)
+            print("전체 검색 수", value.total_results)
+            print("총 페이지 수", value.total_pages)
         } failHandler: {
             print("fail")
-//            group.leave()
         }
-//        group.notify(queue: .main) {
-//            print(#function, "-END-")
-//            self.mainView.collectionView.reloadData()
-//        }
     }
     
     override func configureView() {
@@ -71,24 +78,24 @@ final class SearchViewController: BaseViewController {
 }
 
 // MARK: Pagenation - UICollectionViewDataSourcePrefetching
-//extension SearchViewController: UICollectionViewDataSourcePrefetching {
-//    
-//    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-//
-//        for indexPath in indexPaths {
-//            if !isEnd && list.count-2 == indexPath.item || list.count-3 == indexPath.item {
-//                page += 1
-//                guard let searchText else { return }
-//                callRequest(query: searchText, page: page, order: isLatest)
-//            }
-//        }
-//        
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-//        print(#function)
-//    }
-//}
+extension SearchViewController: UICollectionViewDataSourcePrefetching {
+    
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+
+        for indexPath in indexPaths {
+            if !isEnd && movieList.count-2 == indexPath.item {
+                page += 1
+                guard let searchText else { return }
+                callRequest(query: searchText, page: page)
+            }
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+        print(#function)
+    }
+}
 
 // MARK: UISearchBar
 extension SearchViewController: UISearchBarDelegate {

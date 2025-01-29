@@ -58,11 +58,15 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     }()
     
     func configureData(_ item: MovieResults) {
-        let newUrl = "https://image.tmdb.org/t/p/w500" + item.poster_path
-        guard let url = URL(string: newUrl) else { return }
-        imageView.kf.setImage(with: url)
+        if let poster = item.poster_path {
+            let newUrl = "https://image.tmdb.org/t/p/w500" + poster
+            guard let url = URL(string: newUrl) else { return }
+            imageView.kf.setImage(with: url)
+        } else {
+            imageView.image = UIImage(systemName: "xmark.rectangle")
+        }
         titleLabel.text = item.title
-        dateLabel.text = DateFormatterManager.shared.dateChanged(item.release_date)
+        dateLabel.text = DateFormatterManager.shared.dateChanged(item.release_date ?? "")
     }
     
     override func configureHierarchy() {
