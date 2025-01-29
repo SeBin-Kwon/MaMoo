@@ -29,6 +29,7 @@ class MainViewController: BaseViewController {
         mainView.collectionView.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: MainCollectionViewCell.identifier)
         mainView.collectionView.delegate = self
         mainView.collectionView.dataSource = self
+        print(NSHomeDirectory())
     }
     
     @objc func rightItemTapped() {
@@ -37,17 +38,27 @@ class MainViewController: BaseViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    private func configureData() {
-        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
-        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
-        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
-        for i in 0..<10 {
+    override func viewWillAppear(_ animated: Bool) {
+        let searchList = UserDefaultsManager.shared.searchResults
+        print(searchList)
+        guard !searchList.isEmpty else { return }
+        if !mainView.searchStackView.arrangedSubviews.isEmpty {
+            mainView.searchStackView.removeAll()
+        }
+        for i in 0..<searchList.count {
             let tag = SearchTagButton()
-            tag.searchLabel.text = "어벤져스 \(i)"
+            tag.searchLabel.text = searchList[i]
             tag.addTarget(self, action: #selector(tagtapped), for: .touchUpInside)
             tag.removeButton.addTarget(self, action: #selector(removeButtontapped), for: .touchUpInside)
             mainView.searchStackView.addArrangedSubview(tag)
         }
+    }
+    
+    private func configureData() {
+        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
+        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
+        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
+        
         mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
     }
     

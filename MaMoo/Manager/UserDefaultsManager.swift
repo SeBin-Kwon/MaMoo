@@ -17,6 +17,7 @@ class UserDefaultsManager {
         case nickname
         case profileImage
         case signUpDate
+        case searchResults
         case like
     }
     
@@ -29,39 +30,28 @@ class UserDefaultsManager {
     }
     
     var isDisplayedOnboarding: Bool {
-        get {
-            getter(key: .isDisplayedOnboarding, defaultValue: false)
-        }
-        set {
-            setter(value: newValue, key: .isDisplayedOnboarding)
-        }
+        get { getter(key: .isDisplayedOnboarding, defaultValue: false) }
+        set { setter(value: newValue, key: .isDisplayedOnboarding) }
     }
     
     var nickname: String {
-        get {
-            getter(key: .nickname, defaultValue: "No Name")
-        }
-        set {
-            setter(value: newValue, key: .nickname)
-        }
+        get { getter(key: .nickname, defaultValue: "No Name") }
+        set { setter(value: newValue, key: .nickname) }
     }
     
     var profileImage: Int {
-        get {
-            getter(key: .profileImage, defaultValue: 0)
-        }
-        set {
-            setter(value: newValue, key: .profileImage)
-        }
+        get { getter(key: .profileImage, defaultValue: 0) }
+        set { setter(value: newValue, key: .profileImage) }
     }
     
     var signUpDate: String {
-        get {
-            getter(key: .signUpDate, defaultValue: "No Date")
-        }
-        set {
-            setter(value: newValue, key: .signUpDate)
-        }
+        get { getter(key: .signUpDate, defaultValue: "No Date") }
+        set { setter(value: newValue, key: .signUpDate) }
+    }
+    
+    var searchResults: [String] {
+        get { getter(key: .searchResults, defaultValue: [String]()) }
+        set { setter(value: newValue, key: .searchResults) }
     }
     
 }

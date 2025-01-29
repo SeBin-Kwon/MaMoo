@@ -94,6 +94,7 @@ extension SearchViewController: UISearchBarDelegate {
         previousSearchText = searchText
         self.searchText = searchText
         callRequest(query: searchText, page: page)
+        UserDefaultsManager.shared.searchResults.append(searchText)
     }
 }
 
