@@ -11,7 +11,7 @@ import SnapKit
 final class SearchViewController: BaseViewController {
     
     private let searchView = SearchView()
-    private let movieList = [MovieResults]()
+    private var movieList = [MovieResults]()
     private var page = 1
     private var isEnd = false
     private var searchText: String?
@@ -34,14 +34,15 @@ final class SearchViewController: BaseViewController {
     private func callRequest(query: String, page: Int) {
 //        let group = DispatchGroup()
 //        group.enter()
-//        NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { value in
-//            print(value.results.count)
-//            self.movieList = value.results
+        NetworkManager.shared.fetchResults(api: TMDBRequest.search(value: SearchRequest(query: query, page: page)), type: Movie.self) { value in
+            print(value.results.count)
+            self.movieList = value.results
+            self.searchView.collectionView.reloadData()
 //            group.leave()
-//        } failHandler: {
-//            print("fail")
+        } failHandler: {
+            print("fail")
 //            group.leave()
-//        }
+        }
 //        group.notify(queue: .main) {
 //            print(#function, "-END-")
 //            self.mainView.collectionView.reloadData()
@@ -109,14 +110,15 @@ extension SearchViewController: UISearchBarDelegate {
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        movieList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchViewCollectionViewCell.identifier, for: indexPath) as? SearchViewCollectionViewCell else { return UICollectionViewCell() }
-        for _ in 0..<2 {
-            cell.genreStackView.addArrangedSubview(configureTag())
-        }
+        cell.configureData(movieList[indexPath.item])
+//        for _ in 0..<2 {
+//            cell.genreStackView.addArrangedSubview(configureTag())
+//        }
         return cell
     }
     

@@ -58,20 +58,10 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
     
-//    let genreTag = {
-//        let btn = UIButton()
-//        var config = UIButton.Configuration.filled()
-//        config.buttonSize = .mini
-//        config.cornerStyle = .small
-//        var attributedTitle = AttributedString("장르")
-//        attributedTitle.font = .systemFont(ofSize: 12)
-//        attributedTitle.foregroundColor = .white
-//        config.attributedTitle = attributedTitle
-//        config.baseBackgroundColor = .maMooGray
-//        btn.configuration = config
-//        return btn
-//    }()
-//    
+    func configureData(_ item: MovieResults) {
+        titleLabel.text = item.title
+    }
+    
     override func configureHierarchy() {
         addSubview(imageView)
         addSubview(titleLabel)

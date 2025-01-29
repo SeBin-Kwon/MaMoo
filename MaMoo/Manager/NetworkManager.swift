@@ -14,7 +14,9 @@ class NetworkManager {
     private init() {}
     
     func fetchResults<T: Decodable>(api: TMDBRequest, type: T.Type, _ completionHandler: @escaping (T) -> Void, failHandler: @escaping () -> Void) {
-        AF.request(api.endPoint, method: api.method, headers: api.header).validate(statusCode: 200..<300).responseDecodable(of: T.self) { response in
+        AF.request(api.endPoint, method: api.method, parameters: api.parameter, encoding: URLEncoding(destination: .queryString), headers: api.header)
+            .validate(statusCode: 200..<300)
+            .responseDecodable(of: T.self) { response in
             switch response.result {
             case .success(let value):
                 print("Success")
