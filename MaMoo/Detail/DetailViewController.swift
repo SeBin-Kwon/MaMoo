@@ -36,9 +36,9 @@ class DetailViewController: BaseViewController {
     private func callRequest() {
         guard let movie else { return }
         NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { value in
-            //            print(value.backdrops.count)
-            self.backdropsList = Array(value.backdrops[0..<5])
-            //            print(self.backdropsList)
+            guard !value.backdrops.isEmpty else { return }
+            let count = min(value.backdrops.count, 5)
+            self.backdropsList = Array(value.backdrops[0..<count])
             self.configureBackdropScrollView()
         } failHandler: {
             print("fail")

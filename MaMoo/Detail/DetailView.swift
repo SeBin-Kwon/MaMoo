@@ -14,7 +14,6 @@ class DetailView: BaseView {
        let page = UIPageControl()
         page.currentPage = 0
         page.hidesForSinglePage = true
-//        page.pageIndicatorTintColor = .red
         return page
     }()
     let backdropScrollView = {
