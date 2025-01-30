@@ -35,7 +35,7 @@ struct Backdrops: Decodable {
 }
 
 struct Posters: Decodable {
-    let file_path: String
+    let file_path: String?
 }
 
 struct Casts: Decodable {

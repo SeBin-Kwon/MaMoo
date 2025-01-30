@@ -16,7 +16,7 @@ class DetailViewController: BaseViewController {
     private var backdropsList = [Backdrops]()
     private var isHide = true
     private var castList = [Cast]()
-//    private var posterList = [Posters]()
+    private var posterList = [Posters]()
     
     private let scrollView = {
         let scroll = UIScrollView()
@@ -84,15 +84,24 @@ class DetailViewController: BaseViewController {
     
     private func callRequest() {
         guard let movie else { return }
+        let group = DispatchGroup()
+        group.enter()
         NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { value in
             guard !value.backdrops.isEmpty else { return }
             let count = min(value.backdrops.count, 5)
             self.backdropsList = Array(value.backdrops[0..<count])
             self.configureBackdropScrollView()
+            self.posterList = value.posters
+            group.leave()
         } failHandler: {
             print("fail")
+            group.leave()
         }
-        let group = DispatchGroup()
+        group.notify(queue: .main) {
+            print(#function, "-posterEND-")
+            self.detailView.posterCollectionView.reloadData()
+        }
+        
         group.enter()
         NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { value in
             print("cast success")
@@ -145,7 +154,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if collectionView == detailView.castCollectionView {
             castList.count
         } else {
-            10
+            posterList.count
         }
     }
     
@@ -157,8 +166,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }
-            cell.backgroundColor = .red
-//            cell.configureData(castList[indexPath.item])
+            cell.configureData(posterList[indexPath.item])
             return cell
         }
         

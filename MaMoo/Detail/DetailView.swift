@@ -91,7 +91,6 @@ class DetailView: BaseView {
         addSubview(castCollectionView)
         addSubview(posterLabel)
         addSubview(posterCollectionView)
-        posterCollectionView.backgroundColor = .blue
     }
     override func configureLayout() {
         backdropScrollView.snp.makeConstraints { make in
@@ -172,15 +171,14 @@ class DetailView: BaseView {
     private func configurePosterFlowLayout() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
-        let cellCount: CGFloat = 2
-        let lineSpacing: CGFloat = 20
-        let itemSpacing: CGFloat = 5
+        let cellCount: CGFloat = 3.5
+        let itemSpacing: CGFloat = 10
         let insetSpacing: CGFloat = 10
         let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
-        layout.minimumLineSpacing = lineSpacing
+        layout.minimumLineSpacing = itemSpacing
         layout.minimumInteritemSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
-        layout.itemSize = CGSize(width: cellWidth / cellCount, height: 70)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth / cellCount * 2)
         layout.scrollDirection = .horizontal
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsHorizontalScrollIndicator = false

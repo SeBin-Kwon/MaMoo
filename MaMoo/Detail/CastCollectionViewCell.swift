@@ -13,7 +13,6 @@ class CastCollectionViewCell: BaseCollectionViewCell {
     let imageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
-//        image.backgroundColor = .yellow
         image.clipsToBounds = true
         return image
     }()
