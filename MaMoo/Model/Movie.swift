@@ -38,8 +38,12 @@ struct Posters: Decodable {
     let file_path: String
 }
 
+struct Casts: Decodable {
+    let cast: [Cast]
+}
+
 struct Cast: Decodable {
     let name: String
     let character: String
-    let profile_path: String
+    let profile_path: String?
 }

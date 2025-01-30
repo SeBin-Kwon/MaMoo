@@ -44,7 +44,7 @@ enum TMDBRequest {
         case .search(let value):
             let parameters = ["query": value.query, "page": String(value.page), "include_adult": "false", "language": "ko-KR"]
             return parameters
-        case .Credit(let id):
+        case .Credit(_):
             let parameters = ["language": "ko-KR"]
             return parameters
         default:

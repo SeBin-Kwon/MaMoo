@@ -15,6 +15,8 @@ class DetailViewController: BaseViewController {
     var movie: MovieResults?
     private var backdropsList = [Backdrops]()
     private var isHide = true
+    private var castList = [Cast]()
+    
     private let scrollView = {
         let scroll = UIScrollView()
         scroll.showsVerticalScrollIndicator = false
@@ -83,6 +85,21 @@ class DetailViewController: BaseViewController {
         } failHandler: {
             print("fail")
         }
+        let group = DispatchGroup()
+        group.enter()
+        NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { value in
+            print("cast success")
+            self.castList = value.cast
+            group.leave()
+        } failHandler: {
+            print("fail")
+            group.leave()
+        }
+        group.notify(queue: .main) {
+            print(#function, "-castEND-")
+            self.detailView.castCollectionView.reloadData()
+        }
+
     }
     
     private func configureBackdropScrollView() {
@@ -118,16 +135,12 @@ class DetailViewController: BaseViewController {
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        castList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
-//        cell.configureData(<#T##item: String##String#>)
-        DispatchQueue.main.async {
-            cell.imageView.layer.cornerRadius = cell.imageView.frame.height / 2
-        }
-//        cell.configureData(movieList[indexPath.item])
+        cell.configureData(castList[indexPath.item])
         return cell
     }
     

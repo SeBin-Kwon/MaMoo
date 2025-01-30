@@ -13,7 +13,7 @@ class CastCollectionViewCell: BaseCollectionViewCell {
     let imageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
-        image.backgroundColor = .yellow
+//        image.backgroundColor = .yellow
         image.clipsToBounds = true
         return image
     }()
@@ -24,7 +24,7 @@ class CastCollectionViewCell: BaseCollectionViewCell {
         label.textColor = .white
         return label
     }()
-    private let engNameLabel = {
+    private let chrNameLabel = {
         let label = UILabel()
         label.text = "sdfseeewewwe"
         label.font = .systemFont(ofSize: 13)
@@ -39,7 +39,7 @@ class CastCollectionViewCell: BaseCollectionViewCell {
     override func configureHierarchy() {
         addSubview(imageView)
         uiView.addSubview(nameLabel)
-        uiView.addSubview(engNameLabel)
+        uiView.addSubview(chrNameLabel)
         addSubview(uiView)
     }
     
@@ -56,17 +56,29 @@ class CastCollectionViewCell: BaseCollectionViewCell {
         }
         nameLabel.snp.makeConstraints { make in
             make.top.leading.equalTo(uiView)
+            make.trailing.equalTo(uiView).inset(10)
         }
-        engNameLabel.snp.makeConstraints { make in
+        chrNameLabel.snp.makeConstraints { make in
             make.bottom.leading.equalTo(uiView)
+            make.trailing.equalTo(uiView).inset(10)
         }
     }
     
-//    func configureData(_ item: String) {
-//
-//    }
+    func configureData(_ item: Cast) {
+        if let image = item.profile_path {
+            let newUrl = "https://image.tmdb.org/t/p/w500" + image
+            guard let url = URL(string: newUrl) else { return }
+            imageView.kf.setImage(with: url)
+        } else {
+            imageView.image = UIImage(systemName: "xmark.rectangle")
+        }
+        
+        nameLabel.text = item.name
+        chrNameLabel.text = item.character
+    }
     
-//    override func layoutSubviews() {
-//        imageView.layer.cornerRadius = imageView.frame.height / 2
-//    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        imageView.layer.cornerRadius = imageView.frame.height / 2
+    }
 }
