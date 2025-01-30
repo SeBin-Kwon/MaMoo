@@ -27,8 +27,11 @@ class MainViewController: BaseViewController {
         configureData()
         callRequest()
         mainView.collectionView.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: MainCollectionViewCell.identifier)
+        mainView.searchCollectionView.register(SearchTagCollectionViewCell.self, forCellWithReuseIdentifier: SearchTagCollectionViewCell.identifier)
         mainView.collectionView.delegate = self
         mainView.collectionView.dataSource = self
+        mainView.searchCollectionView.delegate = self
+        mainView.searchCollectionView.dataSource = self
         NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: NSNotification.Name("profile"), object: nil)
     }
     
@@ -50,17 +53,17 @@ class MainViewController: BaseViewController {
         let searchList = UserDefaultsManager.shared.searchResults
         print(searchList)
         guard !searchList.isEmpty else { return }
-        if !mainView.searchStackView.arrangedSubviews.isEmpty {
-            mainView.searchStackView.removeAll()
-        }
+//        if !mainView.searchStackView.arrangedSubviews.isEmpty {
+//            mainView.searchStackView.removeAll()
+//        }
         for i in 0..<searchList.count {
             let tagBtn = SearchTagButton()
             tagBtn.searchLabel.text = searchList[i]
             tagBtn.addTarget(self, action: #selector(tagtapped), for: .touchUpInside)
 //            tagBtn.removeButton.tag = i
             tagBtn.removeButton.addTarget(self, action: #selector(removeButtontapped), for: .touchUpInside)
-            mainView.searchStackView.addArrangedSubview(tagBtn)
-            mainView.searchStackView.arrangedSubviews[i].tag = i
+//            mainView.searchStackView.addArrangedSubview(tagBtn)
+//            mainView.searchStackView.arrangedSubviews[i].tag = i
         }
     }
     
@@ -82,18 +85,19 @@ class MainViewController: BaseViewController {
     }
     
     @objc private func removeButtontapped(_ sender: UIView) {
-        let removeView = mainView.searchStackView.arrangedSubviews[sender.tag]
-        print(sender.tag)
-        UIView.animate(withDuration: 0.3) {
-            removeView.isHidden = true
-        } completion: { _ in
-            self.mainView.searchStackView.removeArrangedSubview(removeView)
-            removeView.removeFromSuperview()
-        }
-        UserDefaultsManager.shared.searchResults.remove(at: sender.tag)
-        for i in 0..<mainView.searchStackView.arrangedSubviews.count {
-            mainView.searchStackView.arrangedSubviews[i].tag = i
-        }
+        print(#function)
+//        let removeView = mainView.searchStackView.arrangedSubviews[sender.tag]
+//        print(sender.tag)
+//        UIView.animate(withDuration: 0.3) {
+//            removeView.isHidden = true
+//        } completion: { _ in
+//            self.mainView.searchStackView.removeArrangedSubview(removeView)
+//            removeView.removeFromSuperview()
+//        }
+//        UserDefaultsManager.shared.searchResults.remove(at: sender.tag)
+//        for i in 0..<mainView.searchStackView.arrangedSubviews.count {
+//            mainView.searchStackView.arrangedSubviews[i].tag = i
+//        }
     }
     
     @objc private func tagtapped() {
@@ -117,35 +121,57 @@ class MainViewController: BaseViewController {
         }
     }
     
-
-    override func configureView() {
-    }
-    
-    override func viewDidLayoutSubviews() {
-        mainView.searchStackView.subviews.forEach {
-            guard let btn = $0 as? SearchTagButton else { return }
-            btn.backgroundView.layer.cornerRadius = mainView.searchStackView.frame.height / 2
-        }
-    }
+//    override func viewDidLayoutSubviews() {
+//        mainView.searchStackView.subviews.forEach {
+//            guard let btn = $0 as? SearchTagButton else { return }
+//            btn.backgroundView.layer.cornerRadius = mainView.searchStackView.frame.height / 2
+//        }
+//    }
 }
 
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = DetailViewController()
-        vc.movie = movieList[indexPath.item]
-        navigationController?.pushViewController(vc, animated: true)
+        switch collectionView {
+        case mainView.collectionView:
+            let vc = DetailViewController()
+            vc.movie = movieList[indexPath.item]
+            navigationController?.pushViewController(vc, animated: true)
+        default:
+            print(#function)
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        movieList.count
+        switch collectionView {
+        case mainView.collectionView:
+            movieList.count
+        default:
+            10
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.identifier, for: indexPath) as? MainCollectionViewCell else { return UICollectionViewCell() }
-        cell.configureData(movieList[indexPath.item])
-        return cell
+        
+        switch collectionView {
+        case mainView.collectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.identifier, for: indexPath) as? MainCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureData(movieList[indexPath.item])
+            return cell
+        default:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchTagCollectionViewCell.identifier, for: indexPath) as? SearchTagCollectionViewCell else { return UICollectionViewCell() }
+            cell.backgroundColor = .maMooLightGray
+            DispatchQueue.main.async {
+                cell.layer.cornerRadius = cell.frame.height / 2
+            }
+            
+//            cell.configureData(movieList[indexPath.item])
+            return cell
+        }
+        
     }
     
     

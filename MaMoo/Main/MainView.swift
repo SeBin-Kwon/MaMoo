@@ -21,22 +21,23 @@ class MainView: BaseView {
         btn.configuration = config
         return btn
     }()
-    let searchStackView = {
-        let stack = UIStackView()
-        stack.backgroundColor = .red
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.distribution = .fillProportionally
-        stack.spacing = 10
-        return stack
-    }()
-    private let scrollView = {
-       let scroll = UIScrollView()
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        scroll.backgroundColor = .blue
-        return scroll
-    }()
+    lazy var searchCollectionView = configureSearchCollectionView()
+//    let searchStackView = {
+//        let stack = UIStackView()
+//        stack.backgroundColor = .red
+//        stack.axis = .horizontal
+//        stack.alignment = .center
+//        stack.distribution = .fillProportionally
+//        stack.spacing = 10
+//        return stack
+//    }()
+//    private let scrollView = {
+//       let scroll = UIScrollView()
+//        scroll.showsHorizontalScrollIndicator = false
+//        scroll.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+//        scroll.backgroundColor = .blue
+//        return scroll
+//    }()
     private lazy var todayTitleLabel = configureTitleLabel("오늘의 영화")
     lazy var collectionView = configureCollectionView()
     
@@ -44,8 +45,9 @@ class MainView: BaseView {
         addSubview(profileEditButton)
         addSubview(searchTitleLabel)
         addSubview(allRemoveButton)
-        scrollView.addSubview(searchStackView)
-        addSubview(scrollView)
+        addSubview(searchCollectionView)
+//        scrollView.addSubview(searchStackView)
+//        addSubview(scrollView)
         addSubview(todayTitleLabel)
         addSubview(collectionView)
     }
@@ -64,22 +66,45 @@ class MainView: BaseView {
             make.centerY.equalTo(searchTitleLabel)
             make.trailing.equalTo(safeAreaLayoutGuide).inset(10)
         }
-        scrollView.snp.makeConstraints { make in
+        searchCollectionView.snp.makeConstraints { make in
             make.top.equalTo(searchTitleLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            make.height.equalTo(38)
         }
-        searchStackView.snp.makeConstraints { make in
-            make.horizontalEdges.equalTo(scrollView)
-            make.height.equalTo(scrollView.snp.height)
-        }
+//        scrollView.snp.makeConstraints { make in
+//            make.top.equalTo(searchTitleLabel.snp.bottom).offset(10)
+//            make.horizontalEdges.equalTo(safeAreaLayoutGuide)
+//        }
+//        searchStackView.snp.makeConstraints { make in
+//            make.horizontalEdges.equalTo(scrollView)
+//            make.height.equalTo(scrollView.snp.height)
+//        }
         todayTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(scrollView.snp.bottom).offset(10)
+            make.top.equalTo(searchCollectionView.snp.bottom).offset(10)
             make.leading.equalTo(safeAreaLayoutGuide).offset(10)
         }
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(todayTitleLabel.snp.bottom)
             make.horizontalEdges.bottom.equalTo(safeAreaLayoutGuide)
         }
+    }
+    
+    private func configureSearchCollectionView() -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+//        let width = UIScreen.main.bounds.width
+//        let cellCount: CGFloat = 1.6
+        let itemSpacing: CGFloat = 10
+//        let insetSpacing: CGFloat = 10
+//        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
+        layout.minimumLineSpacing = itemSpacing
+//        layout.minimumInteritemSpacing = itemSpacing
+        layout.sectionInset = UIEdgeInsets(top: 0, left: itemSpacing, bottom: 0, right: itemSpacing)
+        layout.itemSize = CGSize(width: 100, height: 38)
+        layout.scrollDirection = .horizontal
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.showsHorizontalScrollIndicator = false
+        view.backgroundColor = .black
+        return view
     }
     
     private func configureCollectionView() -> UICollectionView {
