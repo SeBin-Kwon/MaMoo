@@ -19,4 +19,20 @@ extension UIViewController {
         }
         window.makeKeyAndVisible()
     }
+    
+    func displayAlert(title: String, isCancel: Bool, _ completionHandler: ((UIAlertAction) -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        switch isCancel {
+        case true:
+            let cancelButton = UIAlertAction(title: "취소", style: .cancel)
+            let okButton = UIAlertAction(title: "확인", style: .default, handler: completionHandler)
+            alert.addAction(cancelButton)
+            alert.addAction(okButton)
+            present(alert, animated: true)
+        case false:
+            let okButton = UIAlertAction(title: "확인", style: .cancel)
+            alert.addAction(okButton)
+            present(alert, animated: true)
+        }
+    }
 }
