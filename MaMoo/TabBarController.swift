@@ -13,6 +13,11 @@ final class TabBarController: UITabBarController {
         configureTabBarController()
         tabBar.tintColor = UIColor.maMooPoint
         tabBar.unselectedItemTintColor = UIColor.maMooGray
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .black
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = tabBar.standardAppearance
     }
     
     private func configureTabBarController() {
