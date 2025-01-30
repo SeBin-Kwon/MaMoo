@@ -17,7 +17,7 @@ final class SettingTableViewCell: UITableViewCell {
        let label = UILabel()
         label.textColor = .white
         label.text = "sdfsdf"
-        label.font = .systemFont(ofSize: 14)
+        label.font = .systemFont(ofSize: 15)
         return label
     }()
     
@@ -36,7 +36,6 @@ final class SettingTableViewCell: UITableViewCell {
     }
     
     func configureData(_ index: Int) {
-        print(index)
         settingLabel.text = contentText[index]
     }
 
