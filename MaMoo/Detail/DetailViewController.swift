@@ -30,6 +30,10 @@ class DetailViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         guard let movie else { return }
         navigationItem.title = movie.title
+        guard let date = movie.release_date,
+              let vote = movie.vote_average,
+              let genre = movie.genre_ids else { return }
+        self.detailView.configureSmallLabel(date, vote, genre)
         callRequest()
     }
     
