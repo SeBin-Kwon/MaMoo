@@ -18,7 +18,7 @@ class DetailViewController: BaseViewController {
     override func loadView() {
         view = detailView
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         detailView.backdropScrollView.delegate = self
@@ -31,37 +31,40 @@ class DetailViewController: BaseViewController {
         guard let movie else { return }
         navigationItem.title = movie.title
         callRequest()
-        detailView.pageControl.numberOfPages = backdropsList.count
-        configureBackdropScrollView()
     }
     
     private func callRequest() {
         guard let movie else { return }
         NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { value in
-            print(value.backdrops.count)
+            //            print(value.backdrops.count)
             self.backdropsList = Array(value.backdrops[0..<5])
-            print(self.backdropsList)
+            //            print(self.backdropsList)
+            self.configureBackdropScrollView()
         } failHandler: {
             print("fail")
         }
     }
     
     private func configureBackdropScrollView() {
-        backdropsList.forEach {
-            let newUrl = "https://image.tmdb.org/t/p/w500" + $0.file_path
+        for i in 0..<backdropsList.count {
+            let newUrl = "https://image.tmdb.org/t/p/w500" + backdropsList[i].file_path
             guard let url = URL(string: newUrl) else { return }
             let imageView = configureImage()
             imageView.kf.setImage(with: url)
-            imageView.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
+            
+            let xPos = view.frame.width * CGFloat(i)
+            imageView.frame = CGRect(x: xPos, y: 0, width: detailView.backdropScrollView.bounds.width, height: detailView.backdropScrollView.bounds.height)
             detailView.backdropScrollView.addSubview(imageView)
+            detailView.backdropScrollView.contentSize.width = imageView.frame.width * CGFloat(i + 1)
+            detailView.pageControl.numberOfPages = backdropsList.count
         }
     }
+    
     
     private func configureImage() -> UIImageView {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
         image.backgroundColor = .gray
         return image
     }
@@ -69,7 +72,7 @@ class DetailViewController: BaseViewController {
     @objc func rightItemTapped() {
         print(#function)
     }
-
+    
 }
 
 extension DetailViewController: UIScrollViewDelegate {

@@ -14,9 +14,16 @@ class DetailView: BaseView {
        let page = UIPageControl()
         page.currentPage = 0
         page.hidesForSinglePage = true
+//        page.pageIndicatorTintColor = .red
         return page
     }()
-    let backdropScrollView = UIScrollView()
+    let backdropScrollView = {
+        let scroll = UIScrollView()
+        scroll.showsHorizontalScrollIndicator = false
+        scroll.isPagingEnabled = true
+        return scroll
+    }()
+    
     
     private lazy var synopsisLabel = configureLabel()
     private lazy var castLabel = configureLabel()
@@ -27,13 +34,13 @@ class DetailView: BaseView {
         addSubview(pageControl)
     }
     override func configureLayout() {
-        backdropScrollView.backgroundColor = .red
         backdropScrollView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
             make.height.equalTo(400)
         }
         pageControl.snp.makeConstraints { make in
-            make.bottom.equalTo(backdropScrollView.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(backdropScrollView.snp.bottom).inset(20)
         }
     }
     
