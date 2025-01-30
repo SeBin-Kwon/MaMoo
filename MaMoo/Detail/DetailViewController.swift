@@ -16,6 +16,7 @@ class DetailViewController: BaseViewController {
     private var backdropsList = [Backdrops]()
     private var isHide = true
     private var castList = [Cast]()
+//    private var posterList = [Posters]()
     
     private let scrollView = {
         let scroll = UIScrollView()
@@ -32,15 +33,21 @@ class DetailViewController: BaseViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(detailView)
         configureLayout()
-        detailView.backdropScrollView.delegate = self
-        detailView.castCollectionView.delegate = self
-        detailView.castCollectionView.dataSource = self
-        detailView.castCollectionView.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.identifier)
-        
+        configureDelegate()
         let rightItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(rightItemTapped))
         rightItem.tintColor = .maMooPoint
         navigationItem.rightBarButtonItem = rightItem
         detailView.moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
+    }
+    
+    private func configureDelegate() {
+        detailView.backdropScrollView.delegate = self
+        detailView.castCollectionView.delegate = self
+        detailView.castCollectionView.dataSource = self
+        detailView.castCollectionView.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.identifier)
+        detailView.posterCollectionView.delegate = self
+        detailView.posterCollectionView.dataSource = self
+        detailView.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
     }
     
     private func configureLayout() {
@@ -135,13 +142,26 @@ class DetailViewController: BaseViewController {
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        castList.count
+        if collectionView == detailView.castCollectionView {
+            castList.count
+        } else {
+            10
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
-        cell.configureData(castList[indexPath.item])
-        return cell
+        switch collectionView {
+        case detailView.castCollectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureData(castList[indexPath.item])
+            return cell
+        default:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }
+            cell.backgroundColor = .red
+//            cell.configureData(castList[indexPath.item])
+            return cell
+        }
+        
     }
     
 

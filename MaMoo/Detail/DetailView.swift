@@ -72,11 +72,10 @@ class DetailView: BaseView {
         btn.configuration = config
         return btn
     }()
-    
-    lazy var castCollectionView = configureFlowLayout()
-    
     private lazy var castLabel = configureLabel("Cast")
+    lazy var castCollectionView = configureCastFlowLayout()
     private lazy var posterLabel = configureLabel("Poster")
+    lazy var posterCollectionView = configurePosterFlowLayout()
     
     override func configureHierarchy() {
         addSubview(backdropScrollView)
@@ -90,6 +89,9 @@ class DetailView: BaseView {
         addSubview(moreButton)
         addSubview(castLabel)
         addSubview(castCollectionView)
+        addSubview(posterLabel)
+        addSubview(posterCollectionView)
+        posterCollectionView.backgroundColor = .blue
     }
     override func configureLayout() {
         backdropScrollView.snp.makeConstraints { make in
@@ -134,12 +136,40 @@ class DetailView: BaseView {
         castCollectionView.snp.makeConstraints { make in
             make.top.equalTo(castLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(150)
+        }
+        posterLabel.snp.makeConstraints { make in
+            make.top.equalTo(castCollectionView.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(10)
+        }
+        posterCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(posterLabel.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview().inset(30)
             make.height.equalTo(150)
         }
     }
     
-    private func configureFlowLayout() -> UICollectionView {
+    private func configureCastFlowLayout() -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        let width = UIScreen.main.bounds.width
+        let cellCount: CGFloat = 2
+        let lineSpacing: CGFloat = 20
+        let itemSpacing: CGFloat = 5
+        let insetSpacing: CGFloat = 10
+        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
+        layout.minimumLineSpacing = lineSpacing
+        layout.minimumInteritemSpacing = itemSpacing
+        layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: 70)
+        layout.scrollDirection = .horizontal
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.showsHorizontalScrollIndicator = false
+        view.backgroundColor = .black
+        return view
+    }
+    
+    private func configurePosterFlowLayout() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
         let cellCount: CGFloat = 2
