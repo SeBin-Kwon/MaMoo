@@ -16,7 +16,7 @@ final class SearchViewController: BaseViewController {
     private var isEnd = false
     private var searchText: String?
     private var previousSearchText: String?
-    
+    var tagSearchText: String?
     override func loadView() {
         view = searchView
     }
@@ -29,6 +29,13 @@ final class SearchViewController: BaseViewController {
         searchView.collectionView.dataSource = self
         searchView.collectionView.prefetchDataSource = self
         searchView.collectionView.register(SearchViewCollectionViewCell.self, forCellWithReuseIdentifier: SearchViewCollectionViewCell.identifier)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let tagSearchText {
+            searchView.searchBar.text = tagSearchText
+            callRequest(query: tagSearchText, page: 1)
+        }
     }
     
     private func callRequest(query: String, page: Int) {

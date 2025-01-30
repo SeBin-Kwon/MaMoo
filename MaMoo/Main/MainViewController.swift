@@ -13,7 +13,7 @@ class MainViewController: BaseViewController {
 
     private let mainView = MainView()
     private var movieList = [MovieResults]()
-    
+    private var searchList = UserDefaultsManager.shared.searchResults
     override func loadView() {
         view = mainView
     }
@@ -50,21 +50,8 @@ class MainViewController: BaseViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let searchList = UserDefaultsManager.shared.searchResults
-        print(searchList)
-        guard !searchList.isEmpty else { return }
-//        if !mainView.searchStackView.arrangedSubviews.isEmpty {
-//            mainView.searchStackView.removeAll()
-//        }
-        for i in 0..<searchList.count {
-            let tagBtn = SearchTagButton()
-            tagBtn.searchLabel.text = searchList[i]
-            tagBtn.addTarget(self, action: #selector(tagtapped), for: .touchUpInside)
-//            tagBtn.removeButton.tag = i
-            tagBtn.removeButton.addTarget(self, action: #selector(removeButtontapped), for: .touchUpInside)
-//            mainView.searchStackView.addArrangedSubview(tagBtn)
-//            mainView.searchStackView.arrangedSubviews[i].tag = i
-        }
+        searchList = UserDefaultsManager.shared.searchResults
+        mainView.searchCollectionView.reloadData()
     }
     
     private func configureData() {
@@ -84,20 +71,14 @@ class MainViewController: BaseViewController {
         present(vc, animated: true)
     }
     
-    @objc private func removeButtontapped(_ sender: UIView) {
+    @objc private func removeButtontapped(_ sender: UIButton) {
         print(#function)
-//        let removeView = mainView.searchStackView.arrangedSubviews[sender.tag]
-//        print(sender.tag)
-//        UIView.animate(withDuration: 0.3) {
-//            removeView.isHidden = true
-//        } completion: { _ in
-//            self.mainView.searchStackView.removeArrangedSubview(removeView)
-//            removeView.removeFromSuperview()
-//        }
-//        UserDefaultsManager.shared.searchResults.remove(at: sender.tag)
-//        for i in 0..<mainView.searchStackView.arrangedSubviews.count {
-//            mainView.searchStackView.arrangedSubviews[i].tag = i
-//        }
+        print("sender", sender.tag)
+        let index = IndexPath(item: sender.tag, section: 0)
+        searchList.remove(at: sender.tag)
+        UserDefaultsManager.shared.searchResults = searchList
+        mainView.searchCollectionView.deleteItems(at: [index])
+        mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
     @objc private func tagtapped() {
@@ -120,13 +101,6 @@ class MainViewController: BaseViewController {
             self.mainView.collectionView.reloadData()
         }
     }
-    
-//    override func viewDidLayoutSubviews() {
-//        mainView.searchStackView.subviews.forEach {
-//            guard let btn = $0 as? SearchTagButton else { return }
-//            btn.backgroundView.layer.cornerRadius = mainView.searchStackView.frame.height / 2
-//        }
-//    }
 }
 
 
@@ -140,6 +114,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             navigationController?.pushViewController(vc, animated: true)
         default:
             print(#function)
+            let vc = SearchViewController()
+            vc.tagSearchText = searchList[indexPath.item]
+            navigationController?.pushViewController(vc, animated: true)
         }
         
     }
@@ -149,7 +126,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case mainView.collectionView:
             movieList.count
         default:
-            10
+            searchList.count
         }
         
     }
@@ -167,8 +144,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             DispatchQueue.main.async {
                 cell.layer.cornerRadius = cell.frame.height / 2
             }
-            
-//            cell.configureData(movieList[indexPath.item])
+            cell.removeButton.addTarget(self, action: #selector(removeButtontapped), for: .touchUpInside)
+            cell.removeButton.tag = indexPath.item
+            cell.configureData(searchList[indexPath.item])
             return cell
         }
         
