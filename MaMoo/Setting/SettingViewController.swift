@@ -26,15 +26,9 @@ final class SettingViewController: BaseViewController {
         tableView.rowHeight = 50
         tableView.layoutMargins = UIEdgeInsets.zero
         tableView.separatorInset = UIEdgeInsets.zero
-        tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifier)
-        
+        tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifier)  
         configureData()
         NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: NSNotification.Name("profile"), object: nil)
-        
-        
-        button.setTitle("탈퇴", for: .normal)
-        button.backgroundColor = .systemBlue
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
     @objc func profileNotification(value: NSNotification) {
@@ -62,19 +56,10 @@ final class SettingViewController: BaseViewController {
         present(vc, animated: true)
     }
     
-    @objc func buttonTapped() {
-        print(#function)
-        UserDefaultsManager.shared.isDisplayedOnboarding = false
-        for key in UserDefaults.standard.dictionaryRepresentation().keys {
-            UserDefaults.standard.removeObject(forKey: key.description)
-        }
-    }
-    
     override func configureView() {
         tableView.backgroundColor = .black
         view.addSubview(profileEditButton)
         view.addSubview(tableView)
-        view.addSubview(button)
         profileEditButton.snp.makeConstraints { make in
             make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.height.equalTo(140)
@@ -83,10 +68,6 @@ final class SettingViewController: BaseViewController {
             make.top.equalTo(profileEditButton.snp.bottom).offset(10)
             make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(10)
         }
-//        button.snp.makeConstraints { make in
-//            make.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
-//            make.height.equalTo(30)
-//        }
     }
 
 }
@@ -96,6 +77,13 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 3 {
             print(#function)
+            self.displayAlert(title: "정말 탈퇴하시겠습니까?", isCancel: true) { _ in
+                UserDefaultsManager.shared.isDisplayedOnboarding = false
+                for key in UserDefaults.standard.dictionaryRepresentation().keys {
+                    UserDefaults.standard.removeObject(forKey: key.description)
+                }
+                SettingViewController.changeRootViewController(rootView: OnboardingViewController())
+            }
         }
     }
     
