@@ -135,7 +135,7 @@ class DetailView: BaseView {
             make.top.equalTo(castLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview().inset(30)
-            make.height.equalTo(170)
+            make.height.equalTo(150)
         }
     }
     
@@ -143,20 +143,21 @@ class DetailView: BaseView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
         let cellCount: CGFloat = 2
-        let lineSpacing: CGFloat = 30
+        let lineSpacing: CGFloat = 20
         let itemSpacing: CGFloat = 5
         let insetSpacing: CGFloat = 10
         let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
         layout.minimumLineSpacing = lineSpacing
         layout.minimumInteritemSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
-        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth / cellCount / 2.5)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: 70)
         layout.scrollDirection = .horizontal
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsHorizontalScrollIndicator = false
-        view.backgroundColor = .red
+        view.backgroundColor = .black
         return view
     }
+    
     
     
     func configureSynopsis(_ text: String) {

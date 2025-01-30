@@ -123,12 +123,15 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
-        cell.backgroundColor = .blue
+//        cell.configureData(<#T##item: String##String#>)
+        DispatchQueue.main.async {
+            cell.imageView.layer.cornerRadius = cell.imageView.frame.height / 2
+        }
 //        cell.configureData(movieList[indexPath.item])
         return cell
     }
     
-    
+
 }
 
 // MARK: ScrollView
