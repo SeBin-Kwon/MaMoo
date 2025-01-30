@@ -53,6 +53,26 @@ class DetailView: BaseView {
     }()
     
     private lazy var synopsisLabel = configureLabel("Synopsis")
+    
+    let synopsisLine = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .white
+        label.numberOfLines = 3
+        return label
+    }()
+    
+    let moreButton = {
+        let btn = UIButton()
+        var config = UIButton.Configuration.plain()
+        var attributedTitle = AttributedString("More")
+        attributedTitle.font = .systemFont(ofSize: 14, weight: .bold)
+        attributedTitle.foregroundColor = .maMooPoint
+        config.attributedTitle = attributedTitle
+        btn.configuration = config
+        return btn
+    }()
+    
     private lazy var castLabel = configureLabel("Cast")
     private lazy var posterLabel = configureLabel("Poster")
     
@@ -63,6 +83,9 @@ class DetailView: BaseView {
         smallLabelStackView.addArrangedSubview(voteLabel)
         smallLabelStackView.addArrangedSubview(genreLabel)
         addSubview(smallLabelStackView)
+        addSubview(synopsisLabel)
+        addSubview(synopsisLine)
+        addSubview(moreButton)
     }
     override func configureLayout() {
         backdropScrollView.snp.makeConstraints { make in
@@ -88,6 +111,23 @@ class DetailView: BaseView {
             make.top.equalTo(backdropScrollView.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
         }
+        synopsisLabel.snp.makeConstraints { make in
+            make.top.equalTo(smallLabelStackView.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(10)
+        }
+        synopsisLine.snp.makeConstraints { make in
+            make.top.equalTo(synopsisLabel.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview().inset(10)
+        }
+        moreButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(10)
+            make.centerY.equalTo(synopsisLabel)
+        }
+    }
+    
+    
+    func configureSynopsis(_ text: String) {
+        synopsisLine.text = text
     }
     
     func configureSmallLabel(_ date: String, _ vote: Double, _ genre: [Int]) {

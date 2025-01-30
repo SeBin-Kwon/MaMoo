@@ -14,7 +14,7 @@ class DetailViewController: BaseViewController {
     private let detailView = DetailView()
     var movie: MovieResults?
     private var backdropsList = [Backdrops]()
-    
+    private var isHide = true
     override func loadView() {
         view = detailView
     }
@@ -25,6 +25,16 @@ class DetailViewController: BaseViewController {
         let rightItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(rightItemTapped))
         rightItem.tintColor = .maMooPoint
         navigationItem.rightBarButtonItem = rightItem
+        detailView.moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func moreButtonTapped() {
+        isHide.toggle()
+        detailView.synopsisLine.numberOfLines = isHide ? 3 : 0
+        detailView.moreButton.configuration?.attributedTitle = isHide ? AttributedString("More") : AttributedString("Hide")
+        detailView.moreButton.configuration?.attributedTitle?.font = .systemFont(ofSize: 14, weight: .bold)
+        detailView.moreButton.configuration?.attributedTitle?.foregroundColor = .maMooPoint
+        print(#function)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,6 +44,7 @@ class DetailViewController: BaseViewController {
               let vote = movie.vote_average,
               let genre = movie.genre_ids else { return }
         self.detailView.configureSmallLabel(date, vote, genre)
+        detailView.configureSynopsis(movie.overview ?? "")
         callRequest()
     }
     
