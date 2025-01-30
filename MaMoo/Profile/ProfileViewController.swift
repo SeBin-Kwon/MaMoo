@@ -10,7 +10,7 @@ import SnapKit
 
 final class ProfileViewController: BaseViewController {
     
-    private var num = Int.random(in: 0...11)
+    private var num = UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11)
     private lazy var profileImageButton = ProfileImageButton(num: num)
     private lazy var textField = configureTextFieldUI()
     private var textFieldBorder = {
@@ -28,6 +28,7 @@ final class ProfileViewController: BaseViewController {
     private let completeButton = {
         let btn = MaMooButton(title: "완료")
         btn.isEnabled = false
+        btn.isHidden = UserDefaultsManager.shared.isDisplayedOnboarding
         return btn
     }()
     
@@ -39,19 +40,42 @@ final class ProfileViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "프로필 설정"
+        navigationItem.title = UserDefaultsManager.shared.isDisplayedOnboarding ? "프로필 편집" : "프로필 설정"
+        let rightItem = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(completeButtonTapped))
+        rightItem.tintColor = .maMooPoint
+        rightItem.isHidden = !UserDefaultsManager.shared.isDisplayedOnboarding
+        navigationItem.rightBarButtonItem = rightItem
+        
+        let leftItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(leftItemTapped))
+        leftItem.tintColor = .maMooPoint
+        if UserDefaultsManager.shared.isDisplayedOnboarding {
+            navigationItem.leftBarButtonItem = leftItem
+        }
+        
         profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped), for: .touchUpInside)
         textField.delegate = self
         completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
     }
     
+    @objc func leftItemTapped() {
+        print(#function)
+        dismiss(animated: true)
+    }
+    
     @objc private func completeButtonTapped() {
         guard let text = textField.text else { return }
-        UserDefaultsManager.shared.isDisplayedOnboarding = true
-        UserDefaultsManager.shared.nickname = text
-        UserDefaultsManager.shared.profileImage = num
-        UserDefaultsManager.shared.signUpDate = DateFormatterManager.shared.dateFormatted(Date()) + " 가입"
-        ProfileViewController.changeRootViewController(rootView: TabBarController())
+        if !UserDefaultsManager.shared.isDisplayedOnboarding {
+            UserDefaultsManager.shared.isDisplayedOnboarding = true
+            UserDefaultsManager.shared.nickname = text
+            UserDefaultsManager.shared.profileImage = num
+            UserDefaultsManager.shared.signUpDate = DateFormatterManager.shared.dateFormatted(Date()) + " 가입"
+            ProfileViewController.changeRootViewController(rootView: TabBarController())
+        } else {
+            NotificationCenter.default.post(name: NSNotification.Name("profile"), object: nil, userInfo: ["nickname": text, "profileImage": num])
+            UserDefaultsManager.shared.nickname = text
+            UserDefaultsManager.shared.profileImage = num
+            dismiss(animated: true)
+        }
     }
     
     @objc private func profileImageButtonTapped() {
@@ -70,6 +94,7 @@ final class ProfileViewController: BaseViewController {
         let textfield = UITextField()
         textfield.borderStyle = .none
         textfield.backgroundColor = .none
+        textfield.text = UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.nickname : ""
         textfield.textColor = .white
         textfield.attributedPlaceholder = NSAttributedString(string: "닉네임을 입력해주세요", attributes: [
             .foregroundColor: UIColor.maMooGray])

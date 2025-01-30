@@ -29,7 +29,15 @@ class MainViewController: BaseViewController {
         mainView.collectionView.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: MainCollectionViewCell.identifier)
         mainView.collectionView.delegate = self
         mainView.collectionView.dataSource = self
-        print(NSHomeDirectory())
+        NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: NSNotification.Name("profile"), object: nil)
+    }
+    
+    @objc func profileNotification(value: NSNotification) {
+        guard let nickname = value.userInfo!["nickname"] as? String,
+              let imageNum = value.userInfo!["profileImage"] as? Int else { return }
+        mainView.profileEditButton.nicknameLabel.text = nickname
+        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(imageNum)")
+        print("신호받음")
     }
     
     @objc func rightItemTapped() {
@@ -66,6 +74,11 @@ class MainViewController: BaseViewController {
     
     @objc private func profileEditButtontapped() {
         print(#function)
+        let vc = UINavigationController(rootViewController: ProfileViewController())
+        if let sheet = vc.sheetPresentationController {
+            sheet.prefersGrabberVisible = true
+        }
+        present(vc, animated: true)
     }
     
     @objc private func removeButtontapped(_ sender: UIView) {

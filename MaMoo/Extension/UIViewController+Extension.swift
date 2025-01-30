@@ -11,6 +11,7 @@ extension UIViewController {
     static func changeRootViewController(rootView: UIViewController) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first else { return }
+        window.backgroundColor = .maMooGray
         if let tabBar = rootView as? TabBarController {
             window.rootViewController = tabBar
         } else {
