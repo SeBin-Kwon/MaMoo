@@ -15,26 +15,51 @@ class DetailViewController: BaseViewController {
     var movie: MovieResults?
     private var backdropsList = [Backdrops]()
     private var isHide = true
-    override func loadView() {
-        view = detailView
-    }
+    private let scrollView = {
+        let scroll = UIScrollView()
+        scroll.showsVerticalScrollIndicator = false
+        return scroll
+    }()
+    
+//    override func loadView() {
+//        view = detailView
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(scrollView)
+        scrollView.addSubview(detailView)
+        configureLayout()
         detailView.backdropScrollView.delegate = self
+        detailView.castCollectionView.delegate = self
+        detailView.castCollectionView.dataSource = self
+        detailView.castCollectionView.register(CastCollectionViewCell.self, forCellWithReuseIdentifier: CastCollectionViewCell.identifier)
+        
         let rightItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(rightItemTapped))
         rightItem.tintColor = .maMooPoint
         navigationItem.rightBarButtonItem = rightItem
         detailView.moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
     }
     
+    private func configureLayout() {
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        detailView.snp.makeConstraints { make in
+            make.width.equalTo(scrollView.snp.width)
+            make.verticalEdges.equalTo(scrollView)
+        }
+    }
+    
     @objc private func moreButtonTapped() {
         isHide.toggle()
-        detailView.synopsisLine.numberOfLines = isHide ? 3 : 0
-        detailView.moreButton.configuration?.attributedTitle = isHide ? AttributedString("More") : AttributedString("Hide")
-        detailView.moreButton.configuration?.attributedTitle?.font = .systemFont(ofSize: 14, weight: .bold)
-        detailView.moreButton.configuration?.attributedTitle?.foregroundColor = .maMooPoint
-        print(#function)
+        UIView.animate(withDuration: 0.3) { [self] in
+            detailView.synopsisLine.numberOfLines = isHide ? 3 : 0
+            detailView.moreButton.configuration?.attributedTitle = isHide ? AttributedString("More") : AttributedString("Hide")
+            detailView.moreButton.configuration?.attributedTitle?.font = .systemFont(ofSize: 14, weight: .bold)
+            detailView.moreButton.configuration?.attributedTitle?.foregroundColor = .maMooPoint
+            view.layoutIfNeeded()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -90,6 +115,23 @@ class DetailViewController: BaseViewController {
     
 }
 
+
+extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
+        cell.backgroundColor = .blue
+//        cell.configureData(movieList[indexPath.item])
+        return cell
+    }
+    
+    
+}
+
+// MARK: ScrollView
 extension DetailViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)

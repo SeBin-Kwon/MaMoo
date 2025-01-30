@@ -73,6 +73,8 @@ class DetailView: BaseView {
         return btn
     }()
     
+    lazy var castCollectionView = configureFlowLayout()
+    
     private lazy var castLabel = configureLabel("Cast")
     private lazy var posterLabel = configureLabel("Poster")
     
@@ -86,6 +88,8 @@ class DetailView: BaseView {
         addSubview(synopsisLabel)
         addSubview(synopsisLine)
         addSubview(moreButton)
+        addSubview(castLabel)
+        addSubview(castCollectionView)
     }
     override func configureLayout() {
         backdropScrollView.snp.makeConstraints { make in
@@ -123,6 +127,35 @@ class DetailView: BaseView {
             make.trailing.equalToSuperview().inset(10)
             make.centerY.equalTo(synopsisLabel)
         }
+        castLabel.snp.makeConstraints { make in
+            make.top.equalTo(synopsisLine.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(10)
+        }
+        castCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(castLabel.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalToSuperview().inset(30)
+            make.height.equalTo(170)
+        }
+    }
+    
+    private func configureFlowLayout() -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        let width = UIScreen.main.bounds.width
+        let cellCount: CGFloat = 2
+        let lineSpacing: CGFloat = 30
+        let itemSpacing: CGFloat = 5
+        let insetSpacing: CGFloat = 10
+        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
+        layout.minimumLineSpacing = lineSpacing
+        layout.minimumInteritemSpacing = itemSpacing
+        layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth / cellCount / 2.5)
+        layout.scrollDirection = .horizontal
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.showsHorizontalScrollIndicator = false
+        view.backgroundColor = .red
+        return view
     }
     
     
