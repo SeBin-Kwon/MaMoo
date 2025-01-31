@@ -136,6 +136,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.collectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.identifier, for: indexPath) as? MainCollectionViewCell else { return UICollectionViewCell() }
+            cell.backgroundColor = .black
             cell.configureData(movieList[indexPath.item])
             return cell
         default:

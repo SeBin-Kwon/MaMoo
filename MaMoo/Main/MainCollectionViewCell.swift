@@ -44,6 +44,8 @@ class MainCollectionViewCell: BaseCollectionViewCell {
     override func configureHierarchy() {
         addSubview(imageView)
         addSubview(titleLabel)
+        addSubview(likeButton)
+        addSubview(overviewLabel)
     }
     override func configureLayout() {
         imageView.snp.makeConstraints { make in
@@ -53,6 +55,14 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
             make.leading.equalToSuperview()
+        }
+        likeButton.snp.makeConstraints { make in
+            make.centerY.equalTo(titleLabel)
+            make.trailing.equalToSuperview()
+        }
+        overviewLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.horizontalEdges.equalToSuperview()
         }
     }
     
@@ -66,5 +76,6 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         }
         
         titleLabel.text = item.title
+        overviewLabel.text = item.overview
     }
 }

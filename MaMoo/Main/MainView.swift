@@ -79,14 +79,14 @@ class MainView: BaseView {
     private func configureCollectionView() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
-        let cellCount: CGFloat = 1.6
-        let itemSpacing: CGFloat = 10
+        let cellCount: CGFloat = 1.7
+        let itemSpacing: CGFloat = 20
         let insetSpacing: CGFloat = 10
         let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
         layout.minimumLineSpacing = itemSpacing
         layout.minimumInteritemSpacing = itemSpacing
-        layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
-        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth*1.7 / cellCount)
+        layout.sectionInset = UIEdgeInsets(top: -30, left: insetSpacing, bottom: 0, right: insetSpacing)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: cellWidth)
         layout.scrollDirection = .horizontal
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsHorizontalScrollIndicator = false
