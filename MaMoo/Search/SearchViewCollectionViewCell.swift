@@ -23,21 +23,26 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     private let titleLabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .bold)
+        label.numberOfLines = 2
         label.textColor = .white
         return label
     }()
     
     private let dateLabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13)
-        label.textColor = .white
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .maMooGray
         return label
     }()
     
     let likeButton = {
         let btn = UIButton()
+        var config = UIButton.Configuration.plain()
+        config.buttonSize = .medium
+        btn.configuration = config
         btn.setImage(UIImage(systemName: "heart"), for: .normal)
         btn.tintColor = .maMooPoint
+        
         return btn
     }()
     
@@ -52,7 +57,7 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     
     private let lineView = {
         let view = UIView()
-        view.backgroundColor = .maMooGray
+        view.backgroundColor = .darkGray
         return view
     }()
     
@@ -127,28 +132,30 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     override func configureLayout() {
         imageView.snp.makeConstraints { make in
             make.leading.top.equalToSuperview()
-            make.size.equalTo(80)
+            make.width.equalTo(80)
+            make.height.equalToSuperview().inset(10)
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalTo(imageView.snp.trailing).offset(10)
+            make.leading.equalTo(imageView.snp.trailing).offset(20)
+            make.trailing.equalToSuperview()
         }
         dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.leading.equalTo(imageView.snp.trailing).offset(10)
+            make.top.equalTo(titleLabel.snp.bottom).offset(7)
+            make.leading.equalTo(imageView.snp.trailing).offset(20)
         }
         likeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(10)
-            make.bottom.equalTo(imageView.snp.bottom)
+            make.centerY.equalTo(genreStackView)
         }
         genreStackView.snp.makeConstraints { make in
-            make.leading.equalTo(imageView.snp.trailing).offset(10)
+            make.leading.equalTo(imageView.snp.trailing).offset(20)
             make.bottom.equalTo(imageView.snp.bottom)
         }
         lineView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview().inset(5)
-            make.height.equalTo(1)
+            make.height.equalTo(0.5)
         }
     }
 }

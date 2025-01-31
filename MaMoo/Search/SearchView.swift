@@ -39,7 +39,7 @@ final class SearchView: BaseView {
             make.top.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(20)
+            make.top.equalTo(searchBar.snp.bottom).offset(15)
             make.bottom.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         noResultLabel.snp.makeConstraints { make in
@@ -57,7 +57,7 @@ final class SearchView: BaseView {
 //        layout.minimumLineSpacing = itemSpacing
 //        layout.minimumInteritemSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
-        layout.itemSize = CGSize(width: cellWidth, height: 100)
+        layout.itemSize = CGSize(width: cellWidth, height: 115)
         layout.scrollDirection = .vertical
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsVerticalScrollIndicator = false
