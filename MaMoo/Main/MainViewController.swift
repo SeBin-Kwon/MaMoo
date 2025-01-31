@@ -36,6 +36,7 @@ class MainViewController: BaseViewController {
         mainView.searchCollectionView.dataSource = self
         NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
+        mainView.allRemoveButton.addTarget(self, action: #selector(allRemoveButtonTapped), for: .touchUpInside)
     }
 
     @objc func likeNotification(value: NSNotification) {
@@ -60,6 +61,13 @@ class MainViewController: BaseViewController {
         print(#function)
         let vc = SearchViewController()
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func allRemoveButtonTapped() {
+        print(#function)
+        searchList.removeAll()
+        UserDefaults.standard.removeObject(forKey: "searchResults")
+        mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
     override func viewWillAppear(_ animated: Bool) {
