@@ -28,7 +28,7 @@ final class SettingViewController: BaseViewController {
         tableView.separatorInset = UIEdgeInsets.zero
         tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.identifier)  
         configureData()
-        NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: NSNotification.Name("profile"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
     }
     
     @objc func profileNotification(value: NSNotification) {

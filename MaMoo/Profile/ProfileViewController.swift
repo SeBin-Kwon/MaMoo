@@ -71,7 +71,7 @@ final class ProfileViewController: BaseViewController {
             UserDefaultsManager.shared.signUpDate = DateFormatterManager.shared.dateFormatted(Date()) + " 가입"
             ProfileViewController.changeRootViewController(rootView: TabBarController())
         } else {
-            NotificationCenter.default.post(name: NSNotification.Name("profile"), object: nil, userInfo: ["nickname": text, "profileImage": num])
+            NotificationCenter.default.post(name: .profileNotification, object: nil, userInfo: ["nickname": text, "profileImage": num])
             UserDefaultsManager.shared.nickname = text
             UserDefaultsManager.shared.profileImage = num
             dismiss(animated: true)
