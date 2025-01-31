@@ -11,7 +11,7 @@ import SnapKit
 final class ProfileEditButton: BaseButton {
     private let backgroundView = {
        let view = UIView()
-        view.backgroundColor = .darkGray
+        view.backgroundColor = .darkGray.withAlphaComponent(0.6)
         view.layer.cornerRadius = 10
         view.isUserInteractionEnabled = false
         return view
@@ -49,7 +49,7 @@ final class ProfileEditButton: BaseButton {
     
     private let movieBoxBackgroundView = {
         let view = UIView()
-        view.backgroundColor = .maMooPoint
+        view.backgroundColor = .maMooPoint.withAlphaComponent(0.6)
          view.layer.cornerRadius = 8
          return view
      }()
@@ -85,7 +85,7 @@ final class ProfileEditButton: BaseButton {
         backgroundView.addSubview(uiView)
         backgroundView.addSubview(chevron)
         movieBoxBackgroundView.addSubview(movieBoxLabel)
-        backgroundView.addSubview(movieBoxBackgroundView)
+        addSubview(movieBoxBackgroundView)
         
     }
     private func configureLayout() {
@@ -113,7 +113,7 @@ final class ProfileEditButton: BaseButton {
             make.trailing.equalToSuperview().inset(15)
         }
         movieBoxBackgroundView.snp.makeConstraints { make in
-            make.horizontalEdges.bottom.equalToSuperview().inset(15)
+            make.horizontalEdges.bottom.equalTo(backgroundView).inset(15)
             make.height.equalTo(40)
         }
         movieBoxLabel.snp.makeConstraints { make in
