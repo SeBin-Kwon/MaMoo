@@ -67,11 +67,11 @@ class DetailView: BaseView {
     override func configureLayout() {
         backdropScrollView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
-            make.height.equalTo(400)
+            make.height.equalTo(280)
         }
         pageControl.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(backdropScrollView.snp.bottom).inset(20)
+            make.bottom.equalTo(backdropScrollView.snp.bottom).inset(10)
         }
         smallLabelStackView.snp.makeConstraints { make in
             make.top.equalTo(backdropScrollView.snp.bottom).offset(10)
@@ -96,10 +96,10 @@ class DetailView: BaseView {
         castCollectionView.snp.makeConstraints { make in
             make.top.equalTo(castLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(150)
+            make.height.equalTo(110)
         }
         posterLabel.snp.makeConstraints { make in
-            make.top.equalTo(castCollectionView.snp.bottom).offset(10)
+            make.top.equalTo(castCollectionView.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(10)
         }
         posterCollectionView.snp.makeConstraints { make in
@@ -108,6 +108,7 @@ class DetailView: BaseView {
             make.bottom.equalToSuperview().inset(30)
             make.height.equalTo(150)
         }
+//        castCollectionView.backgroundColor = .red
     }
     
     private func configureInfoLabelButton(image: String, contents: String) -> UIButton {
@@ -173,7 +174,7 @@ class DetailView: BaseView {
     private func configureCastFlowLayout() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
-        let cellCount: CGFloat = 2
+        let cellCount: CGFloat = 2.5
         let lineSpacing: CGFloat = 20
         let itemSpacing: CGFloat = 5
         let insetSpacing: CGFloat = 10
@@ -181,7 +182,7 @@ class DetailView: BaseView {
         layout.minimumLineSpacing = lineSpacing
         layout.minimumInteritemSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
-        layout.itemSize = CGSize(width: cellWidth / cellCount, height: 70)
+        layout.itemSize = CGSize(width: cellWidth / cellCount, height: 50)
         layout.scrollDirection = .horizontal
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsHorizontalScrollIndicator = false

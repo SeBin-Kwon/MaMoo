@@ -173,6 +173,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         case detailView.castCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
             cell.configureData(castList[indexPath.item])
+//            cell.backgroundColor = .blue
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }

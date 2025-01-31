@@ -19,15 +19,15 @@ class CastCollectionViewCell: BaseCollectionViewCell {
     private let nameLabel = {
         let label = UILabel()
         label.text = "sdfsdf"
-        label.font = .systemFont(ofSize: 16, weight: .bold)
+        label.font = .systemFont(ofSize: 14, weight: .bold)
         label.textColor = .white
         return label
     }()
     private let chrNameLabel = {
         let label = UILabel()
         label.text = "sdfseeewewwe"
-        label.font = .systemFont(ofSize: 13)
-        label.textColor = .white
+        label.font = .systemFont(ofSize: 12)
+        label.textColor = .maMooGray
         return label
     }()
     let uiView = {
