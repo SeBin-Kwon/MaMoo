@@ -54,4 +54,9 @@ class UserDefaultsManager {
         set { setter(value: newValue, key: .searchResults) }
     }
     
+    var like: [String: Bool] {
+        get { getter(key: .like, defaultValue: [String: Bool]()) }
+        set { setter(value: newValue, key: .like) }
+    }
+    
 }
