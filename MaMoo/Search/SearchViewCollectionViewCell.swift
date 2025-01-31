@@ -56,20 +56,15 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
         return view
     }()
     
-    var id: Int?
+    var id: String?
     var likeState = false
-    
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
-        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
-    }
     
     @objc private func likeButtonTapped(_ sender: UIButton) {
         print(#function)
         guard let id else { return }
         likeState.toggle()
         updateLikeButton(likeState)
-        UserDefaultsManager.shared.like[String(id)] = likeState
+        UserDefaultsManager.shared.like[id] = likeState
         NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
     }
     
@@ -94,7 +89,7 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
             genreStackView.addArrangedSubview(configureTag(genre))
         }
         
-        id = item.id
+        id = String(item.id)
         likeState = UserDefaultsManager.shared.like[String(item.id), default: false]
         updateLikeButton(likeState)
     }
@@ -120,6 +115,7 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func configureHierarchy() {
+        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
         addSubview(imageView)
         addSubview(titleLabel)
         addSubview(dateLabel)

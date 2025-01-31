@@ -16,7 +16,7 @@ final class SearchViewController: BaseViewController {
     private var isEnd = false
     var searchText: String?
     private var previousSearchText: String?
-    private var likeDictionary = [Int:Bool]()
+    private var likeDictionary = [String:Bool]()
     
     override func loadView() {
         view = searchView
@@ -31,22 +31,14 @@ final class SearchViewController: BaseViewController {
         searchView.collectionView.prefetchDataSource = self
         searchView.collectionView.register(SearchViewCollectionViewCell.self, forCellWithReuseIdentifier: SearchViewCollectionViewCell.identifier)
         NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
-        configureLikeDictionary()
-    }
-    
-    private func configureLikeDictionary() {
-        for (id, likeState) in UserDefaultsManager.shared.like {
-            guard let movieId = Int(id) else { return }
-            likeDictionary[movieId] = likeState
-        }
+        likeDictionary = UserDefaultsManager.shared.like
     }
     
     @objc func likeNotification(value: NSNotification) {
-        guard let id = value.userInfo!["id"] as? Int,
+        guard let id = value.userInfo!["id"] as? String,
               let like = value.userInfo!["like"] as? Bool else { return }
         likeDictionary[id] = like
-        UserDefaultsManager.shared.like[String(id)] = like
-        
+        UserDefaultsManager.shared.like[id] = like
         searchView.collectionView.reloadData()
         print("like신호받음", likeDictionary)
     }
@@ -75,7 +67,7 @@ final class SearchViewController: BaseViewController {
             }
             
             for movie in value.results {
-                let id = movie.id
+                let id = String(movie.id)
                 if let likeState = UserDefaultsManager.shared.like[String(id)] {
                     self.likeDictionary[id] = likeState
                 }
@@ -143,7 +135,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchViewCollectionViewCell.identifier, for: indexPath) as? SearchViewCollectionViewCell else { return UICollectionViewCell() }
         let movie = movieList[indexPath.item]
         cell.configureData(movie)
-        let isLiked = likeDictionary[movie.id, default: false]
+        let isLiked = likeDictionary[String(movie.id), default: false]
         cell.updateLikeButton(isLiked)
         return cell
     }

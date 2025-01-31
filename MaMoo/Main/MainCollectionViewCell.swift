@@ -34,14 +34,58 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         return label
     }()
     
-    private let likeButton = {
+    let likeButton = {
         let btn = UIButton()
         btn.setImage(UIImage(systemName: "heart"), for: .normal)
         btn.tintColor = .maMooPoint
         return btn
     }()
+    private var id: String?
+    private var likeState = false
+    
+    @objc private func likeButtonTapped(_ sender: UIButton) {
+        print(#function)
+        guard let id else { return }
+        likeState.toggle()
+        updateLikeButton(likeState)
+        UserDefaultsManager.shared.like[id] = likeState
+        NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
+//        let id = String(movieList[sender.tag].id)
+//        likeDictionary[id, default: false].toggle()
+//        UserDefaultsManager.shared.like = likeDictionary
+//        mainView.collectionView.reloadData()
+//        guard let likeState = UserDefaultsManager.shared.like[id] else { return }
+//        sender.setImage(likeState ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
+//        mainView.collectionView.reloadData()
+    }
+    
+    func configureData(_ item: MovieResults) {
+        if let poster = item.poster_path {
+            let newUrl = "https://image.tmdb.org/t/p/w500" + poster
+            guard let url = URL(string: newUrl) else { return }
+            imageView.kf.setImage(with: url)
+        } else {
+            imageView.image = UIImage(systemName: "xmark.rectangle")
+        }
+        titleLabel.text = item.title
+        overviewLabel.text = item.overview
+        id = String(item.id)
+        likeState = UserDefaultsManager.shared.like[String(item.id), default: false]
+        updateLikeButton(likeState)
+//        let id = String(item.id)
+//        self.id = id
+//        guard let likeState = UserDefaultsManager.shared.like[id] else { return }
+//        self.likeState = likeState
+//        likeButton.setImage(likeState ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
+    }
+    
+    func updateLikeButton(_ isSelected: Bool) {
+        likeButton.setImage(isSelected ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
+        likeState = isSelected
+    }
     
     override func configureHierarchy() {
+        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
         addSubview(imageView)
         addSubview(titleLabel)
         addSubview(likeButton)
@@ -64,18 +108,5 @@ class MainCollectionViewCell: BaseCollectionViewCell {
             make.top.equalTo(titleLabel.snp.bottom).offset(5)
             make.horizontalEdges.equalToSuperview()
         }
-    }
-    
-    func configureData(_ item: MovieResults) {
-        if let poster = item.poster_path {
-            let newUrl = "https://image.tmdb.org/t/p/w500" + poster
-            guard let url = URL(string: newUrl) else { return }
-            imageView.kf.setImage(with: url)
-        } else {
-            imageView.image = UIImage(systemName: "xmark.rectangle")
-        }
-        
-        titleLabel.text = item.title
-        overviewLabel.text = item.overview
     }
 }

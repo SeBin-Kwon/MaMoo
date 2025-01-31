@@ -14,6 +14,8 @@ class MainViewController: BaseViewController {
     private let mainView = MainView()
     private var movieList = [MovieResults]()
     private var searchList = UserDefaultsManager.shared.searchResults
+    private var likeDictionary = [String:Bool]()
+    
     override func loadView() {
         view = mainView
     }
@@ -32,7 +34,18 @@ class MainViewController: BaseViewController {
         mainView.collectionView.dataSource = self
         mainView.searchCollectionView.delegate = self
         mainView.searchCollectionView.dataSource = self
-        NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: NSNotification.Name("profile"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
+    }
+
+    @objc func likeNotification(value: NSNotification) {
+        guard let id = value.userInfo!["id"] as? String,
+              let like = value.userInfo!["like"] as? Bool else { return }
+        likeDictionary[id] = like
+        UserDefaultsManager.shared.like[id] = like
+        
+        mainView.collectionView.reloadData()
+        print("like신호받음", likeDictionary)
     }
     
     @objc func profileNotification(value: NSNotification) {
@@ -51,6 +64,7 @@ class MainViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         searchList = UserDefaultsManager.shared.searchResults
+        likeDictionary = UserDefaultsManager.shared.like
         mainView.searchCollectionView.reloadData()
     }
     
@@ -58,7 +72,6 @@ class MainViewController: BaseViewController {
         mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
         mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
         mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
-        
         mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
     }
     
@@ -81,16 +94,13 @@ class MainViewController: BaseViewController {
         mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
-    @objc private func tagtapped() {
-        print(#function)
-    }
-    
     private func callRequest() {
         let group = DispatchGroup()
         group.enter()
         NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { value in
             print(value.results.count)
             self.movieList = value.results
+            print(self.movieList)
             group.leave()
         } failHandler: {
             print("fail")
@@ -115,7 +125,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         default:
             print(#function)
             let vc = SearchViewController()
-            vc.tagSearchText = searchList[indexPath.item]
+            vc.searchText = searchList[indexPath.item]
             navigationController?.pushViewController(vc, animated: true)
         }
         
@@ -136,8 +146,11 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.collectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.identifier, for: indexPath) as? MainCollectionViewCell else { return UICollectionViewCell() }
+            let movie = movieList[indexPath.item]
             cell.backgroundColor = .black
-            cell.configureData(movieList[indexPath.item])
+            cell.configureData(movie)
+            let isLiked = likeDictionary[String(movie.id), default: false]
+            cell.updateLikeButton(isLiked)
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchTagCollectionViewCell.identifier, for: indexPath) as? SearchTagCollectionViewCell else { return UICollectionViewCell() }
@@ -152,6 +165,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         }
         
     }
-    
-    
+}
+
+extension Notification.Name {
+    static let profileNotification = NSNotification.Name("profileNotification")
+    static let likeNotification = NSNotification.Name("likeNotification")
 }
