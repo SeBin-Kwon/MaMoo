@@ -50,13 +50,6 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         updateLikeButton(likeState)
         UserDefaultsManager.shared.like[id] = likeState
         NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
-//        let id = String(movieList[sender.tag].id)
-//        likeDictionary[id, default: false].toggle()
-//        UserDefaultsManager.shared.like = likeDictionary
-//        mainView.collectionView.reloadData()
-//        guard let likeState = UserDefaultsManager.shared.like[id] else { return }
-//        sender.setImage(likeState ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
-//        mainView.collectionView.reloadData()
     }
     
     func configureData(_ item: MovieResults) {
@@ -72,11 +65,6 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         id = String(item.id)
         likeState = UserDefaultsManager.shared.like[String(item.id), default: false]
         updateLikeButton(likeState)
-//        let id = String(item.id)
-//        self.id = id
-//        guard let likeState = UserDefaultsManager.shared.like[id] else { return }
-//        self.likeState = likeState
-//        likeButton.setImage(likeState ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
     }
     
     func updateLikeButton(_ isSelected: Bool) {

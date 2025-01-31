@@ -17,16 +17,13 @@ class DetailViewController: BaseViewController {
     private var isHide = true
     private var castList = [Cast]()
     private var posterList = [Posters]()
-    
+    private var likeState = false
+    private var id: String?
     private let scrollView = {
         let scroll = UIScrollView()
         scroll.showsVerticalScrollIndicator = false
         return scroll
     }()
-    
-//    override func loadView() {
-//        view = detailView
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +35,19 @@ class DetailViewController: BaseViewController {
         rightItem.tintColor = .maMooPoint
         navigationItem.rightBarButtonItem = rightItem
         detailView.moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        guard let movie else { return }
+        navigationItem.title = movie.title
+        guard let date = movie.release_date,
+              let vote = movie.vote_average,
+              let genre = movie.genre_ids else { return }
+        self.detailView.configureSmallLabel(date, vote, genre)
+        detailView.configureSynopsis(movie.overview ?? "")
+        id = String(movie.id)
+        updateLikeButton(UserDefaultsManager.shared.like[String(movie.id), default: false])
+        callRequest()
     }
     
     private func configureDelegate() {
@@ -60,6 +70,21 @@ class DetailViewController: BaseViewController {
         }
     }
     
+    @objc func rightItemTapped() {
+        print(#function)
+        guard let id else { return }
+        likeState.toggle()
+        updateLikeButton(likeState)
+        UserDefaultsManager.shared.like[id] = likeState
+        NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
+    }
+    
+    func updateLikeButton(_ isSelected: Bool) {
+        guard let rightItem = navigationItem.rightBarButtonItem else { return }
+        rightItem.image = isSelected ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
+        likeState = isSelected
+    }
+    
     @objc private func moreButtonTapped() {
         isHide.toggle()
         UIView.animate(withDuration: 0.3) { [self] in
@@ -69,17 +94,6 @@ class DetailViewController: BaseViewController {
             detailView.moreButton.configuration?.attributedTitle?.foregroundColor = .maMooPoint
             view.layoutIfNeeded()
         }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        guard let movie else { return }
-        navigationItem.title = movie.title
-        guard let date = movie.release_date,
-              let vote = movie.vote_average,
-              let genre = movie.genre_ids else { return }
-        self.detailView.configureSmallLabel(date, vote, genre)
-        detailView.configureSynopsis(movie.overview ?? "")
-        callRequest()
     }
     
     private func callRequest() {
@@ -141,11 +155,6 @@ class DetailViewController: BaseViewController {
         image.backgroundColor = .gray
         return image
     }
-    
-    @objc func rightItemTapped() {
-        print(#function)
-    }
-    
 }
 
 

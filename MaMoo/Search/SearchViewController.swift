@@ -127,6 +127,12 @@ extension SearchViewController: UISearchBarDelegate {
 // MARK: UICollectionView
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = DetailViewController()
+        vc.movie = movieList[indexPath.item]
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         movieList.count
     }
