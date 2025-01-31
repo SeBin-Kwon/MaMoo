@@ -19,12 +19,20 @@ final class SearchView: BaseView {
         bar.searchTextField.backgroundColor = UIColor(white: 0.08, alpha: 1)
         return bar
     }()
-    
     lazy var collectionView = configureCollectionView()
+    let noResultLabel = {
+        let label = UILabel()
+        label.text = "원하는 검색결과를 찾지 못했습니다"
+        label.font = .systemFont(ofSize: 13, weight: .bold)
+        label.textColor = .maMooGray
+        label.isHidden = true
+        return label
+    }()
     
     override func configureHierarchy() {
         addSubview(searchBar)
         addSubview(collectionView)
+        addSubview(noResultLabel)
     }
     override func configureLayout() {
         searchBar.snp.makeConstraints { make in
@@ -33,6 +41,10 @@ final class SearchView: BaseView {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom).offset(20)
             make.bottom.horizontalEdges.equalTo(safeAreaLayoutGuide)
+        }
+        noResultLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(collectionView)
+            make.top.equalTo(collectionView).inset(150)
         }
     }
     

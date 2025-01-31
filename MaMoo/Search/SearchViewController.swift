@@ -57,6 +57,13 @@ final class SearchViewController: BaseViewController {
     private func callRequest(query: String, page: Int) {
         print("search", #function)
         NetworkManager.shared.fetchResults(api: TMDBRequest.search(value: SearchRequest(query: query, page: page)), type: Movie.self) { value in
+            if value.results.isEmpty {
+                self.searchView.noResultLabel.isHidden = false
+                self.movieList = []
+                self.searchView.collectionView.reloadData()
+                return
+            }
+            self.searchView.noResultLabel.isHidden = true
             if page == 1 {
                 self.movieList = value.results
             } else {
