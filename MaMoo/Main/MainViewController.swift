@@ -13,7 +13,7 @@ class MainViewController: BaseViewController {
 
     private let mainView = MainView()
     private var movieList = [MovieResults]()
-    private var searchList = UserDefaultsManager.shared.searchResults
+    private var searchList = [String]()
     private var likeDictionary = [String:Bool]()
     
     override func loadView() {
@@ -44,7 +44,7 @@ class MainViewController: BaseViewController {
               let like = value.userInfo!["like"] as? Bool else { return }
         likeDictionary[id] = like
         UserDefaultsManager.shared.like[id] = like
-        
+        updateLikeCount()
         mainView.collectionView.reloadData()
         print("like신호받음", likeDictionary)
     }
@@ -74,8 +74,14 @@ class MainViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         searchList = UserDefaultsManager.shared.searchResults
         likeDictionary = UserDefaultsManager.shared.like
+        updateLikeCount()
         mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
         mainView.searchCollectionView.reloadData()
+    }
+    
+    private func updateLikeCount() {
+        let likeCount = likeDictionary.filter { $1 == true }.count
+        mainView.profileEditButton.movieBoxLabel.text = "\(likeCount)개의 무비박스 보관중"
     }
     
     private func configureData() {

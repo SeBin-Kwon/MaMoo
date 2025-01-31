@@ -17,6 +17,7 @@ final class SettingViewController: BaseViewController {
         tabel.separatorColor = .maMooGray
         return tabel
     }()
+    private var likeDictionary = [String:Bool]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,7 @@ final class SettingViewController: BaseViewController {
               let imageNum = value.userInfo!["profileImage"] as? Int else { return }
         profileEditButton.nicknameLabel.text = nickname
         profileEditButton.profileImage.image = UIImage(named: "profile_\(imageNum)")
+        updateLikeCount()
         print("신호받음")
     }
     
@@ -43,8 +45,17 @@ final class SettingViewController: BaseViewController {
         profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
         profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
         profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
-        
         profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        likeDictionary = UserDefaultsManager.shared.like
+        updateLikeCount()
+    }
+    
+    private func updateLikeCount() {
+        let likeCount = likeDictionary.filter { $1 == true }.count
+        profileEditButton.movieBoxLabel.text = "\(likeCount)개의 무비박스 보관중"
     }
     
     @objc private func profileEditButtontapped() {
