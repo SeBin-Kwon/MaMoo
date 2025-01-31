@@ -14,13 +14,14 @@ final class SearchViewController: BaseViewController {
     private var movieList = [MovieResults]()
     private var page = 1
     private var isEnd = false
-    private var searchText: String?
+    var searchText: String?
     private var previousSearchText: String?
-    var tagSearchText: String?
+    private var likeDictionary = [Int:Bool]()
+    
     override func loadView() {
         view = searchView
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "영화 검색"
@@ -29,12 +30,35 @@ final class SearchViewController: BaseViewController {
         searchView.collectionView.dataSource = self
         searchView.collectionView.prefetchDataSource = self
         searchView.collectionView.register(SearchViewCollectionViewCell.self, forCellWithReuseIdentifier: SearchViewCollectionViewCell.identifier)
+        NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
+        configureLikeDictionary()
+    }
+    
+    private func configureLikeDictionary() {
+        for (id, likeState) in UserDefaultsManager.shared.like {
+            guard let movieId = Int(id) else { return }
+            likeDictionary[movieId] = likeState
+        }
+    }
+    
+    @objc func likeNotification(value: NSNotification) {
+        guard let id = value.userInfo!["id"] as? Int,
+              let like = value.userInfo!["like"] as? Bool else { return }
+        likeDictionary[id] = like
+        UserDefaultsManager.shared.like[String(id)] = like
+        
+        searchView.collectionView.reloadData()
+        print("like신호받음", likeDictionary)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if let tagSearchText {
-            searchView.searchBar.text = tagSearchText
-            callRequest(query: tagSearchText, page: 1)
+        if let searchText {
+            searchView.searchBar.text = searchText
+            page = 1
+            isEnd = false
+            previousSearchText = searchText
+            self.searchText = searchText
+            callRequest(query: searchText, page: page)
         }
     }
     
@@ -50,6 +74,13 @@ final class SearchViewController: BaseViewController {
                 self.isEnd = true
             }
             
+            for movie in value.results {
+                let id = movie.id
+                if let likeState = UserDefaultsManager.shared.like[String(id)] {
+                    self.likeDictionary[id] = likeState
+                }
+            }
+            
             self.searchView.collectionView.reloadData()
             if page == 1 && !self.movieList.isEmpty {
                 self.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
@@ -62,17 +93,13 @@ final class SearchViewController: BaseViewController {
         }
     }
     
-    override func configureView() {
-        print(#function)
-    }    
-
 }
 
 // MARK: Pagenation - UICollectionViewDataSourcePrefetching
 extension SearchViewController: UICollectionViewDataSourcePrefetching {
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-
+        
         for indexPath in indexPaths {
             if !isEnd && movieList.count-2 == indexPath.item {
                 page += 1
@@ -114,7 +141,10 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchViewCollectionViewCell.identifier, for: indexPath) as? SearchViewCollectionViewCell else { return UICollectionViewCell() }
-        cell.configureData(movieList[indexPath.item])
+        let movie = movieList[indexPath.item]
+        cell.configureData(movie)
+        let isLiked = likeDictionary[movie.id, default: false]
+        cell.updateLikeButton(isLiked)
         return cell
     }
 }
