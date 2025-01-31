@@ -32,6 +32,13 @@ final class SearchViewController: BaseViewController {
         searchView.collectionView.register(SearchViewCollectionViewCell.self, forCellWithReuseIdentifier: SearchViewCollectionViewCell.identifier)
         NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
         likeDictionary = UserDefaultsManager.shared.like
+        searchView.collectionView.keyboardDismissMode = .onDrag
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if movieList.isEmpty {
+            searchView.searchBar.becomeFirstResponder()
+        }
     }
     
     @objc func likeNotification(value: NSNotification) {
@@ -46,7 +53,6 @@ final class SearchViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         if let searchText {
             searchView.searchBar.text = searchText
-            page = 1
             isEnd = false
             previousSearchText = searchText
             self.searchText = searchText
@@ -137,6 +143,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = DetailViewController()
         vc.movie = movieList[indexPath.item]
+        view.endEditing(true)
         navigationController?.pushViewController(vc, animated: true)
     }
     
