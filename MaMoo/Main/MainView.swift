@@ -24,6 +24,14 @@ class MainView: BaseView {
     lazy var searchCollectionView = configureSearchCollectionView()
     private lazy var todayTitleLabel = configureTitleLabel("오늘의 영화")
     lazy var collectionView = configureCollectionView()
+    let isSearchLabel = {
+        let label = UILabel()
+        label.text = "최근 검색어 내역이 없습니다."
+        label.font = .systemFont(ofSize: 13, weight: .bold)
+        label.textColor = .maMooGray
+        label.isHidden = false
+        return label
+    }()
     
     override func configureHierarchy() {
         addSubview(profileEditButton)
@@ -32,6 +40,7 @@ class MainView: BaseView {
         addSubview(searchCollectionView)
         addSubview(todayTitleLabel)
         addSubview(collectionView)
+        addSubview(isSearchLabel)
     }
     
     override func configureLayout() {
@@ -60,6 +69,9 @@ class MainView: BaseView {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(todayTitleLabel.snp.bottom)
             make.horizontalEdges.bottom.equalTo(safeAreaLayoutGuide)
+        }
+        isSearchLabel.snp.makeConstraints { make in
+            make.center.equalTo(searchCollectionView)
         }
     }
     

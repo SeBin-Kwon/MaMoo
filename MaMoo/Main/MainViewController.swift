@@ -67,12 +67,14 @@ class MainViewController: BaseViewController {
         print(#function)
         searchList.removeAll()
         UserDefaults.standard.removeObject(forKey: "searchResults")
+        mainView.isSearchLabel.isHidden = false
         mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
     override func viewWillAppear(_ animated: Bool) {
         searchList = UserDefaultsManager.shared.searchResults
         likeDictionary = UserDefaultsManager.shared.like
+        mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
         mainView.searchCollectionView.reloadData()
     }
     
@@ -98,6 +100,7 @@ class MainViewController: BaseViewController {
         let index = IndexPath(item: sender.tag, section: 0)
         searchList.remove(at: sender.tag)
         UserDefaultsManager.shared.searchResults = searchList
+        mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
         mainView.searchCollectionView.deleteItems(at: [index])
         mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
