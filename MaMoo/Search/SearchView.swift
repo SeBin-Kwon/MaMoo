@@ -51,11 +51,8 @@ final class SearchView: BaseView {
     private func configureCollectionView() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
-//        let itemSpacing: CGFloat = 10
         let insetSpacing: CGFloat = 10
         let cellWidth = width - (insetSpacing*2)
-//        layout.minimumLineSpacing = itemSpacing
-//        layout.minimumInteritemSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
         layout.itemSize = CGSize(width: cellWidth, height: 115)
         layout.scrollDirection = .vertical

@@ -62,14 +62,9 @@ class DetailView: BaseView {
         return label
     }()
     
-    let moreButton = {
+    lazy var moreButton = {
         let btn = UIButton()
-        var config = UIButton.Configuration.plain()
-        var attributedTitle = AttributedString("More")
-        attributedTitle.font = .systemFont(ofSize: 14, weight: .bold)
-        attributedTitle.foregroundColor = .maMooPoint
-        config.attributedTitle = attributedTitle
-        btn.configuration = config
+        btn.configuration = configureMoreButton("More")
         return btn
     }()
     private lazy var castLabel = configureLabel("Cast")
@@ -147,6 +142,15 @@ class DetailView: BaseView {
             make.bottom.equalToSuperview().inset(30)
             make.height.equalTo(150)
         }
+    }
+    
+    func configureMoreButton(_ title: String) -> UIButton.Configuration {
+        var config = UIButton.Configuration.plain()
+        var attributedTitle = AttributedString(title)
+        attributedTitle.font = .systemFont(ofSize: 14, weight: .bold)
+        attributedTitle.foregroundColor = .maMooPoint
+        config.attributedTitle = attributedTitle
+        return config
     }
     
     private func configureCastFlowLayout() -> UICollectionView {

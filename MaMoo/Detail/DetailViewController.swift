@@ -87,11 +87,15 @@ class DetailViewController: BaseViewController {
     
     @objc private func moreButtonTapped() {
         isHide.toggle()
-        UIView.animate(withDuration: 0.3) { [self] in
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseOut]) { [self] in
+            detailView.synopsisLine.alpha = 0
             detailView.synopsisLine.numberOfLines = isHide ? 3 : 0
+            detailView.moreButton.configuration = isHide ? detailView.configureMoreButton("More") : detailView.configureMoreButton("Hide")
+            
             detailView.moreButton.configuration?.attributedTitle = isHide ? AttributedString("More") : AttributedString("Hide")
             detailView.moreButton.configuration?.attributedTitle?.font = .systemFont(ofSize: 14, weight: .bold)
             detailView.moreButton.configuration?.attributedTitle?.foregroundColor = .maMooPoint
+            detailView.synopsisLine.alpha = 1
             view.layoutIfNeeded()
         }
     }
