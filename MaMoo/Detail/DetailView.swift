@@ -23,27 +23,6 @@ class DetailView: BaseView {
         return scroll
     }()
     
-    private let dateLabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 12)
-        label.textColor = .white
-        return label
-    }()
-    
-    private let voteLabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 12)
-        label.textColor = .white
-        return label
-    }()
-    
-    private let genreLabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 12)
-        label.textColor = .white
-        return label
-    }()
-    
     private let smallLabelStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -67,6 +46,7 @@ class DetailView: BaseView {
         btn.configuration = configureMoreButton("More")
         return btn
     }()
+    
     private lazy var castLabel = configureLabel("Cast")
     lazy var castCollectionView = configureCastFlowLayout()
     private lazy var posterLabel = configureLabel("Poster")
@@ -75,9 +55,6 @@ class DetailView: BaseView {
     override func configureHierarchy() {
         addSubview(backdropScrollView)
         addSubview(pageControl)
-        smallLabelStackView.addArrangedSubview(dateLabel)
-        smallLabelStackView.addArrangedSubview(voteLabel)
-        smallLabelStackView.addArrangedSubview(genreLabel)
         addSubview(smallLabelStackView)
         addSubview(synopsisLabel)
         addSubview(synopsisLine)
@@ -96,23 +73,12 @@ class DetailView: BaseView {
             make.centerX.equalToSuperview()
             make.bottom.equalTo(backdropScrollView.snp.bottom).inset(20)
         }
-        dateLabel.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview()
-        }
-        voteLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(dateLabel)
-            make.leading.equalTo(dateLabel.snp.trailing)
-        }
-        genreLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(dateLabel)
-            make.leading.equalTo(voteLabel.snp.trailing)
-        }
         smallLabelStackView.snp.makeConstraints { make in
             make.top.equalTo(backdropScrollView.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
         }
         synopsisLabel.snp.makeConstraints { make in
-            make.top.equalTo(smallLabelStackView.snp.bottom).offset(10)
+            make.top.equalTo(smallLabelStackView.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(10)
         }
         synopsisLine.snp.makeConstraints { make in
@@ -124,7 +90,7 @@ class DetailView: BaseView {
             make.centerY.equalTo(synopsisLabel)
         }
         castLabel.snp.makeConstraints { make in
-            make.top.equalTo(synopsisLine.snp.bottom).offset(10)
+            make.top.equalTo(synopsisLine.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(10)
         }
         castCollectionView.snp.makeConstraints { make in
@@ -144,11 +110,62 @@ class DetailView: BaseView {
         }
     }
     
+    private func configureInfoLabelButton(image: String, contents: String) -> UIButton {
+        let btn = UIButton()
+        var config = UIButton.Configuration.plain()
+        var attributedTitle = AttributedString(contents)
+        attributedTitle.font = .systemFont(ofSize: 12)
+        attributedTitle.foregroundColor = UIColor.maMooGray
+        config.attributedTitle = attributedTitle
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 11)
+        config.preferredSymbolConfigurationForImage = imageConfig
+        config.image = UIImage(systemName: image)
+        config.imagePlacement = .leading
+        config.imagePadding = 5
+        config.baseForegroundColor = UIColor.maMooGray
+        btn.configuration = config
+        return btn
+    }
+    
+    func configureSynopsis(_ text: String) {
+        synopsisLine.text = text
+    }
+    
+    private func configureinfoLine() -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 16)
+        label.textColor = .darkGray
+        label.text = "|"
+        return label
+    }
+    
+    func configureInfoData(_ date: String, _ vote: Double, _ genre: [Int]) {
+        let dateLabel = configureInfoLabelButton(image: "calendar", contents: date)
+        let voteLabel = configureInfoLabelButton(image: "star.fill", contents: String(vote))
+        var string = ""
+        guard !genre.isEmpty else { return }
+        let count = genre.count > 1 ? 2 : 1
+        for i in 0..<count {
+            guard let genre = Genre.genreDictionary[genre[i]] else { break }
+            if i == count-1 {
+                string += "\(genre)"
+            } else {
+                string += "\(genre), "
+            }
+        }
+        let genreLabel = configureInfoLabelButton(image: "film.fill", contents: string)
+        smallLabelStackView.addArrangedSubview(dateLabel)
+        smallLabelStackView.addArrangedSubview(configureinfoLine())
+        smallLabelStackView.addArrangedSubview(voteLabel)
+        smallLabelStackView.addArrangedSubview(configureinfoLine())
+        smallLabelStackView.addArrangedSubview(genreLabel)
+    }
+    
     func configureMoreButton(_ title: String) -> UIButton.Configuration {
         var config = UIButton.Configuration.plain()
         var attributedTitle = AttributedString(title)
         attributedTitle.font = .systemFont(ofSize: 14, weight: .bold)
-        attributedTitle.foregroundColor = .maMooPoint
+        attributedTitle.foregroundColor = UIColor.maMooPoint
         config.attributedTitle = attributedTitle
         return config
     }
@@ -188,33 +205,6 @@ class DetailView: BaseView {
         view.showsHorizontalScrollIndicator = false
         view.backgroundColor = .black
         return view
-    }
-    
-    
-    
-    func configureSynopsis(_ text: String) {
-        synopsisLine.text = text
-    }
-    
-    func configureSmallLabel(_ date: String, _ vote: Double, _ genre: [Int]) {
-//        let dateLabel = UILabel()
-        dateLabel.text = " \(date) | "
-        dateLabel.addImage(name: "calendar")
-//        let voteLabel = UILabel()
-        voteLabel.text = " \(vote) | "
-        voteLabel.addImage(name: "star.fill")
-        guard !genre.isEmpty else { return }
-        let count = genre.count > 1 ? 2 : 1
-        for i in 0..<count {
-            guard let genre = Genre.genreDictionary[genre[i]] else { break }
-            genreLabel.text = (genreLabel.text ?? "") + " " + genre
-        }
-//        genreLabel.text = " \(vote) | "
-        genreLabel.addImage(name: "film.fill")
-//        smallLabel.text = (String(dateLabel.attributedText) ?? "") + (dateLabel.text ?? "")
-//        smallLabel.text = (smallLabel.text ?? "") + " some other word(s)"
-//        guard let genreList
-//        smallLabel.addImage(name: "film.fill")
     }
     
     private func configureLabel(_ title: String) -> UILabel {

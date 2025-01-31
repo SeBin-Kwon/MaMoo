@@ -43,7 +43,8 @@ class DetailViewController: BaseViewController {
         guard let date = movie.release_date,
               let vote = movie.vote_average,
               let genre = movie.genre_ids else { return }
-        self.detailView.configureSmallLabel(date, vote, genre)
+        self.detailView.configureInfoData(date, vote, genre)
+//        self.detailView.configureSmallLabel(date, vote, genre)
         detailView.configureSynopsis(movie.overview ?? "")
         id = String(movie.id)
         updateLikeButton(UserDefaultsManager.shared.like[String(movie.id), default: false])
@@ -91,10 +92,6 @@ class DetailViewController: BaseViewController {
             detailView.synopsisLine.alpha = 0
             detailView.synopsisLine.numberOfLines = isHide ? 3 : 0
             detailView.moreButton.configuration = isHide ? detailView.configureMoreButton("More") : detailView.configureMoreButton("Hide")
-            
-            detailView.moreButton.configuration?.attributedTitle = isHide ? AttributedString("More") : AttributedString("Hide")
-            detailView.moreButton.configuration?.attributedTitle?.font = .systemFont(ofSize: 14, weight: .bold)
-            detailView.moreButton.configuration?.attributedTitle?.foregroundColor = .maMooPoint
             detailView.synopsisLine.alpha = 1
             view.layoutIfNeeded()
         }
