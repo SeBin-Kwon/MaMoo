@@ -83,8 +83,8 @@ final class SearchViewController: BaseViewController {
             var newList = self.movieList
             for i in 0..<self.movieList.count {
                 let movie = self.movieList[i]
-                if movie.poster_path == nil &&
-                    movie.release_date == nil {
+                if (movie.poster_path ?? "").isEmpty &&
+                    (movie.release_date ?? "").isEmpty {
                     newList.remove(at: i)
                 }
                 let id = String(movie.id)
