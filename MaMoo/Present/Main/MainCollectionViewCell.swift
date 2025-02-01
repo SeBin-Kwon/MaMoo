@@ -47,7 +47,6 @@ final class MainCollectionViewCell: BaseCollectionViewCell {
     private var likeState = false
     
     @objc private func likeButtonTapped(_ sender: UIButton) {
-        print(#function)
         guard let id else { return }
         likeState.toggle()
         updateLikeButton(likeState)

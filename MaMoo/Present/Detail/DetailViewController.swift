@@ -85,7 +85,6 @@ final class DetailViewController: BaseViewController {
     }
     
     @objc private func rightItemTapped() {
-        print(#function)
         guard let id else { return }
         likeState.toggle()
         updateLikeButton(likeState)
@@ -123,27 +122,22 @@ final class DetailViewController: BaseViewController {
             self.posterList = value.posters
             group.leave()
         } failHandler: { error in
-            print("fail")
             self.displayAlert(title: error.title, message: error.reason, isCancel: false)
             group.leave()
         }
         group.notify(queue: .main) {
-            print(#function, "-posterEND-")
             self.configureNoDataLabel()
             self.detailView.posterCollectionView.reloadData()
         }
         group.enter()
         NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { value in
-            print("cast success")
             self.castList = value.cast
             group.leave()
         } failHandler: { error in
-            print("fail")
             self.displayAlert(title: error.title, message: error.reason, isCancel: false)
             group.leave()
         }
         group.notify(queue: .main) {
-            print(#function, "-castEND-")
             self.detailView.noCastLabel.isHidden = self.castList.isEmpty ? false : true
             self.detailView.castCollectionView.reloadData()
         }

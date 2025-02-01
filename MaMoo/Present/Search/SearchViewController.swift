@@ -63,11 +63,9 @@ final class SearchViewController: BaseViewController {
         likeDictionary[id] = like
         UserDefaultsManager.shared.like[id] = like
         searchView.collectionView.reloadData()
-        print("like신호받음", likeDictionary)
     }
     
     private func callRequest(query: String, page: Int) {
-        print("search", #function)
         NetworkManager.shared.fetchResults(api: TMDBRequest.search(value: SearchRequest(query: query, page: page)), type: Movie.self) { value in
             if value.results.isEmpty {
                 self.searchView.noResultLabel.isHidden = false
@@ -92,15 +90,11 @@ final class SearchViewController: BaseViewController {
             }
             
             self.searchView.collectionView.reloadData()
-            if self.isSearch && !self.movieList.isEmpty {
+            if self.isSearch && !self.movieList.isEmpty && self.page == 1 {
                 self.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
-            print("현재 페이지", page)
-            print("전체 검색 수", value.total_results)
-            print("총 페이지 수", value.total_pages)
         } failHandler: { error in
             self.displayAlert(title: error.title, message: error.reason, isCancel: false)
-            print("fail")
         }
     }
     

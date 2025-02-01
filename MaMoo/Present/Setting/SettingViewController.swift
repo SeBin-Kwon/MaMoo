@@ -42,7 +42,6 @@ final class SettingViewController: BaseViewController {
         profileEditButton.nicknameLabel.text = nickname
         profileEditButton.profileImage.image = UIImage(named: "profile_\(imageNum)")
         updateLikeCount()
-        print("신호받음")
     }
     
     private func configureData() {
@@ -58,7 +57,6 @@ final class SettingViewController: BaseViewController {
     }
     
     @objc private func profileEditButtontapped() {
-        print(#function)
         let vc = UINavigationController(rootViewController: ProfileViewController())
         if let sheet = vc.sheetPresentationController {
             sheet.prefersGrabberVisible = true
@@ -87,7 +85,6 @@ final class SettingViewController: BaseViewController {
 extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 3 {
-            print(#function)
             self.displayAlert(title: "탈퇴하기", message: "탈퇴를 하면 데이터가 모두 초기화됩니다. 탈퇴 하시겠습니까?", isCancel: true) { _ in
                 UserDefaultsManager.shared.isDisplayedOnboarding = false
                 for key in UserDefaults.standard.dictionaryRepresentation().keys {

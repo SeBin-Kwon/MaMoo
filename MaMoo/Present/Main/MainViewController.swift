@@ -53,13 +53,11 @@ final class MainViewController: BaseViewController {
     }
     
     @objc private func rightItemTapped() {
-        print(#function)
         let vc = SearchViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func allRemoveButtonTapped() {
-        print(#function)
         searchList.removeAll()
         UserDefaults.standard.removeObject(forKey: "searchResults")
         mainView.isSearchLabel.isHidden = false
@@ -68,7 +66,6 @@ final class MainViewController: BaseViewController {
     }
     
     @objc private func profileEditButtontapped() {
-        print(#function)
         let vc = UINavigationController(rootViewController: ProfileViewController())
         if let sheet = vc.sheetPresentationController {
             sheet.prefersGrabberVisible = true
@@ -77,8 +74,6 @@ final class MainViewController: BaseViewController {
     }
     
     @objc private func removeButtontapped(_ sender: UIButton) {
-        print(#function)
-        print("sender", sender.tag)
         let index = IndexPath(item: sender.tag, section: 0)
         searchList.remove(at: sender.tag)
         UserDefaultsManager.shared.searchResults = searchList
@@ -104,17 +99,13 @@ final class MainViewController: BaseViewController {
         let group = DispatchGroup()
         group.enter()
         NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { value in
-            print(value.results.count)
             self.movieList = value.results
-            print(self.movieList)
             group.leave()
         } failHandler: { error in
-            print("fail")
             self.displayAlert(title: error.title, message: error.reason, isCancel: false)
             group.leave()
         }
         group.notify(queue: .main) {
-            print(#function, "-END-")
             self.mainView.collectionView.reloadData()
         }
     }
@@ -129,7 +120,6 @@ extension MainViewController {
         UserDefaultsManager.shared.like[id] = like
         updateLikeCount()
         mainView.collectionView.reloadData()
-        print("like신호받음", likeDictionary)
     }
     
     @objc private func profileNotification(value: NSNotification) {
@@ -137,7 +127,6 @@ extension MainViewController {
               let imageNum = value.userInfo!["profileImage"] as? Int else { return }
         mainView.profileEditButton.nicknameLabel.text = nickname
         mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(imageNum)")
-        print("신호받음")
     }
 }
 
@@ -150,7 +139,6 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             vc.movie = movieList[indexPath.item]
             navigationController?.pushViewController(vc, animated: true)
         default:
-            print(#function)
             let vc = SearchViewController()
             vc.searchText = searchList[indexPath.item]
             navigationController?.pushViewController(vc, animated: true)

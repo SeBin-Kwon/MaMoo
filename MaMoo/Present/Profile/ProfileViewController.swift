@@ -69,7 +69,6 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc private func leftItemTapped() {
-        print(#function)
         dismiss(animated: true)
     }
     
@@ -190,7 +189,6 @@ extension ProfileViewController: UITextFieldDelegate {
         let inputString = string.trimmingCharacters(in: .whitespacesAndNewlines)
         let newString = text.replacingCharacters(in: newRange, with: inputString)
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        print(newString, newString.count)
         isVaild = isValidateNickname(text)
         return true
     }
@@ -202,7 +200,6 @@ extension ProfileViewController: UITextFieldDelegate {
             isVaild = false
             return
         }
-        print("DidChange: ", text)
         isVaild = isValidateNickname(text)
         if isVaild {
             validLabel.text = "사용할 수 있는 닉네임이에요"
