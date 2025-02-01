@@ -8,8 +8,8 @@
 import UIKit
 import SnapKit
 
-class ProfileImageCollectionViewCell: BaseCollectionViewCell {
-    var profileImageView = {
+final class ProfileImageCollectionViewCell: BaseCollectionViewCell {
+    let profileImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true

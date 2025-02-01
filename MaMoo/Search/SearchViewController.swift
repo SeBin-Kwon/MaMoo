@@ -42,15 +42,6 @@ final class SearchViewController: BaseViewController {
         }
     }
     
-    @objc func likeNotification(value: NSNotification) {
-        guard let id = value.userInfo!["id"] as? String,
-              let like = value.userInfo!["like"] as? Bool else { return }
-        likeDictionary[id] = like
-        UserDefaultsManager.shared.like[id] = like
-        searchView.collectionView.reloadData()
-        print("like신호받음", likeDictionary)
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         if let searchText {
             searchView.searchBar.text = searchText
@@ -60,6 +51,15 @@ final class SearchViewController: BaseViewController {
             self.searchText = searchText
             callRequest(query: searchText, page: page)
         }
+    }
+    
+    @objc func likeNotification(value: NSNotification) {
+        guard let id = value.userInfo!["id"] as? String,
+              let like = value.userInfo!["like"] as? Bool else { return }
+        likeDictionary[id] = like
+        UserDefaultsManager.shared.like[id] = like
+        searchView.collectionView.reloadData()
+        print("like신호받음", likeDictionary)
     }
     
     private func callRequest(query: String, page: Int) {
@@ -107,7 +107,7 @@ final class SearchViewController: BaseViewController {
     
 }
 
-// MARK: Pagenation - UICollectionViewDataSourcePrefetching
+// MARK: Pagenation UICollectionViewDataSourcePrefetching
 extension SearchViewController: UICollectionViewDataSourcePrefetching {
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
@@ -127,7 +127,7 @@ extension SearchViewController: UICollectionViewDataSourcePrefetching {
     }
 }
 
-// MARK: UISearchBar
+// MARK: SearchBar Delegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchText = searchView.searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
@@ -145,7 +145,7 @@ extension SearchViewController: UISearchBarDelegate {
     }
 }
 
-// MARK: UICollectionView
+// MARK: CollectionView Delegate
 extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -42,6 +42,15 @@ final class ProfileViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = UserDefaultsManager.shared.isDisplayedOnboarding ? "프로필 편집" : "프로필 설정"
+        configureNavigationItem()
+        profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped), for: .touchUpInside)
+        textField.delegate = self
+        completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped))
+        view.addGestureRecognizer(tap)
+    }
+    
+    private func configureNavigationItem() {
         let rightItem = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(completeButtonTapped))
         rightItem.setTitleTextAttributes([.foregroundColor: UIColor.maMooPoint, .font: UIFont.systemFont(ofSize: 16, weight: .bold)], for: .normal)
         rightItem.isHidden = !UserDefaultsManager.shared.isDisplayedOnboarding
@@ -53,19 +62,13 @@ final class ProfileViewController: BaseViewController {
         if UserDefaultsManager.shared.isDisplayedOnboarding {
             navigationItem.leftBarButtonItem = leftItem
         }
-        
-        profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped), for: .touchUpInside)
-        textField.delegate = self
-        completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped))
-        view.addGestureRecognizer(tap)
     }
     
     @objc private func tapGestureTapped() {
         view.endEditing(true)
     }
     
-    @objc func leftItemTapped() {
+    @objc private func leftItemTapped() {
         print(#function)
         dismiss(animated: true)
     }

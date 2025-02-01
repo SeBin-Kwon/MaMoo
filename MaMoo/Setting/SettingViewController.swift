@@ -9,9 +9,8 @@ import UIKit
 import SnapKit
 
 final class SettingViewController: BaseViewController {
-    let button = UIButton()
-    let profileEditButton = ProfileEditButton()
-    let tableView = {
+    private let profileEditButton = ProfileEditButton()
+    private let tableView = {
         let tabel = UITableView()
         tabel.separatorStyle = .singleLine
         tabel.separatorColor = .maMooGray
@@ -32,7 +31,12 @@ final class SettingViewController: BaseViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
     }
     
-    @objc func profileNotification(value: NSNotification) {
+    override func viewWillAppear(_ animated: Bool) {
+        likeDictionary = UserDefaultsManager.shared.like
+        updateLikeCount()
+    }
+    
+    @objc private func profileNotification(value: NSNotification) {
         guard let nickname = value.userInfo!["nickname"] as? String,
               let imageNum = value.userInfo!["profileImage"] as? Int else { return }
         profileEditButton.nicknameLabel.text = nickname
@@ -46,11 +50,6 @@ final class SettingViewController: BaseViewController {
         profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
         profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
         profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        likeDictionary = UserDefaultsManager.shared.like
-        updateLikeCount()
     }
     
     private func updateLikeCount() {
@@ -83,8 +82,9 @@ final class SettingViewController: BaseViewController {
 
 }
 
+
+// MARK: TableView Delegate
 extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 3 {
             print(#function)

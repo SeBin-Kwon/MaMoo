@@ -53,7 +53,7 @@ final class ProfileImageViewController: BaseViewController {
 }
 
 
-// MARK: CollectionView
+// MARK: CollectionView Delegate
 extension ProfileImageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class SearchViewCollectionViewCell: BaseCollectionViewCell {
+final class SearchViewCollectionViewCell: BaseCollectionViewCell {
     
     private let imageView = {
         let image = UIImageView()
@@ -106,21 +106,6 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
         likeState = isSelected
     }
     
-    private func configureTag(_ str: String) -> UIButton {
-        let btn = UIButton()
-        var config = UIButton.Configuration.filled()
-        config.buttonSize = .mini
-        config.cornerStyle = .small
-        var attributedTitle = AttributedString(str)
-        attributedTitle.font = .systemFont(ofSize: 12)
-        attributedTitle.foregroundColor = .white
-        config.attributedTitle = attributedTitle
-        config.baseBackgroundColor = .darkGray
-        config.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
-        btn.configuration = config
-        return btn
-    }
-    
     override func configureHierarchy() {
         likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
         addSubview(imageView)
@@ -159,5 +144,23 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
             make.bottom.equalToSuperview().inset(5)
             make.height.equalTo(0.5)
         }
+    }
+}
+
+// MARK: Comfigure UI
+extension SearchViewCollectionViewCell {
+    private func configureTag(_ str: String) -> UIButton {
+        let btn = UIButton()
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .mini
+        config.cornerStyle = .small
+        var attributedTitle = AttributedString(str)
+        attributedTitle.font = .systemFont(ofSize: 12)
+        attributedTitle.foregroundColor = .white
+        config.attributedTitle = attributedTitle
+        config.baseBackgroundColor = .darkGray
+        config.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
+        btn.configuration = config
+        return btn
     }
 }
