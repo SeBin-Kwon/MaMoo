@@ -177,6 +177,10 @@ extension ProfileViewController {
 
 // MARK: TextField Delegate
 extension ProfileViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+    }
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
         guard let newRange = Range(range, in: text) else { return true }
