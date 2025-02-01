@@ -35,6 +35,7 @@ final class ProfileViewController: BaseViewController {
     private var isVaild = false {
         didSet {
             completeButton.isEnabled = isVaild ? true : false
+            navigationItem.rightBarButtonItem?.isEnabled = isVaild ? true : false
         }
     }
     
@@ -44,6 +45,7 @@ final class ProfileViewController: BaseViewController {
         let rightItem = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(completeButtonTapped))
         rightItem.tintColor = .maMooPoint
         rightItem.isHidden = !UserDefaultsManager.shared.isDisplayedOnboarding
+        rightItem.isEnabled = false
         navigationItem.rightBarButtonItem = rightItem
         
         let leftItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(leftItemTapped))
@@ -120,7 +122,7 @@ final class ProfileViewController: BaseViewController {
         view.addSubview(completeButton)
         
         profileImageButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(60)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(UserDefaultsManager.shared.isDisplayedOnboarding ? 30 : 60)
             make.centerX.equalToSuperview()
         }
         textField.snp.makeConstraints { make in

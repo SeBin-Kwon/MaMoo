@@ -41,7 +41,7 @@ final class ProfileImageViewController: BaseViewController {
         view.addSubview(profileImageButton)
         view.addSubview(collectionView)
         profileImageButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(60)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(UserDefaultsManager.shared.isDisplayedOnboarding ? 30 : 60)
             make.centerX.equalToSuperview()
         }
         collectionView.snp.makeConstraints { make in
