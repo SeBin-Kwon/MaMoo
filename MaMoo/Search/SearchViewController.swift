@@ -131,6 +131,13 @@ extension SearchViewController: UICollectionViewDataSourcePrefetching {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchText = searchView.searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+        if searchText.isEmpty {
+            page = 1
+            isEnd = false
+            isSearch = true
+            callRequest(query: searchText, page: page)
+            return
+        }
         view.endEditing(true)
         if let previousSearchText {
             guard searchText != previousSearchText else { return }
