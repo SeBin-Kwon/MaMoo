@@ -42,9 +42,16 @@ final class DetailViewController: BaseViewController {
         navigationItem.title = movie.title
         guard let date = movie.release_date,
               let vote = movie.vote_average,
-              let genre = movie.genre_ids else { return }
+              let genre = movie.genre_ids,
+              let synopsis = movie.overview else { return }
         self.detailView.configureInfoData(date, vote, genre)
-        detailView.configureSynopsis(movie.overview ?? "")
+        if !synopsis.isEmpty {
+            detailView.configureSynopsis(synopsis)
+            detailView.noSynopsisLabel.isHidden = true
+        } else {
+            detailView.noSynopsisLabel.isHidden = false
+        }
+        
         id = String(movie.id)
         updateLikeButton(UserDefaultsManager.shared.like[String(movie.id), default: false])
         callRequest()
@@ -58,6 +65,11 @@ final class DetailViewController: BaseViewController {
         detailView.posterCollectionView.delegate = self
         detailView.posterCollectionView.dataSource = self
         detailView.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
+    }
+    
+    private func configureNoDataLabel() {
+        detailView.noBackdropLabel.isHidden = backdropsList.isEmpty ? false : true
+        detailView.noPosterLabel.isHidden = posterList.isEmpty ? false : true
     }
     
     private func configureLayout() {
@@ -114,6 +126,7 @@ final class DetailViewController: BaseViewController {
         }
         group.notify(queue: .main) {
             print(#function, "-posterEND-")
+            self.configureNoDataLabel()
             self.detailView.posterCollectionView.reloadData()
         }
         group.enter()
@@ -127,6 +140,7 @@ final class DetailViewController: BaseViewController {
         }
         group.notify(queue: .main) {
             print(#function, "-castEND-")
+            self.detailView.noCastLabel.isHidden = self.castList.isEmpty ? false : true
             self.detailView.castCollectionView.reloadData()
         }
     }

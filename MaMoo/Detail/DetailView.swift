@@ -47,6 +47,11 @@ final class DetailView: BaseView {
         return btn
     }()
     
+    lazy var noBackdropLabel = configureNoDataLabel("백드롭 이미지가 없습니다")
+    lazy var noSynopsisLabel = configureNoDataLabel("시놉시스 정보가 없습니다")
+    lazy var noCastLabel = configureNoDataLabel("배우 정보가 없습니다")
+    lazy var noPosterLabel = configureNoDataLabel("포스트 이미지가 없습니다")
+    
     private lazy var castLabel = configureLabel("Cast")
     lazy var castCollectionView = configureCastFlowLayout()
     private lazy var posterLabel = configureLabel("Poster")
@@ -63,6 +68,10 @@ final class DetailView: BaseView {
         addSubview(castCollectionView)
         addSubview(posterLabel)
         addSubview(posterCollectionView)
+        addSubview(noBackdropLabel)
+        addSubview(noSynopsisLabel)
+        addSubview(noCastLabel)
+        addSubview(noPosterLabel)
     }
     override func configureLayout() {
         backdropScrollView.snp.makeConstraints { make in
@@ -108,6 +117,19 @@ final class DetailView: BaseView {
             make.bottom.equalToSuperview().inset(30)
             make.height.equalTo(150)
         }
+        noBackdropLabel.snp.makeConstraints { make in
+            make.center.equalTo(backdropScrollView)
+        }
+        noSynopsisLabel.snp.makeConstraints { make in
+            make.top.equalTo(synopsisLabel.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+        }
+        noCastLabel.snp.makeConstraints { make in
+            make.center.equalTo(castCollectionView)
+        }
+        noPosterLabel.snp.makeConstraints { make in
+            make.center.equalTo(posterCollectionView)
+        }
     }
     
     func configureSynopsis(_ text: String) {
@@ -139,6 +161,16 @@ final class DetailView: BaseView {
 
 // MARK: Configure UI
 extension DetailView {
+    
+    private func configureNoDataLabel(_ text: String) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = .systemFont(ofSize: 13, weight: .bold)
+        label.textColor = .maMooGray
+        label.isHidden = true
+        return label
+    }
+    
     private func configureInfoLabelButton(image: String, contents: String) -> UIButton {
         let btn = UIButton()
         var config = UIButton.Configuration.plain()
