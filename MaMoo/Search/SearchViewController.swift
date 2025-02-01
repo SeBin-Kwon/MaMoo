@@ -36,6 +36,10 @@ final class SearchViewController: BaseViewController {
         searchView.collectionView.keyboardDismissMode = .onDrag
     }
     
+    deinit{
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         if movieList.isEmpty {
             searchView.searchBar.becomeFirstResponder()
@@ -80,19 +84,13 @@ final class SearchViewController: BaseViewController {
             if value.total_pages == page {
                 self.isEnd = true
             }
-            var newList = self.movieList
-            for i in 0..<self.movieList.count {
-                let movie = self.movieList[i]
-                if (movie.poster_path ?? "").isEmpty &&
-                    (movie.release_date ?? "").isEmpty {
-                    newList.remove(at: i)
-                }
+            for movie in value.results {
                 let id = String(movie.id)
                 if let likeState = UserDefaultsManager.shared.like[String(id)] {
                     self.likeDictionary[id] = likeState
                 }
             }
-            self.movieList = newList
+            
             self.searchView.collectionView.reloadData()
             if self.isSearch && !self.movieList.isEmpty {
                 self.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
@@ -120,10 +118,6 @@ extension SearchViewController: UICollectionViewDataSourcePrefetching {
             }
         }
         
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-        print(#function)
     }
 }
 

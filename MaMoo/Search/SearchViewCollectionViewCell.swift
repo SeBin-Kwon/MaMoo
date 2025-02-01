@@ -64,7 +64,6 @@ final class SearchViewCollectionViewCell: BaseCollectionViewCell {
     var likeState = false
     
     @objc private func likeButtonTapped(_ sender: UIButton) {
-        print(#function)
         guard let id else { return }
         likeState.toggle()
         updateLikeButton(likeState)
@@ -73,6 +72,9 @@ final class SearchViewCollectionViewCell: BaseCollectionViewCell {
     }
     
     func configureData(_ item: MovieResults) {
+        id = String(item.id)
+        likeState = UserDefaultsManager.shared.like[String(item.id), default: false]
+        updateLikeButton(likeState)
         if !genreStackView.arrangedSubviews.isEmpty {
             genreStackView.removeAll()
         }
@@ -89,16 +91,13 @@ final class SearchViewCollectionViewCell: BaseCollectionViewCell {
         titleLabel.text = item.title
         dateLabel.text = DateFormatterManager.shared.dateChanged(item.release_date ?? "")
         guard let genreList = item.genre_ids else { return }
-        guard !genreList.isEmpty else { return }
-        let count = genreList.count > 1 ? 2 : 1
-        for i in 0..<count {
-            guard let genre = Genre.genreDictionary[genreList[i]] else { break }
-            genreStackView.addArrangedSubview(configureTag(genre))
+        if !genreList.isEmpty {
+            let count = genreList.count > 1 ? 2 : 1
+            for i in 0..<count {
+                guard let genre = Genre.genreDictionary[genreList[i]] else { break }
+                genreStackView.addArrangedSubview(configureTag(genre))
+            }
         }
-        
-        id = String(item.id)
-        likeState = UserDefaultsManager.shared.like[String(item.id), default: false]
-        updateLikeButton(likeState)
     }
     
     func updateLikeButton(_ isSelected: Bool) {
@@ -133,7 +132,7 @@ final class SearchViewCollectionViewCell: BaseCollectionViewCell {
         }
         likeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(10)
-            make.centerY.equalTo(genreStackView)
+            make.bottom.equalToSuperview().inset(10)
         }
         genreStackView.snp.makeConstraints { make in
             make.leading.equalTo(imageView.snp.trailing).offset(20)

@@ -37,8 +37,6 @@ final class NetworkManager {
         case notFound = 404
         case server = 500
         
-        //실패 가능한 이니셜라이저
-        
         var title: String {
             switch self {
             case .badRequest: return "잘못된 요청"
@@ -60,36 +58,3 @@ final class NetworkManager {
         }
     }
 }
-    
-//    func fetchPhotoResults<T: Decodable>(api: UnsplashRequest, type: T.Type, _ completionHandler: @escaping (T) -> Void, failHandler: @escaping (Int, ErrorType) -> Void) {
-//        AF.request(api.endPoint, method: api.method, parameters: api.parameter, encoding: URLEncoding(destination: .queryString), headers: api.header)
-//            .validate(statusCode: 200..<300)
-//            .responseDecodable(of: T.self) { response in
-//                switch response.result {
-//                case .success(let value):
-//                    print("Success")
-//                    completionHandler(value)
-//                case .failure(let error):
-//                    guard let code = error.responseCode else { return }
-//                    switch code {
-////                        failHandler(code, ErrorType(rawValue: code))
-//                    case 400:
-//                        failHandler(code, ErrorType.badRequest)
-//                    case 401:
-//                        failHandler(code, ErrorType.unauthorized)
-//                    case 403:
-//                        failHandler(code, ErrorType.forbidden)
-//                    case 404:
-//                        failHandler(code, ErrorType.notFound)
-//                    case 500, 503:
-//                        failHandler(code, ErrorType.server)
-//                    default:
-//                        failHandler(code, ErrorType.server)
-//                    }
-//                }
-//            }
-//    }
- 
-    
-    
-//}
