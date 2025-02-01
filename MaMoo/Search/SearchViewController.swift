@@ -17,6 +17,7 @@ final class SearchViewController: BaseViewController {
     var searchText: String?
     private var previousSearchText: String?
     private var likeDictionary = [String:Bool]()
+    private var isSearch = false
     
     override func loadView() {
         view = searchView
@@ -54,6 +55,7 @@ final class SearchViewController: BaseViewController {
         if let searchText {
             searchView.searchBar.text = searchText
             isEnd = false
+            isSearch = false
             previousSearchText = searchText
             self.searchText = searchText
             callRequest(query: searchText, page: page)
@@ -92,7 +94,7 @@ final class SearchViewController: BaseViewController {
             }
             self.movieList = newList
             self.searchView.collectionView.reloadData()
-            if page == 1 && !self.movieList.isEmpty {
+            if self.isSearch && !self.movieList.isEmpty {
                 self.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
             print("현재 페이지", page)
@@ -137,6 +139,7 @@ extension SearchViewController: UISearchBarDelegate {
         isEnd = false
         previousSearchText = searchText
         self.searchText = searchText
+        isSearch = true
         callRequest(query: searchText, page: page)
         UserDefaultsManager.shared.searchResults.append(searchText)
     }

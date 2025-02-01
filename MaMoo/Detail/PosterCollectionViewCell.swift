@@ -13,7 +13,7 @@ class PosterCollectionViewCell: BaseCollectionViewCell {
     let imageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
-        image.backgroundColor = .gray
+        image.backgroundColor = .darkGray
         image.clipsToBounds = true
         return image
     }()
@@ -33,8 +33,11 @@ class PosterCollectionViewCell: BaseCollectionViewCell {
             let newUrl = "https://image.tmdb.org/t/p/w500" + image
             guard let url = URL(string: newUrl) else { return }
             imageView.kf.setImage(with: url)
+            imageView.contentMode = .scaleAspectFill
         } else {
-            imageView.image = UIImage(systemName: "xmark.rectangle")
+            imageView.image = UIImage(systemName: "xmark")
+            imageView.contentMode = .center
+            imageView.tintColor = .black
         }
     }
 }

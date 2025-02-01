@@ -16,6 +16,7 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
+        image.backgroundColor = .darkGray
         return image
     }()
     
@@ -59,8 +60,11 @@ class MainCollectionViewCell: BaseCollectionViewCell {
             let newUrl = "https://image.tmdb.org/t/p/w500" + poster
             guard let url = URL(string: newUrl) else { return }
             imageView.kf.setImage(with: url)
+            imageView.contentMode = .scaleAspectFill
         } else {
-            imageView.image = UIImage(systemName: "xmark.rectangle")
+            imageView.image = UIImage(systemName: "xmark")
+            imageView.contentMode = .center
+            imageView.tintColor = .black
         }
         titleLabel.text = item.title
         overviewLabel.text = item.overview

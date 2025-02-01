@@ -14,7 +14,7 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
     private let imageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
-        image.backgroundColor = .gray
+        image.backgroundColor = .darkGray
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
         return image
@@ -80,8 +80,11 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
             let newUrl = "https://image.tmdb.org/t/p/w500" + poster
             guard let url = URL(string: newUrl) else { return }
             imageView.kf.setImage(with: url)
+            imageView.contentMode = .scaleAspectFill
         } else {
-            imageView.image = UIImage(systemName: "xmark.rectangle")
+            imageView.image = UIImage(systemName: "xmark")
+            imageView.contentMode = .center
+            imageView.tintColor = .black
         }
         titleLabel.text = item.title
         dateLabel.text = DateFormatterManager.shared.dateChanged(item.release_date ?? "")

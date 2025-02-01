@@ -130,15 +130,23 @@ class DetailViewController: BaseViewController {
             print(#function, "-castEND-")
             self.detailView.castCollectionView.reloadData()
         }
-
+        
     }
     
     private func configureBackdropScrollView() {
         for i in 0..<backdropsList.count {
-            let newUrl = "https://image.tmdb.org/t/p/w500" + backdropsList[i].file_path
-            guard let url = URL(string: newUrl) else { return }
-            let imageView = configureImage()
-            imageView.kf.setImage(with: url)
+            var imageView = UIImageView()
+            if let image = backdropsList[i].file_path {
+                let newUrl = "https://image.tmdb.org/t/p/w500" + image
+                guard let url = URL(string: newUrl) else { return }
+                imageView = configureImage()
+                imageView.kf.setImage(with: url)
+                imageView.contentMode = .scaleAspectFill
+            } else {
+                imageView.image = UIImage(systemName: "xmark")
+                imageView.contentMode = .center
+                imageView.tintColor = .black
+            }
             
             let xPos = view.frame.width * CGFloat(i)
             imageView.frame = CGRect(x: xPos, y: 0, width: detailView.backdropScrollView.bounds.width, height: detailView.backdropScrollView.bounds.height)
@@ -153,7 +161,7 @@ class DetailViewController: BaseViewController {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
-        image.backgroundColor = .gray
+        image.backgroundColor = .darkGray
         return image
     }
 }
@@ -182,7 +190,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
     }
     
-
+    
 }
 
 // MARK: ScrollView

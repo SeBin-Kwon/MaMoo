@@ -31,7 +31,7 @@ struct MovieImage: Decodable {
 }
 
 struct Backdrops: Decodable {
-    let file_path: String
+    let file_path: String?
 }
 
 struct Posters: Decodable {

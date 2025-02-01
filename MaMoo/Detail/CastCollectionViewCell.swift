@@ -14,6 +14,7 @@ class CastCollectionViewCell: BaseCollectionViewCell {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
+        image.backgroundColor = .darkGray
         return image
     }()
     private let nameLabel = {
@@ -54,12 +55,10 @@ class CastCollectionViewCell: BaseCollectionViewCell {
             make.trailing.equalToSuperview().inset(10)
         }
         nameLabel.snp.makeConstraints { make in
-            make.top.leading.equalTo(uiView)
-            make.trailing.equalTo(uiView).inset(10)
+            make.top.horizontalEdges.equalTo(uiView)
         }
         chrNameLabel.snp.makeConstraints { make in
-            make.bottom.leading.equalTo(uiView)
-            make.trailing.equalTo(uiView).inset(10)
+            make.bottom.horizontalEdges.equalTo(uiView)
         }
     }
     
@@ -68,8 +67,11 @@ class CastCollectionViewCell: BaseCollectionViewCell {
             let newUrl = "https://image.tmdb.org/t/p/w500" + image
             guard let url = URL(string: newUrl) else { return }
             imageView.kf.setImage(with: url)
+            imageView.contentMode = .scaleAspectFill
         } else {
-            imageView.image = UIImage(systemName: "xmark.rectangle")
+            imageView.image = UIImage(systemName: "person.fill")
+            imageView.contentMode = .center
+            imageView.tintColor = .black
         }
         
         nameLabel.text = item.name
