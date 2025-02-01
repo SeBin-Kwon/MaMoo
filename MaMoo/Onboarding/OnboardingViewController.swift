@@ -43,6 +43,7 @@ final class OnboardingViewController: BaseViewController {
     }
     
     @objc private func buttonTapped() {
+        print(#function)
         navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
     
