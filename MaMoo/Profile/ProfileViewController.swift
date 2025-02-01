@@ -43,7 +43,7 @@ final class ProfileViewController: BaseViewController {
         super.viewDidLoad()
         navigationItem.title = UserDefaultsManager.shared.isDisplayedOnboarding ? "프로필 편집" : "프로필 설정"
         let rightItem = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(completeButtonTapped))
-        rightItem.tintColor = .maMooPoint
+        rightItem.setTitleTextAttributes([.foregroundColor: UIColor.maMooPoint, .font: UIFont.systemFont(ofSize: 16, weight: .bold)], for: .normal)
         rightItem.isHidden = !UserDefaultsManager.shared.isDisplayedOnboarding
         rightItem.isEnabled = false
         navigationItem.rightBarButtonItem = rightItem

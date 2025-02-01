@@ -17,7 +17,7 @@ class BaseViewController: UIViewController {
         backBarButtonItem.tintColor = .maMooPoint
         navigationItem.backBarButtonItem = backBarButtonItem
         let appearance = UINavigationBarAppearance()
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 16, weight: .bold)]
         appearance.backgroundColor = .black
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
