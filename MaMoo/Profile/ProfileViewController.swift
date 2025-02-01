@@ -20,7 +20,7 @@ final class ProfileViewController: BaseViewController {
     }()
     private var validLabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14)
+        label.font = .systemFont(ofSize: 12)
         label.textColor = .maMooPoint
         label.isHidden = true
         return label
@@ -96,8 +96,9 @@ final class ProfileViewController: BaseViewController {
         textfield.backgroundColor = .none
         textfield.text = UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.nickname : ""
         textfield.textColor = .white
+        textfield.font = .systemFont(ofSize: 14)
         textfield.attributedPlaceholder = NSAttributedString(string: "닉네임을 입력해주세요", attributes: [
-            .foregroundColor: UIColor.maMooGray])
+            .foregroundColor: UIColor.maMooGray, .font: UIFont.systemFont(ofSize: 14)])
         return textfield
     }
     
@@ -109,7 +110,7 @@ final class ProfileViewController: BaseViewController {
         view.addSubview(completeButton)
         
         profileImageButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(50)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(60)
             make.centerX.equalToSuperview()
         }
         textField.snp.makeConstraints { make in
@@ -117,16 +118,16 @@ final class ProfileViewController: BaseViewController {
             make.horizontalEdges.equalToSuperview().inset(20)
         }
         textFieldBorder.snp.makeConstraints { make in
-            make.top.equalTo(textField.snp.bottom).offset(20)
+            make.top.equalTo(textField.snp.bottom).offset(13)
             make.horizontalEdges.equalToSuperview().inset(10)
-            make.height.equalTo(2)
+            make.height.equalTo(1.5)
         }
         validLabel.snp.makeConstraints { make in
-            make.top.equalTo(textFieldBorder).offset(20)
+            make.top.equalTo(textFieldBorder).offset(15)
             make.leading.equalToSuperview().offset(20)
         }
         completeButton.snp.makeConstraints { make in
-            make.top.equalTo(validLabel.snp.bottom).offset(50)
+            make.top.equalTo(validLabel.snp.bottom).offset(30)
             make.horizontalEdges.equalToSuperview().inset(10)
         }
     }

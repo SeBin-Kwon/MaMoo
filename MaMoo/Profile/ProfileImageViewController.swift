@@ -41,11 +41,11 @@ final class ProfileImageViewController: BaseViewController {
         view.addSubview(profileImageButton)
         view.addSubview(collectionView)
         profileImageButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(50)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(60)
             make.centerX.equalToSuperview()
         }
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(profileImageButton.snp.bottom).offset(50)
+            make.top.equalTo(profileImageButton.snp.bottom).offset(80)
             make.horizontalEdges.bottom.equalToSuperview()
         }
     }
@@ -95,7 +95,7 @@ extension ProfileImageViewController: UICollectionViewDelegate, UICollectionView
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
         let cellCount: CGFloat = 4
-        let itemSpacing: CGFloat = 20
+        let itemSpacing: CGFloat = 15
         let insetSpacing: CGFloat = 30
         let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
         layout.minimumLineSpacing = itemSpacing

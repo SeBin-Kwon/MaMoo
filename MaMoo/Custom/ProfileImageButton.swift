@@ -18,7 +18,7 @@ final class ProfileImageButton: BaseButton {
         image.layer.borderWidth = 3
         image.layer.borderColor = UIColor.maMooPoint.cgColor
         image.clipsToBounds = true
-        image.frame = .init(x: 0, y: 0, width: 100, height: 100)
+        image.frame = .init(x: 0, y: 0, width: 95, height: 95)
         return image
     }()
     
@@ -52,7 +52,7 @@ final class ProfileImageButton: BaseButton {
     
     private func configureLayout() {
         profileImageView.snp.makeConstraints { make in
-            make.size.equalTo(100)
+            make.size.equalTo(95)
             make.center.equalToSuperview()
         }
         cameraBackgroundView.snp.makeConstraints { make in
