@@ -21,11 +21,11 @@ final class UserDefaultsManager {
         case like
     }
     
-    func getter<T>(key: UserDefaultsKey, defaultValue: T) -> T {
+    func getter<T: UserDefaultsProtocol>(key: UserDefaultsKey, defaultValue: T) -> T {
         userDefaults.object(forKey: key.rawValue) as? T ?? defaultValue
     }
     
-    func setter<T>(value: T, key: UserDefaultsKey) {
+    func setter<T: UserDefaultsProtocol>(value: T, key: UserDefaultsKey) {
         userDefaults.set(value, forKey: key.rawValue)
     }
     
@@ -60,3 +60,10 @@ final class UserDefaultsManager {
     }
     
 }
+
+protocol UserDefaultsProtocol {}
+extension String: UserDefaultsProtocol {}
+extension Bool: UserDefaultsProtocol {}
+extension Int: UserDefaultsProtocol {}
+extension Array: UserDefaultsProtocol {}
+extension Dictionary: UserDefaultsProtocol {}
