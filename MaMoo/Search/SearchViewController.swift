@@ -98,7 +98,8 @@ final class SearchViewController: BaseViewController {
             print("현재 페이지", page)
             print("전체 검색 수", value.total_results)
             print("총 페이지 수", value.total_pages)
-        } failHandler: {
+        } failHandler: { error in
+            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
             print("fail")
         }
     }

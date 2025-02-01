@@ -120,8 +120,9 @@ final class DetailViewController: BaseViewController {
             }
             self.posterList = value.posters
             group.leave()
-        } failHandler: {
+        } failHandler: { error in
             print("fail")
+            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
             group.leave()
         }
         group.notify(queue: .main) {
@@ -134,8 +135,9 @@ final class DetailViewController: BaseViewController {
             print("cast success")
             self.castList = value.cast
             group.leave()
-        } failHandler: {
+        } failHandler: { error in
             print("fail")
+            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
             group.leave()
         }
         group.notify(queue: .main) {

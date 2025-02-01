@@ -108,8 +108,9 @@ final class MainViewController: BaseViewController {
             self.movieList = value.results
             print(self.movieList)
             group.leave()
-        } failHandler: {
+        } failHandler: { error in
             print("fail")
+            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
             group.leave()
         }
         group.notify(queue: .main) {
