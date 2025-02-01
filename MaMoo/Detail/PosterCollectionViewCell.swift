@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class PosterCollectionViewCell: BaseCollectionViewCell {
-    let imageView = {
+final class PosterCollectionViewCell: BaseCollectionViewCell {
+    private let imageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.backgroundColor = .darkGray

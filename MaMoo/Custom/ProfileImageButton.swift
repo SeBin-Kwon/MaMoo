@@ -29,7 +29,7 @@ final class ProfileImageButton: BaseButton {
         return image
     }()
     
-    let cameraBackgroundView = {
+    private let cameraBackgroundView = {
         let view = UIView()
         view.backgroundColor = .maMooPoint
         view.clipsToBounds = true

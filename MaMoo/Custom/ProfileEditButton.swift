@@ -10,7 +10,7 @@ import SnapKit
 
 final class ProfileEditButton: BaseButton {
     private let backgroundView = {
-       let view = UIView()
+        let view = UIView()
         view.backgroundColor = .darkGray.withAlphaComponent(0.6)
         view.layer.cornerRadius = 18
         view.isUserInteractionEnabled = false
@@ -50,9 +50,9 @@ final class ProfileEditButton: BaseButton {
     private let movieBoxBackgroundView = {
         let view = UIView()
         view.backgroundColor = .maMooPoint.withAlphaComponent(0.6)
-         view.layer.cornerRadius = 8
-         return view
-     }()
+        view.layer.cornerRadius = 8
+        return view
+    }()
     
     let movieBoxLabel = {
         let label = UILabel()
@@ -62,9 +62,9 @@ final class ProfileEditButton: BaseButton {
         return label
     }()
     
-    let uiView = {
+    private let uiView = {
         let view = UIView()
-         return view
+        return view
     }()
     
     init() {

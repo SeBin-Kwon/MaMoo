@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class DetailViewController: BaseViewController {
+final class DetailViewController: BaseViewController {
     
     private let detailView = DetailView()
     var movie: MovieResults?
@@ -70,7 +70,7 @@ class DetailViewController: BaseViewController {
         }
     }
     
-    @objc func rightItemTapped() {
+    @objc private func rightItemTapped() {
         print(#function)
         guard let id else { return }
         likeState.toggle()
@@ -79,7 +79,7 @@ class DetailViewController: BaseViewController {
         NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
     }
     
-    func updateLikeButton(_ isSelected: Bool) {
+    private func updateLikeButton(_ isSelected: Bool) {
         guard let rightItem = navigationItem.rightBarButtonItem else { return }
         rightItem.image = isSelected ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
         likeState = isSelected
@@ -116,7 +116,6 @@ class DetailViewController: BaseViewController {
             print(#function, "-posterEND-")
             self.detailView.posterCollectionView.reloadData()
         }
-        
         group.enter()
         NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { value in
             print("cast success")
@@ -130,9 +129,11 @@ class DetailViewController: BaseViewController {
             print(#function, "-castEND-")
             self.detailView.castCollectionView.reloadData()
         }
-        
     }
-    
+}
+
+// MARK: Configure UI
+extension DetailViewController {
     private func configureBackdropScrollView() {
         for i in 0..<backdropsList.count {
             var imageView = UIImageView()
@@ -156,7 +157,6 @@ class DetailViewController: BaseViewController {
         }
     }
     
-    
     private func configureImage() -> UIImageView {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
@@ -167,6 +167,7 @@ class DetailViewController: BaseViewController {
 }
 
 
+// MARK: UICollectionView Delegate
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == detailView.castCollectionView {
@@ -193,7 +194,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
 }
 
-// MARK: ScrollView
+// MARK: ScrollView Delegate
 extension DetailViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)

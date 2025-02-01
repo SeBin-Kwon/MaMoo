@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class CastCollectionViewCell: BaseCollectionViewCell {
-    let imageView = {
+final class CastCollectionViewCell: BaseCollectionViewCell {
+    private let imageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
@@ -31,7 +31,7 @@ class CastCollectionViewCell: BaseCollectionViewCell {
         label.textColor = .maMooGray
         return label
     }()
-    let uiView = {
+    private let uiView = {
         let view = UIView()
          return view
     }()

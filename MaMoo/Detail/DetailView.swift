@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class DetailView: BaseView {
+final class DetailView: BaseView {
     
     let pageControl = {
        let page = UIPageControl()
@@ -110,33 +110,8 @@ class DetailView: BaseView {
         }
     }
     
-    private func configureInfoLabelButton(image: String, contents: String) -> UIButton {
-        let btn = UIButton()
-        var config = UIButton.Configuration.plain()
-        var attributedTitle = AttributedString(contents)
-        attributedTitle.font = .systemFont(ofSize: 12)
-        attributedTitle.foregroundColor = UIColor.maMooGray
-        config.attributedTitle = attributedTitle
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 11)
-        config.preferredSymbolConfigurationForImage = imageConfig
-        config.image = UIImage(systemName: image)
-        config.imagePlacement = .leading
-        config.imagePadding = 5
-        config.baseForegroundColor = UIColor.maMooGray
-        btn.configuration = config
-        return btn
-    }
-    
     func configureSynopsis(_ text: String) {
         synopsisLine.text = text
-    }
-    
-    private func configureinfoLine() -> UILabel {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16)
-        label.textColor = .darkGray
-        label.text = "|"
-        return label
     }
     
     func configureInfoData(_ date: String, _ vote: Double, _ genre: [Int]) {
@@ -160,6 +135,34 @@ class DetailView: BaseView {
         smallLabelStackView.addArrangedSubview(configureinfoLine())
         smallLabelStackView.addArrangedSubview(genreLabel)
     }
+}
+
+// MARK: Configure UI
+extension DetailView {
+    private func configureInfoLabelButton(image: String, contents: String) -> UIButton {
+        let btn = UIButton()
+        var config = UIButton.Configuration.plain()
+        var attributedTitle = AttributedString(contents)
+        attributedTitle.font = .systemFont(ofSize: 12)
+        attributedTitle.foregroundColor = UIColor.maMooGray
+        config.attributedTitle = attributedTitle
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 11)
+        config.preferredSymbolConfigurationForImage = imageConfig
+        config.image = UIImage(systemName: image)
+        config.imagePlacement = .leading
+        config.imagePadding = 5
+        config.baseForegroundColor = UIColor.maMooGray
+        btn.configuration = config
+        return btn
+    }
+    
+    private func configureinfoLine() -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 16)
+        label.textColor = .darkGray
+        label.text = "|"
+        return label
+    }
     
     func configureMoreButton(_ title: String) -> UIButton.Configuration {
         var config = UIButton.Configuration.plain()
@@ -170,6 +173,18 @@ class DetailView: BaseView {
         return config
     }
     
+    private func configureLabel(_ title: String) -> UILabel {
+        let label = UILabel()
+        label.text = title
+        label.font = .systemFont(ofSize: 16, weight: .bold)
+        label.textColor = .white
+        return label
+    }
+}
+
+
+// MARK: FlowLayout
+extension DetailView {
     private func configureCastFlowLayout() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         let width = UIScreen.main.bounds.width
@@ -206,13 +221,4 @@ class DetailView: BaseView {
         view.backgroundColor = .black
         return view
     }
-    
-    private func configureLabel(_ title: String) -> UILabel {
-        let label = UILabel()
-        label.text = title
-        label.font = .systemFont(ofSize: 16, weight: .bold)
-        label.textColor = .white
-        return label
-    }
-
 }
