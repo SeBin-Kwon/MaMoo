@@ -48,8 +48,10 @@ final class DetailViewController: BaseViewController {
         if !synopsis.isEmpty {
             detailView.configureSynopsis(synopsis)
             detailView.noSynopsisLabel.isHidden = true
+            detailView.moreButton.isHidden = false
         } else {
             detailView.noSynopsisLabel.isHidden = false
+            detailView.moreButton.isHidden = true
         }
         
         id = String(movie.id)
