@@ -17,8 +17,15 @@ class SearchTagCollectionViewCell: BaseCollectionViewCell {
     
     let removeButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(systemName: "xmark"), for: .normal)
-        btn.tintColor = .black
+        var config = UIButton.Configuration.plain()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10)
+        config.preferredSymbolConfigurationForImage = imageConfig
+        config.image = UIImage(systemName: "xmark")
+        config.baseForegroundColor = UIColor.black
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        btn.configuration = config
+//        btn.setImage(UIImage(systemName: "xmark"), for: .normal)
+//        btn.tintColor = .black
         return btn
     }()
     
@@ -30,12 +37,12 @@ class SearchTagCollectionViewCell: BaseCollectionViewCell {
     override func configureLayout() {
         searchLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(10)
+            make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().inset(30)
         }
         removeButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(10)
+            make.trailing.equalToSuperview().inset(15)
         }
     }
     

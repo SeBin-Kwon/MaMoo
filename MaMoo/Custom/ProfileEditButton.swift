@@ -12,7 +12,7 @@ final class ProfileEditButton: BaseButton {
     private let backgroundView = {
        let view = UIView()
         view.backgroundColor = .darkGray.withAlphaComponent(0.6)
-        view.layer.cornerRadius = 10
+        view.layer.cornerRadius = 18
         view.isUserInteractionEnabled = false
         return view
     }()
@@ -35,8 +35,8 @@ final class ProfileEditButton: BaseButton {
     
     let dateLabel = {
         let label = UILabel()
-        label.textColor = .maMooLightGray
-        label.font = .systemFont(ofSize: 13)
+        label.textColor = .maMooGray
+        label.font = .systemFont(ofSize: 12)
         return label
     }()
     

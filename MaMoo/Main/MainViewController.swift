@@ -68,6 +68,7 @@ class MainViewController: BaseViewController {
         searchList.removeAll()
         UserDefaults.standard.removeObject(forKey: "searchResults")
         mainView.isSearchLabel.isHidden = false
+        mainView.allRemoveButton.isHidden = true
         mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
@@ -76,6 +77,7 @@ class MainViewController: BaseViewController {
         likeDictionary = UserDefaultsManager.shared.like
         updateLikeCount()
         mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
+        mainView.allRemoveButton.isHidden = searchList.isEmpty ? true : false
         mainView.searchCollectionView.reloadData()
     }
     
@@ -107,6 +109,7 @@ class MainViewController: BaseViewController {
         searchList.remove(at: sender.tag)
         UserDefaultsManager.shared.searchResults = searchList
         mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
+        mainView.allRemoveButton.isHidden = searchList.isEmpty ? true : false
         mainView.searchCollectionView.deleteItems(at: [index])
         mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }

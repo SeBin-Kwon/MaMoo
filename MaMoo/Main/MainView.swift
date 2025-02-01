@@ -15,7 +15,7 @@ class MainView: BaseView {
         let btn = UIButton()
         var config = UIButton.Configuration.plain()
         var attributedTitle = AttributedString("전체 삭제")
-        attributedTitle.font = .systemFont(ofSize: 13, weight: .bold)
+        attributedTitle.font = .systemFont(ofSize: 14, weight: .bold)
         attributedTitle.foregroundColor = UIColor.maMooPoint
         config.attributedTitle = attributedTitle
         btn.configuration = config
@@ -50,7 +50,7 @@ class MainView: BaseView {
             make.height.equalTo(140)
         }
         searchTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(profileEditButton.snp.bottom).offset(10)
+            make.top.equalTo(profileEditButton.snp.bottom).offset(20)
             make.leading.equalTo(safeAreaLayoutGuide).offset(10)
         }
         allRemoveButton.snp.makeConstraints { make in
@@ -63,7 +63,7 @@ class MainView: BaseView {
             make.height.equalTo(38)
         }
         todayTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(searchCollectionView.snp.bottom).offset(10)
+            make.top.equalTo(searchCollectionView.snp.bottom).offset(20)
             make.leading.equalTo(safeAreaLayoutGuide).offset(10)
         }
         collectionView.snp.makeConstraints { make in
@@ -80,7 +80,7 @@ class MainView: BaseView {
         let itemSpacing: CGFloat = 10
         layout.minimumLineSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: itemSpacing, bottom: 0, right: itemSpacing)
-        layout.itemSize = CGSize(width: 100, height: 38)
+        layout.itemSize = CGSize(width: 96, height: 33)
         layout.scrollDirection = .horizontal
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsHorizontalScrollIndicator = false

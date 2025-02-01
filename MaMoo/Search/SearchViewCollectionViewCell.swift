@@ -42,7 +42,6 @@ class SearchViewCollectionViewCell: BaseCollectionViewCell {
         btn.configuration = config
         btn.setImage(UIImage(systemName: "heart"), for: .normal)
         btn.tintColor = .maMooPoint
-        
         return btn
     }()
     

@@ -31,6 +31,7 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         label.font = .systemFont(ofSize: 13)
         label.textColor = .white
         label.numberOfLines = 2
+        label.textAlignment = .justified
         return label
     }()
     
@@ -40,6 +41,7 @@ class MainCollectionViewCell: BaseCollectionViewCell {
         btn.tintColor = .maMooPoint
         return btn
     }()
+    
     private var id: String?
     private var likeState = false
     
@@ -82,7 +84,7 @@ class MainCollectionViewCell: BaseCollectionViewCell {
     override func configureLayout() {
         imageView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
-            make.height.equalToSuperview().inset(30)
+            make.height.equalToSuperview().inset(25)
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
@@ -93,7 +95,7 @@ class MainCollectionViewCell: BaseCollectionViewCell {
             make.trailing.equalToSuperview()
         }
         overviewLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.top.equalTo(likeButton.snp.bottom).offset(5)
             make.horizontalEdges.equalToSuperview()
         }
     }
