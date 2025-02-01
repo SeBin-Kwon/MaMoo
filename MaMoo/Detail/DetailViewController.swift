@@ -44,7 +44,6 @@ class DetailViewController: BaseViewController {
               let vote = movie.vote_average,
               let genre = movie.genre_ids else { return }
         self.detailView.configureInfoData(date, vote, genre)
-//        self.detailView.configureSmallLabel(date, vote, genre)
         detailView.configureSynopsis(movie.overview ?? "")
         id = String(movie.id)
         updateLikeButton(UserDefaultsManager.shared.like[String(movie.id), default: false])
@@ -102,10 +101,11 @@ class DetailViewController: BaseViewController {
         let group = DispatchGroup()
         group.enter()
         NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { value in
-            guard !value.backdrops.isEmpty else { return }
-            let count = min(value.backdrops.count, 5)
-            self.backdropsList = Array(value.backdrops[0..<count])
-            self.configureBackdropScrollView()
+            if !value.backdrops.isEmpty {
+                let count = min(value.backdrops.count, 5)
+                self.backdropsList = Array(value.backdrops[0..<count])
+                self.configureBackdropScrollView()
+            }
             self.posterList = value.posters
             group.leave()
         } failHandler: {
@@ -173,7 +173,6 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         case detailView.castCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
             cell.configureData(castList[indexPath.item])
-//            cell.backgroundColor = .blue
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }

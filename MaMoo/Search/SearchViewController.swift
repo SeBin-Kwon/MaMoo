@@ -78,14 +78,19 @@ final class SearchViewController: BaseViewController {
             if value.total_pages == page {
                 self.isEnd = true
             }
-            
-            for movie in value.results {
+            var newList = self.movieList
+            for i in 0..<self.movieList.count {
+                let movie = self.movieList[i]
+                if movie.poster_path == nil &&
+                    movie.release_date == nil {
+                    newList.remove(at: i)
+                }
                 let id = String(movie.id)
                 if let likeState = UserDefaultsManager.shared.like[String(id)] {
                     self.likeDictionary[id] = likeState
                 }
             }
-            
+            self.movieList = newList
             self.searchView.collectionView.reloadData()
             if page == 1 && !self.movieList.isEmpty {
                 self.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)

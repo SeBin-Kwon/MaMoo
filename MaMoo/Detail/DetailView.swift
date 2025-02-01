@@ -108,7 +108,6 @@ class DetailView: BaseView {
             make.bottom.equalToSuperview().inset(30)
             make.height.equalTo(150)
         }
-//        castCollectionView.backgroundColor = .red
     }
     
     private func configureInfoLabelButton(image: String, contents: String) -> UIButton {
