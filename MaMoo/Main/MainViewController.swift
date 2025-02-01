@@ -28,12 +28,7 @@ final class MainViewController: BaseViewController {
         navigationItem.rightBarButtonItem = rightItem
         configureData()
         callRequest()
-        mainView.collectionView.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: MainCollectionViewCell.identifier)
-        mainView.searchCollectionView.register(SearchTagCollectionViewCell.self, forCellWithReuseIdentifier: SearchTagCollectionViewCell.identifier)
-        mainView.collectionView.delegate = self
-        mainView.collectionView.dataSource = self
-        mainView.searchCollectionView.delegate = self
-        mainView.searchCollectionView.dataSource = self
+        configureDelegate()
         NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
         mainView.allRemoveButton.addTarget(self, action: #selector(allRemoveButtonTapped), for: .touchUpInside)
@@ -46,6 +41,15 @@ final class MainViewController: BaseViewController {
         mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
         mainView.allRemoveButton.isHidden = searchList.isEmpty ? true : false
         mainView.searchCollectionView.reloadData()
+    }
+    
+    private func configureDelegate() {
+        mainView.collectionView.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: MainCollectionViewCell.identifier)
+        mainView.searchCollectionView.register(SearchTagCollectionViewCell.self, forCellWithReuseIdentifier: SearchTagCollectionViewCell.identifier)
+        mainView.collectionView.delegate = self
+        mainView.collectionView.dataSource = self
+        mainView.searchCollectionView.delegate = self
+        mainView.searchCollectionView.dataSource = self
     }
     
     @objc private func rightItemTapped() {
