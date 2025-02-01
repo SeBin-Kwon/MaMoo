@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class MainView: BaseView {
+final class MainView: BaseView {
     let profileEditButton = ProfileEditButton()
     private lazy var searchTitleLabel = configureTitleLabel("최근검색어")
     let allRemoveButton = {

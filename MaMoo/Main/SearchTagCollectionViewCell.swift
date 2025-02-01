@@ -7,10 +7,9 @@
 
 import UIKit
 
-class SearchTagCollectionViewCell: BaseCollectionViewCell {
-    let searchLabel = {
+final class SearchTagCollectionViewCell: BaseCollectionViewCell {
+    private let searchLabel = {
         let label = UILabel()
-        label.text = "sdf"
         label.font = .systemFont(ofSize: 14)
         return label
     }()
@@ -24,8 +23,6 @@ class SearchTagCollectionViewCell: BaseCollectionViewCell {
         config.baseForegroundColor = UIColor.black
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         btn.configuration = config
-//        btn.setImage(UIImage(systemName: "xmark"), for: .normal)
-//        btn.tintColor = .black
         return btn
     }()
     

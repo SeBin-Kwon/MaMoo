@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Alamofire
 
-class MainViewController: BaseViewController {
+final class MainViewController: BaseViewController {
 
     private let mainView = MainView()
     private var movieList = [MovieResults]()
@@ -38,39 +38,6 @@ class MainViewController: BaseViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
         mainView.allRemoveButton.addTarget(self, action: #selector(allRemoveButtonTapped), for: .touchUpInside)
     }
-
-    @objc func likeNotification(value: NSNotification) {
-        guard let id = value.userInfo!["id"] as? String,
-              let like = value.userInfo!["like"] as? Bool else { return }
-        likeDictionary[id] = like
-        UserDefaultsManager.shared.like[id] = like
-        updateLikeCount()
-        mainView.collectionView.reloadData()
-        print("like신호받음", likeDictionary)
-    }
-    
-    @objc func profileNotification(value: NSNotification) {
-        guard let nickname = value.userInfo!["nickname"] as? String,
-              let imageNum = value.userInfo!["profileImage"] as? Int else { return }
-        mainView.profileEditButton.nicknameLabel.text = nickname
-        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(imageNum)")
-        print("신호받음")
-    }
-    
-    @objc func rightItemTapped() {
-        print(#function)
-        let vc = SearchViewController()
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    @objc func allRemoveButtonTapped() {
-        print(#function)
-        searchList.removeAll()
-        UserDefaults.standard.removeObject(forKey: "searchResults")
-        mainView.isSearchLabel.isHidden = false
-        mainView.allRemoveButton.isHidden = true
-        mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
-    }
     
     override func viewWillAppear(_ animated: Bool) {
         searchList = UserDefaultsManager.shared.searchResults
@@ -81,16 +48,19 @@ class MainViewController: BaseViewController {
         mainView.searchCollectionView.reloadData()
     }
     
-    private func updateLikeCount() {
-        let likeCount = likeDictionary.filter { $1 == true }.count
-        mainView.profileEditButton.movieBoxLabel.text = "\(likeCount)개의 무비박스 보관중"
+    @objc private func rightItemTapped() {
+        print(#function)
+        let vc = SearchViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
-    private func configureData() {
-        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
-        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
-        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
-        mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
+    @objc private func allRemoveButtonTapped() {
+        print(#function)
+        searchList.removeAll()
+        UserDefaults.standard.removeObject(forKey: "searchResults")
+        mainView.isSearchLabel.isHidden = false
+        mainView.allRemoveButton.isHidden = true
+        mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
     @objc private func profileEditButtontapped() {
@@ -114,6 +84,18 @@ class MainViewController: BaseViewController {
         mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
+    private func updateLikeCount() {
+        let likeCount = likeDictionary.filter { $1 == true }.count
+        mainView.profileEditButton.movieBoxLabel.text = "\(likeCount)개의 무비박스 보관중"
+    }
+    
+    private func configureData() {
+        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
+        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
+        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
+        mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
+    }
+    
     private func callRequest() {
         let group = DispatchGroup()
         group.enter()
@@ -133,9 +115,29 @@ class MainViewController: BaseViewController {
     }
 }
 
-
-extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+// MARK: Notification
+extension MainViewController {
+    @objc private func likeNotification(value: NSNotification) {
+        guard let id = value.userInfo!["id"] as? String,
+              let like = value.userInfo!["like"] as? Bool else { return }
+        likeDictionary[id] = like
+        UserDefaultsManager.shared.like[id] = like
+        updateLikeCount()
+        mainView.collectionView.reloadData()
+        print("like신호받음", likeDictionary)
+    }
     
+    @objc private func profileNotification(value: NSNotification) {
+        guard let nickname = value.userInfo!["nickname"] as? String,
+              let imageNum = value.userInfo!["profileImage"] as? Int else { return }
+        mainView.profileEditButton.nicknameLabel.text = nickname
+        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(imageNum)")
+        print("신호받음")
+    }
+}
+
+// MARK: UICollectionView Delegate
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch collectionView {
         case mainView.collectionView:
@@ -185,9 +187,4 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         }
         
     }
-}
-
-extension Notification.Name {
-    static let profileNotification = NSNotification.Name("profileNotification")
-    static let likeNotification = NSNotification.Name("likeNotification")
 }

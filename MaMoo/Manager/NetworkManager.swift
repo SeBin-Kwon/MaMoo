@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-class NetworkManager {
+final class NetworkManager {
     
     static let shared = NetworkManager()
     private init() {}
@@ -23,7 +23,39 @@ class NetworkManager {
                 completionHandler(value)
             case .failure(let error):
                 print(error)
+//                guard let code = error.responseCode else { return }
                 failHandler()
+//                failHandler(ErrorType(rawValue: code) ?? ErrorType.server)
+            }
+        }
+    }
+    
+    enum ErrorType: Int {
+        case badRequest = 400
+        case unauthorized = 401
+        case forbidden = 403
+        case notFound = 404
+        case server = 500
+        
+        //실패 가능한 이니셜라이저
+        
+        var title: String {
+            switch self {
+            case .badRequest: return "잘못된 요청"
+            case .unauthorized: return "승인되지 않음"
+            case .forbidden: return "금지됨"
+            case .notFound: return "찾을 수 없음"
+            case .server: return "서버 오류"
+            }
+        }
+        
+        var reason: String {
+            switch self {
+            case .badRequest: return "필수 매개변수가 누락되었습니다."
+            case .unauthorized: return "잘못된 엑세스 토큰입니다."
+            case .forbidden: return "요청을 수행할 권한이 없습니다."
+            case .notFound: return "요청하신 리소스가 존재하지 않습니다."
+            case .server: return "Unsplash팀에 문의해주세요."
             }
         }
     }
@@ -58,24 +90,6 @@ class NetworkManager {
 //            }
 //    }
  
-//    enum ErrorType: String {
-//        case badRequest = "잘못된 요청"
-//        case unauthorized = "승인되지 않음"
-//        case forbidden = "금지됨"
-//        case notFound = "찾을 수 없음"
-//        case server = "서버 오류"
-//        
-//        //실패 가능한 이니셜라이저
-//        
-//        var reason: String {
-//            switch self {
-//            case .badRequest: return "필수 매개변수가 누락되었습니다."
-//            case .unauthorized: return "잘못된 엑세스 토큰입니다."
-//            case .forbidden: return "요청을 수행할 권한이 없습니다."
-//            case .notFound: return "요청하신 리소스가 존재하지 않습니다."
-//            case .server: return "Unsplash팀에 문의해주세요."
-//            }
-//        }
-//    }
+    
     
 //}
