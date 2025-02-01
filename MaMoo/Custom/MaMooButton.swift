@@ -21,7 +21,7 @@ final class MaMooButton: BaseButton {
         config.cornerStyle = .capsule
         config.background.strokeColor = .maMooPoint
         config.background.strokeWidth = 2
-        config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 13, leading: 0, bottom: 13, trailing: 0)
         self.configuration = config
     }
 }

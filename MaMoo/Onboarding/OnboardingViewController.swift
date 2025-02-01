@@ -21,7 +21,7 @@ final class OnboardingViewController: BaseViewController {
         let label = UILabel()
         label.text = "Onboarding"
         label.textColor = .white
-        label.font = UIFont.italicSystemFont(ofSize: 37, weight: .bold)
+        label.font = UIFont.italicSystemFont(ofSize: 35, weight: .bold)
         
         return label
     }()
@@ -29,6 +29,7 @@ final class OnboardingViewController: BaseViewController {
     private let contentLabel = {
         let label = UILabel()
         label.text = "당신만의 영화 세상,\nMAMOO를 시작해보세요."
+        label.font = .systemFont(ofSize: 16)
         label.textColor = .white
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -51,20 +52,20 @@ final class OnboardingViewController: BaseViewController {
         view.addSubview(contentLabel)
         view.addSubview(button)
         imageView.snp.makeConstraints { make in
-            make.top.equalTo(30)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.horizontalEdges.equalToSuperview()
         }
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(imageView.snp.bottom)
+            make.top.equalTo(imageView.snp.bottom).inset(10)
         }
         contentLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(30)
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
         }
         button.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(10)
-            make.top.equalTo(contentLabel.snp.bottom).offset(30)
+            make.top.equalTo(contentLabel.snp.bottom).offset(40)
         }
     }
     
