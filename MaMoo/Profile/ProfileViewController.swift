@@ -55,11 +55,21 @@ final class ProfileViewController: BaseViewController {
         profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped), for: .touchUpInside)
         textField.delegate = self
         completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func tapGestureTapped() {
+        view.endEditing(true)
     }
     
     @objc func leftItemTapped() {
         print(#function)
         dismiss(animated: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        textField.becomeFirstResponder()
     }
     
     @objc private func completeButtonTapped() {
