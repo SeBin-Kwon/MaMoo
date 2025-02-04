@@ -63,18 +63,17 @@ final class SearchViewCollectionViewCell: BaseCollectionViewCell {
     var id: String?
     var likeState = false
     
-    @objc private func likeButtonTapped(_ sender: UIButton) {
+    @objc private func likeButtonTapped() {
         guard let id else { return }
         likeState.toggle()
         updateLikeButton(likeState)
-        UserDefaultsManager.shared.like[id] = likeState
         NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
     }
     
-    func configureData(_ item: MovieResults) {
+    func configureData(_ item: MovieResults, _ isLiked: Bool) {
         id = String(item.id)
-        likeState = UserDefaultsManager.shared.like[String(item.id), default: false]
-        updateLikeButton(likeState)
+        likeState = isLiked
+        updateLikeButton(isLiked)
         if !genreStackView.arrangedSubviews.isEmpty {
             genreStackView.removeAll()
         }

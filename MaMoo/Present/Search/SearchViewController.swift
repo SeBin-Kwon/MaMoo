@@ -158,9 +158,8 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchViewCollectionViewCell.identifier, for: indexPath) as? SearchViewCollectionViewCell else { return UICollectionViewCell() }
         let movie = movieList[indexPath.item]
-        cell.configureData(movie)
         let isLiked = likeDictionary[String(movie.id), default: false]
-        cell.updateLikeButton(isLiked)
+        cell.configureData(movie, isLiked)
         return cell
     }
 }
