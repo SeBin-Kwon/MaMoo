@@ -9,11 +9,9 @@ import UIKit
 import SnapKit
 
 final class ProfileImageButton: BaseButton {
-    private let num: Int
     
-    lazy var profileImageView = {
+    var profileImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "profile_\(num)")
         image.contentMode = .scaleAspectFill
         image.layer.borderWidth = 3
         image.layer.borderColor = UIColor.maMooPoint.cgColor
@@ -37,8 +35,7 @@ final class ProfileImageButton: BaseButton {
         return view
     }()
     
-    init(num: Int?) {
-        self.num = num ?? 0
+    init() {
         super.init(frame: .zero)
         configureHierarchy()
         configureLayout()
