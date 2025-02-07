@@ -12,7 +12,7 @@ final class ProfileImageViewController: BaseViewController {
     
     var num: Int?
     var contents: ((Int?) -> Void)?
-    private lazy var profileImageButton = ProfileImageButton(num: num)
+    private lazy var profileImageButton = ProfileImageButton()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureFlowLayout())
     private let profileList = Array(0...11)
     
