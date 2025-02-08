@@ -23,5 +23,8 @@ class ProfileImageViewModel {
         }
     }
     
+    deinit {
+        print("ProfileImageViewModel Deinit")
+    }
     
 }

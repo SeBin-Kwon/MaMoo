@@ -11,27 +11,26 @@ import SnapKit
 class MBTICollectionViewCell: BaseCollectionViewCell {
     private let mbtiLabel = {
        let label = UILabel()
-        label.text = "T"
-        label.textColor = .white
+        label.textColor = .maMooGray
         label.font = .systemFont(ofSize: 16)
         return label
     }()
     
-    private let uiView = {
+    private let cellBackground = {
        let view = UIView()
-        view.layer.borderColor = UIColor.maMooLightGray.cgColor
-        view.layer.borderWidth = 2
+        view.layer.borderColor = UIColor.maMooGray.cgColor
+        view.layer.borderWidth = 1
         view.clipsToBounds = true
         return view
     }()
     
     override func configureHierarchy() {
-        addSubview(uiView)
+        addSubview(cellBackground)
         addSubview(mbtiLabel)
     }
     
     override func configureLayout() {
-        uiView.snp.makeConstraints { make in
+        cellBackground.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         mbtiLabel.snp.makeConstraints { make in
@@ -39,8 +38,18 @@ class MBTICollectionViewCell: BaseCollectionViewCell {
         }
     }
     
+    func configureData(_ text: String) {
+        mbtiLabel.text = text
+    }
+    
+    func updateSelectedCell(_ isSelected: Bool) {
+        cellBackground.backgroundColor = isSelected ? .maMooPoint : .clear
+        cellBackground.layer.borderWidth = isSelected ? 0 : 1
+        mbtiLabel.textColor = isSelected ? UIColor.white : UIColor.maMooGray
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        uiView.layer.cornerRadius = uiView.layer.frame.height / 2
+        cellBackground.layer.cornerRadius = cellBackground.layer.frame.height / 2
     }
 }

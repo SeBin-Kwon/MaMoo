@@ -8,13 +8,16 @@
 import Foundation
 
 class ProfileViewModel {
-    var outputNum = Observable(UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11))
-    
-    var outputIsValid = Observable((false, ""))
     var inputText: Observable<String?> = Observable(nil)
-    
     var inputCompleteButtonTapped: Observable<String?> = Observable(nil)
-    
+    var outputNum = Observable(UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11))
+    var outputIsValid = Observable((false, ""))
+    let mbtiContents = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]]
+    var inputMBTISelectedIndex = Observable((0, 0))
+    var mbtiSelectList = Array(repeating: [false, false], count: 4)
+    var outputMBTI: Observable<String?> = Observable(nil)
+    var outputLastSelcetSection = Observable(0)
+
     init() {
         inputCompleteButtonTapped.lazyBind { [weak self] text in
             self?.completeButtonTapped(text)
@@ -22,6 +25,25 @@ class ProfileViewModel {
         inputText.lazyBind { [weak self] text in
             self?.isValidateNickname(text)
         }
+        inputMBTISelectedIndex.lazyBind { [weak self] (section, item) in
+            self?.updateOutputMBTISelectList(section: section, item: item)
+        }
+    }
+    
+    deinit {
+        print("ProfileViewModel Deinit")
+    }
+    
+    private func updateOutputMBTISelectList(section: Int, item: Int) {
+                
+        if mbtiSelectList[section][item] {
+            mbtiSelectList[section][item] = false
+        } else {
+            mbtiSelectList[section] = [false, false]
+            mbtiSelectList[section][item] = true
+        }
+        
+        outputLastSelcetSection.value = section
     }
     
     private func isValidateNickname(_ text: String?) {

@@ -27,6 +27,10 @@ final class ProfileImageViewController: BaseViewController {
         bindData()
     }
     
+    deinit {
+        print("ProfileImageViewController Deinit")
+    }
+    
     private func bindData() {
         viewModel.outputNum.lazyBind { [weak self] num in
             self?.profileImageButton.profileImageView.image = UIImage(named: "profile_\(num ?? 0)")

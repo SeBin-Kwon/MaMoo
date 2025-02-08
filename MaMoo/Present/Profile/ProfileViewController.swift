@@ -45,6 +45,10 @@ final class ProfileViewController: BaseViewController {
         bindData()
     }
     
+    deinit {
+        print("ProfileViewController Deinit")
+    }
+    
     private func bindData() {
         viewModel.outputNum.bind { [weak self] num in
             self?.num = num
@@ -54,6 +58,9 @@ final class ProfileViewController: BaseViewController {
             self?.completeButton.isEnabled = value ? true : false
             self?.navigationItem.rightBarButtonItem?.isEnabled = value ? true : false
             self?.validLabel.text = text
+        }
+        viewModel.outputLastSelcetSection.lazyBind { [weak self] section in
+            self?.collectionView.reloadSections(IndexSet(integer: section))
         }
     }
     
@@ -67,8 +74,8 @@ final class ProfileViewController: BaseViewController {
     private func configureAction() {
         profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped), for: .touchUpInside)
         completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped))
-        view.addGestureRecognizer(tap)
+        //        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped))
+        //        view.addGestureRecognizer(tap)
     }
     
     private func configureNavigationBar() {
@@ -86,9 +93,9 @@ final class ProfileViewController: BaseViewController {
         }
     }
     
-    @objc private func tapGestureTapped() {
-        view.endEditing(true)
-    }
+    //    @objc private func tapGestureTapped() {
+    //        view.endEditing(true)
+    //    }
     
     @objc private func leftItemTapped() {
         dismiss(animated: true)
@@ -104,6 +111,7 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc private func profileImageButtonTapped() {
+        view.endEditing(true)
         let vc = ProfileImageViewController()
         vc.viewModel.inputNum.value = num
         vc.viewModel.outputContents = { [weak self] value in
@@ -138,18 +146,24 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(#function)
+        view.endEditing(true)
+        viewModel.inputMBTISelectedIndex.value = (indexPath.section, indexPath.item)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        print(#function)
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        viewModel.mbtiSelectList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        8
+        viewModel.mbtiSelectList[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MBTICollectionViewCell.identifier, for: indexPath) as? MBTICollectionViewCell else { return UICollectionViewCell() }
+        let text = viewModel.mbtiContents[indexPath.section][indexPath.item]
+        let isSelected = viewModel.mbtiSelectList[indexPath.section][indexPath.item]
+        cell.configureData(text)
+        cell.updateSelectedCell(isSelected)
         
         return cell
     }
@@ -161,11 +175,11 @@ extension ProfileViewController {
     
     private func configureFlowLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewFlowLayout()
-        let width = UIScreen.main.bounds.width / 1.5
+        let width = UIScreen.main.bounds.width / 1.4
         let cellCount: CGFloat = 4
         let itemSpacing: CGFloat = 10
-        let insetSpacing: CGFloat = 0
-        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*2)
+        let insetSpacing: CGFloat = 5
+        let cellWidth = width - (itemSpacing * (cellCount-1)) - (insetSpacing*(cellCount+1))
         layout.minimumLineSpacing = itemSpacing
         layout.minimumInteritemSpacing = itemSpacing
         layout.sectionInset = UIEdgeInsets(top: 0, left: insetSpacing, bottom: 0, right: insetSpacing)
@@ -211,9 +225,9 @@ extension ProfileViewController {
         }
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(validLabel.snp.bottom).offset(30)
-            make.trailing.equalToSuperview().inset(10)
-            make.width.equalTo(view.frame.size.width / 1.5)
-            make.height.equalTo(view.frame.size.height / 6.5)
+            make.trailing.equalToSuperview().inset(5)
+            make.width.equalTo(view.frame.size.width / 1.4)
+            make.height.equalTo(view.frame.size.height / 6.8)
         }
         completeButton.snp.makeConstraints { make in
             make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(10)
