@@ -10,11 +10,9 @@ import SnapKit
 
 final class ProfileImageViewController: BaseViewController {
     
-    var num: Int?
-    var contents: ((Int?) -> Void)?
+    let viewModel = ProfileImageViewModel()
     private lazy var profileImageButton = ProfileImageButton()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureFlowLayout())
-    private let profileList = Array(0...11)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,17 +24,20 @@ final class ProfileImageViewController: BaseViewController {
         collectionView.dataSource = self
         collectionView.backgroundColor = .black
         collectionView.register(ProfileImageCollectionViewCell.self, forCellWithReuseIdentifier: ProfileImageCollectionViewCell.identifier)
+        bindData()
+    }
+    
+    private func bindData() {
+        viewModel.outputNum.lazyBind { [weak self] num in
+            self?.profileImageButton.profileImageView.image = UIImage(named: "profile_\(num ?? 0)")
+        }
     }
     
     @objc private func leftItemTapped() {
-        contents?(num)
+        viewModel.inputBackButtonTapped.value = ()
         navigationController?.popViewController(animated: true)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        profileImageButton.profileImageView.image = UIImage(named: "profile_\(num ?? 0)")
-    }
-
     override func configureView() {
         view.addSubview(profileImageButton)
         view.addSubview(collectionView)
@@ -65,19 +66,19 @@ extension ProfileImageViewController: UICollectionViewDelegate, UICollectionView
         guard let cell = collectionView.cellForItem(at: indexPath) as? ProfileImageCollectionViewCell else { return }
         cell.updateSelectedCell(true)
         profileImageButton.profileImageView.image = UIImage(named: "profile_\(indexPath.item)")
-        num = indexPath.item
+        viewModel.inputNum.value = indexPath.item
         collectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        profileList.count
+        viewModel.profileList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileImageCollectionViewCell.identifier, for: indexPath) as? ProfileImageCollectionViewCell else { return UICollectionViewCell() }
         
         cell.configureImageView(index: indexPath.item)
-        if num == indexPath.item {
+        if viewModel.inputNum.value == indexPath.item {
             cell.updateSelectedCell(true)
         } else {
             cell.updateSelectedCell(false)

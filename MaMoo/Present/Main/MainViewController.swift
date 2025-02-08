@@ -35,6 +35,7 @@ final class MainViewController: BaseViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         searchList = UserDefaultsManager.shared.searchResults
         likeDictionary = UserDefaultsManager.shared.like
         updateLikeCount()

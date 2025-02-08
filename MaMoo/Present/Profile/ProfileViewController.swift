@@ -105,8 +105,8 @@ final class ProfileViewController: BaseViewController {
     
     @objc private func profileImageButtonTapped() {
         let vc = ProfileImageViewController()
-        vc.num = num
-        vc.contents = { [weak self] value in
+        vc.viewModel.inputNum.value = num
+        vc.viewModel.outputContents = { [weak self] value in
             guard let value else { return }
             self?.profileImageButton.profileImageView.image = UIImage(named: "profile_\(value)")
             self?.viewModel.outputNum.value = value
