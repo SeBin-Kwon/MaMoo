@@ -7,15 +7,21 @@
 
 import Foundation
 
+struct MBTI {
+    let type: String
+    var isSelected: Bool = false
+}
+
 class ProfileViewModel {
     var inputText: Observable<String?> = Observable(nil)
     var inputCompleteButtonTapped: Observable<String?> = Observable(nil)
     var outputNum = Observable(UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11))
     var outputIsValid = Observable((false, ""))
-    let mbtiContents = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]]
+    var mbtiList = [[MBTI(type: "E"), MBTI(type: "I")],
+                    [MBTI(type: "S"), MBTI(type: "N")],
+                    [MBTI(type: "T"), MBTI(type: "F")],
+                    [MBTI(type: "J"), MBTI(type: "P")]]
     var inputMBTISelectedIndex = Observable((0, 0))
-    var mbtiSelectList = Array(repeating: [false, false], count: 4)
-    var outputMBTI: Observable<String?> = Observable(nil)
     var outputLastSelcetSection = Observable(0)
 
     init() {
@@ -36,13 +42,13 @@ class ProfileViewModel {
     
     private func updateOutputMBTISelectList(section: Int, item: Int) {
                 
-        if mbtiSelectList[section][item] {
-            mbtiSelectList[section][item] = false
+        if mbtiList[section][item].isSelected {
+            mbtiList[section][item].isSelected = false
         } else {
-            for i in 0..<mbtiSelectList[section].count {
-                mbtiSelectList[section][i] = false
+            for i in 0..<mbtiList[section].count {
+                mbtiList[section][i].isSelected = false
             }
-            mbtiSelectList[section][item] = true
+            mbtiList[section][item].isSelected = true
         }
         
         outputLastSelcetSection.value = section

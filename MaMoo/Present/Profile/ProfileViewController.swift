@@ -151,17 +151,17 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        viewModel.mbtiSelectList.count
+        viewModel.mbtiList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.mbtiSelectList[section].count
+        viewModel.mbtiList[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MBTICollectionViewCell.identifier, for: indexPath) as? MBTICollectionViewCell else { return UICollectionViewCell() }
-        let text = viewModel.mbtiContents[indexPath.section][indexPath.item]
-        let isSelected = viewModel.mbtiSelectList[indexPath.section][indexPath.item]
+        let text = viewModel.mbtiList[indexPath.section][indexPath.item].type
+        let isSelected = viewModel.mbtiList[indexPath.section][indexPath.item].isSelected
         cell.configureData(text)
         cell.updateSelectedCell(isSelected)
         
