@@ -25,7 +25,7 @@ final class ProfileViewController: BaseViewController {
     private var validLabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12)
-        label.textColor = .maMooPoint
+        label.textColor = .maMooFalseLabel
         label.isHidden = true
         return label
     }()
@@ -33,18 +33,32 @@ final class ProfileViewController: BaseViewController {
     private var validMBTILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12)
-        label.textColor = .maMooPoint
+        label.textColor = .maMooFalseLabel
         label.isHidden = true
         return label
     }()
     
     private let completeButton = {
-        let btn = MaMooButton(title: "완료")
+        var btn = MaMooButton(title: "완료")
         btn.isEnabled = false
         btn.isHidden = UserDefaultsManager.shared.isDisplayedOnboarding
+        
+        let buttonStateHandler: UIButton.ConfigurationUpdateHandler = { button in
+            switch button.state {
+            case .normal:
+                button.configuration?.background.strokeColor = .maMooPoint
+                button.configuration?.attributedTitle?.foregroundColor = UIColor.maMooPoint
+            case .disabled:
+                button.configuration?.background.strokeColor = .maMooDisabled
+                button.configuration?.attributedTitle?.foregroundColor = UIColor.maMooDisabled
+            default:
+                return
+            }
+        }
+        btn.configurationUpdateHandler = buttonStateHandler
         return btn
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureLayout()
@@ -65,8 +79,12 @@ final class ProfileViewController: BaseViewController {
         viewModel.outputIsValid.lazyBind { [weak self] (bool, text) in
             let value = self?.viewModel.outputIsValidMBTI.value.0 ?? false && bool
             self?.completeButton.isEnabled = value ? true : false
+            
+            self?.completeButton.layer.borderColor = value ? UIColor.maMooPoint.cgColor : UIColor.maMooDisabled.cgColor
+            
             self?.navigationItem.rightBarButtonItem?.isEnabled = value ? true : false
             self?.validLabel.text = text
+            self?.validLabel.textColor =  bool ? .maMooPoint : .maMooFalseLabel
         }
         viewModel.outputLastSelcetSection.lazyBind { [weak self] section in
             self?.collectionView.reloadSections(IndexSet(integer: section))
@@ -74,6 +92,9 @@ final class ProfileViewController: BaseViewController {
         viewModel.outputIsValidMBTI.lazyBind { [weak self] (bool, text) in
             let value = self?.viewModel.outputIsValid.value.0 ?? false && bool
             self?.completeButton.isEnabled = value ? true : false
+            
+            self?.completeButton.layer.borderColor = value ? UIColor.maMooPoint.cgColor : UIColor.maMooDisabled.cgColor
+            
             self?.navigationItem.rightBarButtonItem?.isEnabled = value ? true : false
             self?.validMBTILabel.text = text
         }
