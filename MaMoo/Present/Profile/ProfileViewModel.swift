@@ -17,6 +17,7 @@ class ProfileViewModel {
     var inputCompleteButtonTapped: Observable<String?> = Observable(nil)
     var outputNum = Observable(UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11))
     var outputIsValid = Observable((false, ""))
+    var outputIsValidMBTI = Observable((false, ""))
     var mbtiList = [[MBTI(type: "E"), MBTI(type: "I")],
                     [MBTI(type: "S"), MBTI(type: "N")],
                     [MBTI(type: "T"), MBTI(type: "F")],
@@ -26,6 +27,7 @@ class ProfileViewModel {
 
     init() {
         inputCompleteButtonTapped.lazyBind { [weak self] text in
+            self?.isValidateMBTI()
             self?.completeButtonTapped(text)
         }
         inputText.lazyBind { [weak self] text in
@@ -84,8 +86,19 @@ class ProfileViewModel {
         return false
     }
     
+    private func isValidateMBTI() {
+        for mbti in mbtiList {
+            if mbti.filter({ $0.isSelected }).count == 0 {
+                outputIsValidMBTI.value = (false, "MBTI를 모두 선택해주세요")
+                return
+            }
+        }
+        outputIsValidMBTI.value = (true, "")
+    }
+    
     private func completeButtonTapped(_ text: String?) {
         guard let text else { return }
+        guard outputIsValidMBTI.value.0 else { return }
         if !UserDefaultsManager.shared.isDisplayedOnboarding {
             UserDefaultsManager.shared.isDisplayedOnboarding = true
             UserDefaultsManager.shared.nickname = text
