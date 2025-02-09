@@ -39,7 +39,9 @@ class ProfileViewModel {
         if mbtiSelectList[section][item] {
             mbtiSelectList[section][item] = false
         } else {
-            mbtiSelectList[section] = [false, false]
+            for i in 0..<mbtiSelectList[section].count {
+                mbtiSelectList[section][i] = false
+            }
             mbtiSelectList[section][item] = true
         }
         
