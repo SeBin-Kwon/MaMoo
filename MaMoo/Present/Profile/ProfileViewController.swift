@@ -30,6 +30,14 @@ final class ProfileViewController: BaseViewController {
         return label
     }()
     
+    private var validMBTILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 12)
+        label.textColor = .maMooPoint
+        label.isHidden = true
+        return label
+    }()
+    
     private let completeButton = {
         let btn = MaMooButton(title: "완료")
         btn.isEnabled = false
@@ -54,13 +62,20 @@ final class ProfileViewController: BaseViewController {
             self?.num = num
             self?.profileImageButton.profileImageView.addProfileImage(num)
         }
-        viewModel.outputIsValid.lazyBind { [weak self] (value, text) in
+        viewModel.outputIsValid.lazyBind { [weak self] (bool, text) in
+            let value = self?.viewModel.outputIsValidMBTI.value.0 ?? false && bool
             self?.completeButton.isEnabled = value ? true : false
             self?.navigationItem.rightBarButtonItem?.isEnabled = value ? true : false
             self?.validLabel.text = text
         }
         viewModel.outputLastSelcetSection.lazyBind { [weak self] section in
             self?.collectionView.reloadSections(IndexSet(integer: section))
+        }
+        viewModel.outputIsValidMBTI.lazyBind { [weak self] (bool, text) in
+            let value = self?.viewModel.outputIsValid.value.0 ?? false && bool
+            self?.completeButton.isEnabled = value ? true : false
+            self?.navigationItem.rightBarButtonItem?.isEnabled = value ? true : false
+            self?.validMBTILabel.text = text
         }
     }
     
@@ -148,6 +163,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         print(#function)
         view.endEditing(true)
         viewModel.inputMBTISelectedIndex.value = (indexPath.section, indexPath.item)
+        validMBTILabel.isHidden = false
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -202,7 +218,7 @@ extension ProfileViewController {
     }
     
     private func configureLayout() {
-        [profileImageButton, textField, textFieldBorder, validLabel, collectionView, completeButton].forEach {
+        [profileImageButton, textField, textFieldBorder, validLabel, collectionView, completeButton, validMBTILabel].forEach {
             view.addSubview($0)
         }
         
@@ -228,6 +244,10 @@ extension ProfileViewController {
             make.trailing.equalToSuperview().inset(5)
             make.width.equalTo(view.frame.size.width / 1.4)
             make.height.equalTo(view.frame.size.height / 6.8)
+        }
+        validMBTILabel.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom).offset(15)
+            make.leading.equalTo(collectionView)
         }
         completeButton.snp.makeConstraints { make in
             make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(10)

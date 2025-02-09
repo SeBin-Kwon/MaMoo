@@ -27,7 +27,7 @@ class ProfileViewModel {
 
     init() {
         inputCompleteButtonTapped.lazyBind { [weak self] text in
-            self?.isValidateMBTI()
+            print("버튼 눌림")
             self?.completeButtonTapped(text)
         }
         inputText.lazyBind { [weak self] text in
@@ -54,6 +54,7 @@ class ProfileViewModel {
         }
         
         outputLastSelcetSection.value = section
+        isValidateMBTI()
     }
     
     private func isValidateNickname(_ text: String?) {
@@ -98,7 +99,8 @@ class ProfileViewModel {
     
     private func completeButtonTapped(_ text: String?) {
         guard let text else { return }
-        guard outputIsValidMBTI.value.0 else { return }
+        guard outputIsValidMBTI.value.0 else {
+            return }
         if !UserDefaultsManager.shared.isDisplayedOnboarding {
             UserDefaultsManager.shared.isDisplayedOnboarding = true
             UserDefaultsManager.shared.nickname = text
