@@ -110,8 +110,9 @@ final class ProfileViewController: BaseViewController {
     private func configureAction() {
         profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped), for: .touchUpInside)
         completeButton.addTarget(self, action: #selector(completeButtonTapped), for: .touchUpInside)
-        //        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped))
-        //        view.addGestureRecognizer(tap)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureTapped))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
     
     private func configureNavigationBar() {
@@ -129,9 +130,9 @@ final class ProfileViewController: BaseViewController {
         }
     }
     
-    //    @objc private func tapGestureTapped() {
-    //        view.endEditing(true)
-    //    }
+    @objc private func tapGestureTapped() {
+        view.endEditing(true)
+    }
     
     @objc private func leftItemTapped() {
         dismiss(animated: true)
