@@ -12,28 +12,49 @@ struct MBTI {
     var isSelected: Bool = false
 }
 
-class ProfileViewModel {
-    var inputText: Observable<String?> = Observable(nil)
-    var inputCompleteButtonTapped: Observable<String?> = Observable(nil)
-    var outputNum = Observable(UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11))
-    var outputIsValid = Observable((false, ""))
-    var outputIsValidMBTI = Observable((false, ""))
+class ProfileViewModel: BaseViewModel {
+    
+    var input: Input
+    var output: Output
+    
+    struct Input {
+        var text: Observable<String?> = Observable(nil)
+        var completeButtonTapped: Observable<String?> = Observable(nil)
+        var mbtiSelectedIndex = Observable((0, 0))
+    }
+    
+    struct Output {
+        var num = Observable(UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11))
+        var isValid = Observable((false, ""))
+        var isValidMBTI = Observable((false, ""))
+        var lastSelcetSection = Observable(0)
+    }
+    
+    
+    
     var mbtiList = [[MBTI(type: "E"), MBTI(type: "I")],
                     [MBTI(type: "S"), MBTI(type: "N")],
                     [MBTI(type: "T"), MBTI(type: "F")],
                     [MBTI(type: "J"), MBTI(type: "P")]]
-    var inputMBTISelectedIndex = Observable((0, 0))
-    var outputLastSelcetSection = Observable(0)
+    
+    
 
     init() {
-        inputCompleteButtonTapped.lazyBind { [weak self] text in
+        input = Input()
+        output = Output()
+        transform()
+    }
+    
+    func transform() {
+        print(#function)
+        input.completeButtonTapped.lazyBind { [weak self] text in
             print("버튼 눌림")
             self?.completeButtonTapped(text)
         }
-        inputText.lazyBind { [weak self] text in
+        input.text.lazyBind { [weak self] text in
             self?.isValidateNickname(text)
         }
-        inputMBTISelectedIndex.lazyBind { [weak self] (section, item) in
+        input.mbtiSelectedIndex.lazyBind { [weak self] (section, item) in
             self?.updateOutputMBTISelectList(section: section, item: item)
         }
     }
@@ -53,7 +74,7 @@ class ProfileViewModel {
             mbtiList[section][item].isSelected = true
         }
         
-        outputLastSelcetSection.value = section
+        output.lastSelcetSection.value = section
         isValidateMBTI()
     }
     
@@ -61,22 +82,22 @@ class ProfileViewModel {
         guard let text = text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
         
         guard text.count >= 2 && text.count < 10 else {
-            outputIsValid.value = (false, "2글자 이상 10글자 미만으로 설정해주세요")
+            output.isValid.value = (false, "2글자 이상 10글자 미만으로 설정해주세요")
             return
         }
         
         let pattern = "(?=.*[!@#$%^])"
         if matchesPattern(text, pattern) {
-            outputIsValid.value = (false, "닉네임에 @, #, $, % 는 포함할 수 없어요")
+            output.isValid.value = (false, "닉네임에 @, #, $, % 는 포함할 수 없어요")
             return
         }
         
         if text.filter({ $0.isNumber }).count > 0 {
-            outputIsValid.value = (false, "닉네임에 숫자는 포함할 수 없어요")
+            output.isValid.value = (false, "닉네임에 숫자는 포함할 수 없어요")
             return
         }
 
-        outputIsValid.value = (true, "사용할 수 있는 닉네임이에요")
+        output.isValid.value = (true, "사용할 수 있는 닉네임이에요")
     }
     
     private func matchesPattern(_ string: String, _ pattern: String) -> Bool {
@@ -90,27 +111,27 @@ class ProfileViewModel {
     private func isValidateMBTI() {
         for mbti in mbtiList {
             if mbti.filter({ $0.isSelected }).count == 0 {
-                outputIsValidMBTI.value = (false, "MBTI를 모두 선택해주세요")
+                output.isValidMBTI.value = (false, "MBTI를 모두 선택해주세요")
                 return
             }
         }
-        outputIsValidMBTI.value = (true, "")
+        output.isValidMBTI.value = (true, "")
     }
     
     private func completeButtonTapped(_ text: String?) {
         guard let text else { return }
-        guard outputIsValidMBTI.value.0 else {
+        guard output.isValidMBTI.value.0 else {
             return }
         if !UserDefaultsManager.shared.isDisplayedOnboarding {
             UserDefaultsManager.shared.isDisplayedOnboarding = true
             UserDefaultsManager.shared.nickname = text
-            UserDefaultsManager.shared.profileImage = outputNum.value
+            UserDefaultsManager.shared.profileImage = output.num.value
             UserDefaultsManager.shared.signUpDate = DateFormatterManager.shared.dateFormatted(Date()) + " 가입"
             ProfileViewController.changeRootViewController(rootView: TabBarController())
         } else {
-            NotificationCenter.default.post(name: .profileNotification, object: nil, userInfo: ["nickname": text, "profileImage": outputNum.value])
+            NotificationCenter.default.post(name: .profileNotification, object: nil, userInfo: ["nickname": text, "profileImage": output.num.value])
             UserDefaultsManager.shared.nickname = text
-            UserDefaultsManager.shared.profileImage = outputNum.value
+            UserDefaultsManager.shared.profileImage = output.num.value
         }
     }
 }

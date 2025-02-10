@@ -73,12 +73,12 @@ final class ProfileViewController: BaseViewController {
     }
     
     private func bindData() {
-        viewModel.outputNum.bind { [weak self] num in
+        viewModel.output.num.bind { [weak self] num in
             self?.num = num
             self?.profileImageButton.profileImageView.addProfileImage(num)
         }
-        viewModel.outputIsValid.lazyBind { [weak self] (bool, text) in
-            let value = self?.viewModel.outputIsValidMBTI.value.0 ?? false && bool
+        viewModel.output.isValid.lazyBind { [weak self] (bool, text) in
+            let value = self?.viewModel.output.isValidMBTI.value.0 ?? false && bool
             self?.completeButton.isEnabled = value ? true : false
             
             self?.completeButton.layer.borderColor = value ? UIColor.maMooPoint.cgColor : UIColor.maMooDisabled.cgColor
@@ -87,11 +87,11 @@ final class ProfileViewController: BaseViewController {
             self?.validLabel.text = text
             self?.validLabel.textColor =  bool ? .maMooPoint : .maMooFalseLabel
         }
-        viewModel.outputLastSelcetSection.lazyBind { [weak self] section in
+        viewModel.output.lastSelcetSection.lazyBind { [weak self] section in
             self?.collectionView.reloadSections(IndexSet(integer: section))
         }
-        viewModel.outputIsValidMBTI.lazyBind { [weak self] (bool, text) in
-            let value = self?.viewModel.outputIsValid.value.0 ?? false && bool
+        viewModel.output.isValidMBTI.lazyBind { [weak self] (bool, text) in
+            let value = self?.viewModel.output.isValid.value.0 ?? false && bool
             self?.completeButton.isEnabled = value ? true : false
             
             self?.completeButton.layer.borderColor = value ? UIColor.maMooPoint.cgColor : UIColor.maMooDisabled.cgColor
@@ -144,7 +144,7 @@ final class ProfileViewController: BaseViewController {
     }
     
     @objc private func completeButtonTapped() {
-        viewModel.inputCompleteButtonTapped.value = textField.text
+        viewModel.input.completeButtonTapped.value = textField.text
         dismiss(animated: true)
     }
     
@@ -155,7 +155,7 @@ final class ProfileViewController: BaseViewController {
         vc.viewModel.outputContents = { [weak self] value in
             guard let value else { return }
             self?.profileImageButton.profileImageView.image = UIImage(named: "profile_\(value)")
-            self?.viewModel.outputNum.value = value
+            self?.viewModel.output.num.value = value
         }
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -168,13 +168,13 @@ extension ProfileViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        viewModel.inputText.value = textField.text
+        viewModel.input.text.value = textField.text
         validLabel.isHidden = false
         return true
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        viewModel.inputText.value = textField.text
+        viewModel.input.text.value = textField.text
     }
 }
 
@@ -185,7 +185,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(#function)
         view.endEditing(true)
-        viewModel.inputMBTISelectedIndex.value = (indexPath.section, indexPath.item)
+        viewModel.input.mbtiSelectedIndex.value = (indexPath.section, indexPath.item)
         validMBTILabel.isHidden = false
     }
     
