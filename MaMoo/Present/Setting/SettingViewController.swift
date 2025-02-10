@@ -20,6 +20,7 @@ final class SettingViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureView()
         navigationItem.title = "설정"
         tableView.delegate = self
         tableView.dataSource = self
@@ -64,7 +65,7 @@ final class SettingViewController: BaseViewController {
         present(vc, animated: true)
     }
     
-    override func configureView() {
+    private func configureView() {
         tableView.backgroundColor = .black
         view.addSubview(profileEditButton)
         view.addSubview(tableView)

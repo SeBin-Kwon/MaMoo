@@ -16,6 +16,7 @@ final class ProfileImageViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureView()
         navigationItem.title = "프로필 이미지 설정"
         let leftItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftItemTapped))
         leftItem.tintColor = .maMooPoint
@@ -42,7 +43,7 @@ final class ProfileImageViewController: BaseViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    override func configureView() {
+    private func configureView() {
         view.addSubview(profileImageButton)
         view.addSubview(collectionView)
         profileImageButton.snp.makeConstraints { make in

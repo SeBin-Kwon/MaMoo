@@ -61,6 +61,7 @@ final class ProfileViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureView()
         configureLayout()
         configureNavigationBar()
         configureAction()
@@ -100,7 +101,7 @@ final class ProfileViewController: BaseViewController {
         }
     }
     
-    override func configureView() {
+    private func configureView() {
         collectionView.backgroundColor = .black
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -262,7 +263,7 @@ extension ProfileViewController {
             make.leading.equalToSuperview().offset(20)
         }
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(validLabel.snp.bottom).offset(30)
+            make.top.equalTo(textFieldBorder.snp.bottom).offset(40)
             make.trailing.equalToSuperview().inset(5)
             make.width.equalTo(view.frame.size.width / 1.4)
             make.height.equalTo(view.frame.size.height / 6.8)

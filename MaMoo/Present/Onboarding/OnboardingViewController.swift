@@ -39,6 +39,7 @@ final class OnboardingViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureView()
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
@@ -46,7 +47,7 @@ final class OnboardingViewController: BaseViewController {
         navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
     
-    override func configureView() {
+    private func configureView() {
         view.addSubview(imageView)
         view.addSubview(titleLabel)
         view.addSubview(contentLabel)

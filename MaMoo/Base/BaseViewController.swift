@@ -11,7 +11,7 @@ class BaseViewController: UIViewController {
 
     init() {
         super.init(nibName: nil, bundle: nil)
-        configureView()
+//        configureView()
         view.backgroundColor = .black
         let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         backBarButtonItem.tintColor = .maMooPoint
@@ -23,8 +23,8 @@ class BaseViewController: UIViewController {
         navigationItem.scrollEdgeAppearance = appearance
     }
     
-    func configureView() {
-    }
+//    func configureView() {
+//    }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
