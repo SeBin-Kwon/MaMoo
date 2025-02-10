@@ -30,6 +30,14 @@ final class ProfileViewController: BaseViewController {
         return label
     }()
     
+    private var mbtiLabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15, weight: .bold)
+        label.text = "MBTI"
+        label.textColor = .white
+        return label
+    }()
+    
     private var validMBTILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12)
@@ -241,7 +249,7 @@ extension ProfileViewController {
     }
     
     private func configureLayout() {
-        [profileImageButton, textField, textFieldBorder, validLabel, collectionView, completeButton, validMBTILabel].forEach {
+        [profileImageButton, textField, textFieldBorder, validLabel, mbtiLabel, collectionView, completeButton, validMBTILabel].forEach {
             view.addSubview($0)
         }
         
@@ -267,6 +275,10 @@ extension ProfileViewController {
             make.trailing.equalToSuperview().inset(5)
             make.width.equalTo(view.frame.size.width / 1.4)
             make.height.equalTo(view.frame.size.height / 6.8)
+        }
+        mbtiLabel.snp.makeConstraints { make in
+            make.top.equalTo(collectionView).inset(10)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(10)
         }
         validMBTILabel.snp.makeConstraints { make in
             make.top.equalTo(collectionView.snp.bottom).offset(15)
