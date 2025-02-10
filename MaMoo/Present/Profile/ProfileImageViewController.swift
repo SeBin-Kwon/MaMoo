@@ -33,13 +33,13 @@ final class ProfileImageViewController: BaseViewController {
     }
     
     private func bindData() {
-        viewModel.outputNum.lazyBind { [weak self] num in
+        viewModel.output.num.lazyBind { [weak self] num in
             self?.profileImageButton.profileImageView.image = UIImage(named: "profile_\(num ?? 0)")
         }
     }
     
     @objc private func leftItemTapped() {
-        viewModel.inputBackButtonTapped.value = ()
+        viewModel.input.backButtonTapped.value = ()
         navigationController?.popViewController(animated: true)
     }
     
@@ -71,7 +71,7 @@ extension ProfileImageViewController: UICollectionViewDelegate, UICollectionView
         guard let cell = collectionView.cellForItem(at: indexPath) as? ProfileImageCollectionViewCell else { return }
         cell.updateSelectedCell(true)
         profileImageButton.profileImageView.image = UIImage(named: "profile_\(indexPath.item)")
-        viewModel.inputNum.value = indexPath.item
+        viewModel.input.num.value = indexPath.item
         collectionView.reloadData()
     }
     
@@ -83,7 +83,7 @@ extension ProfileImageViewController: UICollectionViewDelegate, UICollectionView
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileImageCollectionViewCell.identifier, for: indexPath) as? ProfileImageCollectionViewCell else { return UICollectionViewCell() }
         
         cell.configureImageView(index: indexPath.item)
-        if viewModel.inputNum.value == indexPath.item {
+        if viewModel.input.num.value == indexPath.item {
             cell.updateSelectedCell(true)
         } else {
             cell.updateSelectedCell(false)

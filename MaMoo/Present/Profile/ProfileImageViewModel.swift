@@ -7,19 +7,35 @@
 
 import Foundation
 
-class ProfileImageViewModel {
-    var inputNum: Observable<Int?> = Observable(nil)
-    var inputBackButtonTapped: Observable<Void?> = Observable(())
-    var outputContents: ((Int?) -> Void)?
-    var outputNum: Observable<Int?> = Observable(nil)
+class ProfileImageViewModel: BaseViewModel {
+    
+    var input: Input
+    var output: Output
+    
+    struct Input {
+        var num: Observable<Int?> = Observable(nil)
+        var backButtonTapped: Observable<Void?> = Observable(())
+    }
+    
+    struct Output {
+        var contents: ((Int?) -> Void)?
+        var num: Observable<Int?> = Observable(nil)
+    }
+    
     let profileList = Array(0...11)
     
     init() {
-        inputNum.lazyBind { [weak self] num in
-            self?.outputNum.value = num
+        input = Input()
+        output = Output()
+        transform()
+    }
+    
+    func transform() {
+        input.num.lazyBind { [weak self] num in
+            self?.output.num.value = num
         }
-        inputBackButtonTapped.lazyBind { [weak self] value in
-            self?.outputContents?(self?.outputNum.value)
+        input.backButtonTapped.lazyBind { [weak self] value in
+            self?.output.contents?(self?.output.num.value)
         }
     }
     
