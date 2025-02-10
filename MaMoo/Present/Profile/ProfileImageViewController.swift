@@ -17,14 +17,8 @@ final class ProfileImageViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        navigationItem.title = "프로필 이미지 설정"
-        let leftItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftItemTapped))
-        leftItem.tintColor = .maMooPoint
-        navigationItem.leftBarButtonItem = leftItem
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.backgroundColor = .black
-        collectionView.register(ProfileImageCollectionViewCell.self, forCellWithReuseIdentifier: ProfileImageCollectionViewCell.identifier)
+        configureLayout()
+        configureNavigationBar()
         bindData()
     }
     
@@ -44,6 +38,13 @@ final class ProfileImageViewController: BaseViewController {
     }
     
     private func configureView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.backgroundColor = .black
+        collectionView.register(ProfileImageCollectionViewCell.self, forCellWithReuseIdentifier: ProfileImageCollectionViewCell.identifier)
+    }
+    
+    private func configureLayout() {
         view.addSubview(profileImageButton)
         view.addSubview(collectionView)
         profileImageButton.snp.makeConstraints { make in
@@ -54,6 +55,13 @@ final class ProfileImageViewController: BaseViewController {
             make.top.equalTo(profileImageButton.snp.bottom).offset(80)
             make.horizontalEdges.bottom.equalToSuperview()
         }
+    }
+    
+    private func configureNavigationBar() {
+        navigationItem.title = UserDefaultsManager.shared.isDisplayedOnboarding ? "프로필 이미지 편집" : "프로필 이미지 설정"
+        let leftItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftItemTapped))
+        leftItem.tintColor = .maMooPoint
+        navigationItem.leftBarButtonItem = leftItem
     }
 
 }

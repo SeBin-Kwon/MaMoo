@@ -1,6 +1,6 @@
 # 🎬 MAMOO
 
-> MAMOO는 영화를 검색할 수 있는 앱입니다.
+> MAMOO는 오늘의 추천 영화를 확인하고, 영화를 검색할 수 있는 앱입니다.
 
 - **기간:** 9일 (25.01.24 ~ 25.02.01)
 
@@ -59,8 +59,6 @@ Swift, UIKit, SnapKit, Kingfisher, Alamofire, TMDB API
 ### Base
 
 - View마다 반복되는 공통 메서드, UI들을 CustomView로 관리했습니다.
-
-- UIViewController -> BaseViewController -> MainViewController 식으로 상속이 이뤄집니다.
 
 ### Networking
 
