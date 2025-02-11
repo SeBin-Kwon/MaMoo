@@ -23,6 +23,7 @@ class SearchViewModel: BaseViewModel {
         var movieList = Observable([MovieResults]())
         var isScroll: Observable<Void?> = Observable(nil)
         var searchTagText = Observable("")
+        var error: Observable<ErrorType?> = Observable(nil)
     }
     
     private var page = 1
@@ -87,38 +88,40 @@ class SearchViewModel: BaseViewModel {
     }
     
     private func callRequest(query: String, page: Int) {
-        NetworkManager.shared.fetchResults(api: TMDBRequest.search(value: SearchRequest(query: query, page: page)), type: Movie.self) { [weak self] value in
-            print(#function)
-
-            if value.results.isEmpty {
-                self?.output.movieList.value = []
-                return
-            }
-            if page == 1 {
-                self?.output.movieList.value = value.results
-            } else {
-                self?.output.movieList.value.append(contentsOf: value.results)
-            }
-            
-            if value.total_pages == page {
-                self?.isEnd = true
-            }
-            
-            for movie in value.results {
-                let id = String(movie.id)
-                if let likeState = UserDefaultsManager.shared.like[String(id)] {
-                    self?.output.likeDictionary.value[id] = likeState
+        NetworkManager.shared.fetchResults(api: TMDBRequest.search(value: SearchRequest(query: query, page: page)), type: Movie.self) { [weak self] response in
+            switch response {
+            case .success(let value):
+                if value.results.isEmpty {
+                    self?.output.movieList.value = []
+                    return
                 }
+                if page == 1 {
+                    self?.output.movieList.value = value.results
+                } else {
+                    self?.output.movieList.value.append(contentsOf: value.results)
+                }
+                
+                if value.total_pages == page {
+                    self?.isEnd = true
+                }
+                
+                for movie in value.results {
+                    let id = String(movie.id)
+                    if let likeState = UserDefaultsManager.shared.like[String(id)] {
+                        self?.output.likeDictionary.value[id] = likeState
+                    }
+                }
+                guard let self else { return }
+                if self.isSearch && !self.output.movieList.value.isEmpty && self.page == 1 {
+                    self.output.isScroll.value = ()
+                }
+            case .failure(let error):
+                guard let code = error.responseCode,
+                      let errorType = ErrorType(rawValue: code) else { return }
+                self?.output.error.value = errorType
             }
-            print("총 페이지 ", value.total_pages, "현재페이지: ", page)
-            guard let self else { return }
-            if self.isSearch && !self.output.movieList.value.isEmpty && self.page == 1 {
-                self.output.isScroll.value = ()
-            }
-        } failHandler: { error in
-            print(error)
-//            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
         }
+        
     }
     
     @objc private func likeNotification(_ value: NSNotification?) {

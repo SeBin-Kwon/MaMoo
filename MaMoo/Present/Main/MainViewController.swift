@@ -48,6 +48,10 @@ final class MainViewController: BaseViewController {
         viewModel.output.reloadCollectionView.bind { [weak self] _ in
             self?.mainView.collectionView.reloadSections(IndexSet(integer: 0))
         }
+        viewModel.output.error.lazyBind { [weak self] error in
+            guard let error else { return }
+            self?.displayAlert(title: error.title, message: error.reason, isCancel: false)
+        }
     }
     
     private func configureAction() {

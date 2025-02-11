@@ -27,6 +27,7 @@ class MainViewModel: BaseViewModel {
         var nickname = Observable(UserDefaultsManager.shared.nickname)
         var profileImage = Observable(UserDefaultsManager.shared.profileImage)
         var reloadCollectionView: Observable<Void?> = Observable(())
+        var error: Observable<ErrorType?> = Observable(nil)
     }
     
     init() {
@@ -57,13 +58,17 @@ class MainViewModel: BaseViewModel {
     private func callRequest() {
         let group = DispatchGroup()
         group.enter()
-        NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { [weak self] value in
-            self?.movieList = value.results
-            group.leave()
-        } failHandler: { error in
-            print(error)
-//            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
-            group.leave()
+        NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { [weak self] response in
+            switch response {
+            case .success(let value):
+                self?.movieList = value.results
+                group.leave()
+            case .failure(let error):
+                guard let code = error.responseCode,
+                      let errorType = ErrorType(rawValue: code) else { return }
+                self?.output.error.value = errorType
+                group.leave()
+            }
         }
         group.notify(queue: .main) {
             self.output.reloadCollectionView.value = ()

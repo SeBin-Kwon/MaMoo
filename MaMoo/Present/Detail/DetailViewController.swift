@@ -113,29 +113,40 @@ final class DetailViewController: BaseViewController {
         guard let movie else { return }
         let group = DispatchGroup()
         group.enter()
-        NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { value in
-            if !value.backdrops.isEmpty {
-                let count = min(value.backdrops.count, 5)
-                self.backdropsList = Array(value.backdrops[0..<count])
-                self.configureBackdropScrollView()
+        NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { response in
+            
+            switch response {
+            case .success(let value):
+                if !value.backdrops.isEmpty {
+                    let count = min(value.backdrops.count, 5)
+                    self.backdropsList = Array(value.backdrops[0..<count])
+                    self.configureBackdropScrollView()
+                }
+                self.posterList = value.posters
+                group.leave()
+            case .failure(let error):
+                guard let code = error.responseCode,
+                      let errorType = ErrorType(rawValue: code) else { return }
+                self.displayAlert(title: errorType.title, message: errorType.reason, isCancel: false)
+                group.leave()
             }
-            self.posterList = value.posters
-            group.leave()
-        } failHandler: { error in
-            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
-            group.leave()
-        }
-        group.notify(queue: .main) {
-            self.configureNoDataLabel()
-            self.detailView.posterCollectionView.reloadData()
+            group.notify(queue: .main) {
+                self.configureNoDataLabel()
+                self.detailView.posterCollectionView.reloadData()
+            }
         }
         group.enter()
-        NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { value in
-            self.castList = value.cast
-            group.leave()
-        } failHandler: { error in
-            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
-            group.leave()
+        NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { response in
+            switch response {
+            case .success(let value):
+                self.castList = value.cast
+                group.leave()
+            case .failure(let error):
+                guard let code = error.responseCode,
+                      let errorType = ErrorType(rawValue: code) else { return }
+                self.displayAlert(title: errorType.title, message: errorType.reason, isCancel: false)
+                group.leave()
+            }
         }
         group.notify(queue: .main) {
             self.detailView.noCastLabel.isHidden = self.castList.isEmpty ? false : true

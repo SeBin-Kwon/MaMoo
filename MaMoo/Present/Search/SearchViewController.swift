@@ -44,6 +44,10 @@ final class SearchViewController: BaseViewController {
         viewModel.output.searchTagText.lazyBind { [weak self] text in
             self?.searchView.searchBar.text = text
         }
+        viewModel.output.error.lazyBind { [weak self] error in
+            guard let error else { return }
+            self?.displayAlert(title: error.title, message: error.reason, isCancel: false)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
