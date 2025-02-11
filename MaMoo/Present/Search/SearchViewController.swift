@@ -18,6 +18,7 @@ final class SearchViewController: BaseViewController {
     private var previousSearchText: String?
     private var likeDictionary = [String:Bool]()
     private var isSearch = false
+    var contents: (([String]?) -> Void)?
     
     override func loadView() {
         view = searchView
@@ -25,7 +26,8 @@ final class SearchViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "영화 검색"
+        configureNavigationBar()
+        
         searchView.searchBar.delegate = self
         searchView.collectionView.delegate = self
         searchView.collectionView.dataSource = self
@@ -44,6 +46,18 @@ final class SearchViewController: BaseViewController {
         if movieList.isEmpty {
             searchView.searchBar.becomeFirstResponder()
         }
+    }
+    
+    private func configureNavigationBar() {
+        navigationItem.title = "영화 검색"
+        let leftItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftItemTapped))
+        leftItem.tintColor = .maMooPoint
+        navigationItem.leftBarButtonItem = leftItem
+    }
+    
+    @objc private func leftItemTapped() {
+        contents?(UserDefaultsManager.shared.searchResults)
+        navigationController?.popViewController(animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {

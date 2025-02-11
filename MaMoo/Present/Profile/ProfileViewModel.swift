@@ -14,8 +14,8 @@ struct MBTI {
 
 class ProfileViewModel: BaseViewModel {
     
-    var input: Input
-    var output: Output
+    private(set) var input: Input
+    private(set) var output: Output
     
     struct Input {
         var text: Observable<String?> = Observable(nil)

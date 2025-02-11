@@ -13,6 +13,7 @@ final class ProfileImageViewController: BaseViewController {
     let viewModel = ProfileImageViewModel()
     private lazy var profileImageButton = ProfileImageButton()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureFlowLayout())
+    var contents: ((Int?) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +34,7 @@ final class ProfileImageViewController: BaseViewController {
     }
     
     @objc private func leftItemTapped() {
-        viewModel.input.backButtonTapped.value = ()
+        contents?(viewModel.output.num.value)
         navigationController?.popViewController(animated: true)
     }
     

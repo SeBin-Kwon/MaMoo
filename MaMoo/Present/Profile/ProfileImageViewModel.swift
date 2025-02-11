@@ -9,16 +9,14 @@ import Foundation
 
 class ProfileImageViewModel: BaseViewModel {
     
-    var input: Input
-    var output: Output
+    private(set) var input: Input
+    private(set) var output: Output
     
     struct Input {
         var num: Observable<Int?> = Observable(nil)
-        var backButtonTapped: Observable<Void?> = Observable(())
     }
     
     struct Output {
-        var contents: ((Int?) -> Void)?
         var num: Observable<Int?> = Observable(nil)
     }
     
@@ -33,9 +31,6 @@ class ProfileImageViewModel: BaseViewModel {
     func transform() {
         input.num.lazyBind { [weak self] num in
             self?.output.num.value = num
-        }
-        input.backButtonTapped.lazyBind { [weak self] value in
-            self?.output.contents?(self?.output.num.value)
         }
     }
     
