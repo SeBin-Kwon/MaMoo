@@ -12,36 +12,58 @@ import Alamofire
 final class MainViewController: BaseViewController {
 
     private let mainView = MainView()
-    private var movieList = [MovieResults]()
-    private var searchList = [String]()
-    private var likeDictionary = [String:Bool]()
-    
+    let viewModel = MainViewModel()
+
     override func loadView() {
         view = mainView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "MAMOO"
-        let rightItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(rightItemTapped))
-        rightItem.tintColor = .maMooPoint
-        navigationItem.rightBarButtonItem = rightItem
+        configureNavigationBar()
         configureData()
-        callRequest()
         configureDelegate()
+        configureAction()
+        bindData()
+    }
+    
+    private func bindData() {
+        viewModel.output.likeDictionary.lazyBind { [weak self] dict in
+            self?.mainView.collectionView.reloadData()
+        }
+        viewModel.output.searchList.bind { [weak self] list in
+            self?.mainView.isSearchLabel.isHidden = list.isEmpty ? false : true
+            self?.mainView.allRemoveButton.isHidden = list.isEmpty ? true : false
+            self?.mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
+        }
+        viewModel.output.likeCount.bind { [weak self] num in
+            print(".output.likeCount.")
+            self?.mainView.profileEditButton.movieBoxLabel.text = "\(num)개의 무비박스 보관중"
+        }
+        viewModel.output.nickname.bind { [weak self] text in
+            print(".output.nickname.")
+            self?.mainView.profileEditButton.nicknameLabel.text = text
+        }
+        viewModel.output.profileImage.bind { [weak self] num in
+            print(".output.profileImage.")
+            self?.mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(num)")
+        }
+        viewModel.output.reloadCollectionView.bind { [weak self] _ in
+            self?.mainView.collectionView.reloadSections(IndexSet(integer: 0))
+        }
+    }
+    
+    private func configureAction() {
         NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
         mainView.allRemoveButton.addTarget(self, action: #selector(allRemoveButtonTapped), for: .touchUpInside)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        searchList = UserDefaultsManager.shared.searchResults
-        likeDictionary = UserDefaultsManager.shared.like
-        updateLikeCount()
-        mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
-        mainView.allRemoveButton.isHidden = searchList.isEmpty ? true : false
-        mainView.searchCollectionView.reloadData()
+    private func configureNavigationBar() {
+        navigationItem.title = "MAMOO"
+        let rightItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(rightItemTapped))
+        rightItem.tintColor = .maMooPoint
+        navigationItem.rightBarButtonItem = rightItem
     }
     
     private func configureDelegate() {
@@ -55,12 +77,15 @@ final class MainViewController: BaseViewController {
     
     @objc private func rightItemTapped() {
         let vc = SearchViewController()
+        vc.contents = { [weak self] value in
+            guard let value else { return }
+            self?.viewModel.output.searchList.value = value
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func allRemoveButtonTapped() {
-        searchList.removeAll()
-        UserDefaults.standard.removeObject(forKey: "searchResults")
+        viewModel.input.isAllRemoveButtonTapped.value = ()
         mainView.isSearchLabel.isHidden = false
         mainView.allRemoveButton.isHidden = true
         mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
@@ -74,20 +99,10 @@ final class MainViewController: BaseViewController {
         present(vc, animated: true)
     }
     
-    @objc private func removeButtontapped(_ sender: UIButton) {
-        let index = IndexPath(item: sender.tag, section: 0)
-        searchList.remove(at: sender.tag)
-        UserDefaultsManager.shared.searchResults = searchList
-        mainView.isSearchLabel.isHidden = searchList.isEmpty ? false : true
-        mainView.allRemoveButton.isHidden = searchList.isEmpty ? true : false
-        mainView.searchCollectionView.deleteItems(at: [index])
-        mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
+    @objc private func removeButtonTapped(_ sender: UIButton) {
+        viewModel.input.isRemoveButtonTapped.value = sender.tag
     }
-    
-    private func updateLikeCount() {
-        let likeCount = likeDictionary.filter { $1 == true }.count
-        mainView.profileEditButton.movieBoxLabel.text = "\(likeCount)개의 무비박스 보관중"
-    }
+
     
     private func configureData() {
         mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
@@ -95,39 +110,16 @@ final class MainViewController: BaseViewController {
         mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
         mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
     }
-    
-    private func callRequest() {
-        let group = DispatchGroup()
-        group.enter()
-        NetworkManager.shared.fetchResults(api: TMDBRequest.trending, type: Movie.self) { value in
-            self.movieList = value.results
-            group.leave()
-        } failHandler: { error in
-            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
-            group.leave()
-        }
-        group.notify(queue: .main) {
-            self.mainView.collectionView.reloadData()
-        }
-    }
 }
 
 // MARK: Notification
 extension MainViewController {
     @objc private func likeNotification(value: NSNotification) {
-        guard let id = value.userInfo!["id"] as? String,
-              let like = value.userInfo!["like"] as? Bool else { return }
-        likeDictionary[id] = like
-        UserDefaultsManager.shared.like[id] = like
-        updateLikeCount()
-        mainView.collectionView.reloadData()
+        viewModel.input.likeNotification.value = value
     }
     
     @objc private func profileNotification(value: NSNotification) {
-        guard let nickname = value.userInfo!["nickname"] as? String,
-              let imageNum = value.userInfo!["profileImage"] as? Int else { return }
-        mainView.profileEditButton.nicknameLabel.text = nickname
-        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(imageNum)")
+        viewModel.input.profileNotification.value = value
     }
 }
 
@@ -137,11 +129,11 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.collectionView:
             let vc = DetailViewController()
-            vc.movie = movieList[indexPath.item]
+            vc.movie = viewModel.movieList[indexPath.item]
             navigationController?.pushViewController(vc, animated: true)
         default:
             let vc = SearchViewController()
-            vc.searchText = searchList[indexPath.item]
+            vc.searchText = viewModel.output.searchList.value[indexPath.item]
             navigationController?.pushViewController(vc, animated: true)
         }
         
@@ -150,9 +142,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
         case mainView.collectionView:
-            movieList.count
+            viewModel.movieList.count
         default:
-            searchList.count
+            viewModel.output.searchList.value.count
         }
         
     }
@@ -162,10 +154,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.collectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.identifier, for: indexPath) as? MainCollectionViewCell else { return UICollectionViewCell() }
-            let movie = movieList[indexPath.item]
+            let movie = viewModel.movieList[indexPath.item]
             cell.backgroundColor = .black
             cell.configureData(movie)
-            let isLiked = likeDictionary[String(movie.id), default: false]
+            let isLiked = viewModel.output.likeDictionary.value[String(movie.id), default: false]
             cell.updateLikeButton(isLiked)
             return cell
         default:
@@ -174,9 +166,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             DispatchQueue.main.async {
                 cell.layer.cornerRadius = cell.frame.height / 2
             }
-            cell.removeButton.addTarget(self, action: #selector(removeButtontapped), for: .touchUpInside)
+            cell.removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
             cell.removeButton.tag = indexPath.item
-            cell.configureData(searchList[indexPath.item])
+            cell.configureData(viewModel.output.searchList.value[indexPath.item])
             return cell
         }
         
