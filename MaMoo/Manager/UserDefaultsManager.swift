@@ -29,6 +29,10 @@ final class UserDefaultsManager {
         userDefaults.set(value, forKey: key.rawValue)
     }
     
+    func removeObject<T: UserDefaultsProtocol>(key: UserDefaultsKey, type: T.Type) {
+        userDefaults.removeObject(forKey: key.rawValue)
+    }
+    
     var isDisplayedOnboarding: Bool {
         get { getter(key: .isDisplayedOnboarding, defaultValue: false) }
         set { setter(value: newValue, key: .isDisplayedOnboarding) }

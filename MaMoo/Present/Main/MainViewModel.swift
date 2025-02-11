@@ -99,7 +99,7 @@ class MainViewModel: BaseViewModel {
     
     private func allRemoveButtonTapped() {
         output.searchList.value.removeAll()
-        UserDefaults.standard.removeObject(forKey: "searchResults")// 매니저 부르기
+        UserDefaultsManager.shared.removeObject(key: .searchResults, type: [String].self)
     }
     
     private func updateLikeCount() {
