@@ -11,13 +11,7 @@ import SnapKit
 final class SearchViewController: BaseViewController {
     
     private let searchView = SearchView()
-    private var movieList = [MovieResults]()
-    private var page = 1
-    private var isEnd = false
-    var searchText: String?
-    private var previousSearchText: String?
-    private var likeDictionary = [String:Bool]()
-    private var isSearch = false
+    let viewModel = SearchViewModel()
     var contents: (([String]?) -> Void)?
     
     override func loadView() {
@@ -27,27 +21,37 @@ final class SearchViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
-        
-        searchView.searchBar.delegate = self
-        searchView.collectionView.delegate = self
-        searchView.collectionView.dataSource = self
-        searchView.collectionView.prefetchDataSource = self
-        searchView.collectionView.register(SearchViewCollectionViewCell.self, forCellWithReuseIdentifier: SearchViewCollectionViewCell.identifier)
-        NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
-        likeDictionary = UserDefaultsManager.shared.like
-        searchView.collectionView.keyboardDismissMode = .onDrag
+        configureView()
+        configureAction()
+        bindData()
     }
     
     deinit{
         NotificationCenter.default.removeObserver(self)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        if movieList.isEmpty {
-            searchView.searchBar.becomeFirstResponder()
+    private func bindData() {
+        viewModel.output.likeDictionary.bind { [weak self] dict in
+            print("output.likeDictionary.bind")
+            self?.searchView.collectionView.reloadData() // 셀 하나만 리로드
+        }
+        viewModel.output.movieList.lazyBind { [weak self] list in
+            print("output.movieList.lazyBind")
+            self?.searchView.noResultLabel.isHidden = list.isEmpty ? false : true
+            self?.searchView.collectionView.reloadData()
+        }
+        viewModel.output.isScroll.lazyBind { [weak self] _ in
+            print("output.isScroll.lazyBind")
+            self?.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        if viewModel.output.movieList.value.isEmpty {
+            searchView.searchBar.becomeFirstResponder()
+        }
+    }
+
     private func configureNavigationBar() {
         navigationItem.title = "영화 검색"
         let leftItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftItemTapped))
@@ -55,62 +59,31 @@ final class SearchViewController: BaseViewController {
         navigationItem.leftBarButtonItem = leftItem
     }
     
+    private func configureView() {
+        searchView.searchBar.delegate = self
+        searchView.collectionView.delegate = self
+        searchView.collectionView.dataSource = self
+        searchView.collectionView.prefetchDataSource = self
+        searchView.collectionView.register(SearchViewCollectionViewCell.self, forCellWithReuseIdentifier: SearchViewCollectionViewCell.identifier)
+    }
+    
+    private func configureAction() {
+        NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
+        searchView.collectionView.keyboardDismissMode = .onDrag
+    }
+    
+    
     @objc private func leftItemTapped() {
         contents?(UserDefaultsManager.shared.searchResults)
         navigationController?.popViewController(animated: true)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        if let searchText {
-            searchView.searchBar.text = searchText
-            isEnd = false
-            isSearch = false
-            previousSearchText = searchText
-            self.searchText = searchText
-            callRequest(query: searchText, page: page)
-        }
-    }
     
     @objc func likeNotification(value: NSNotification) {
-        guard let id = value.userInfo!["id"] as? String,
-              let like = value.userInfo!["like"] as? Bool else { return }
-        likeDictionary[id] = like
-        UserDefaultsManager.shared.like[id] = like
-        searchView.collectionView.reloadData()
+        viewModel.input.likeNotification.value = value
     }
     
-    private func callRequest(query: String, page: Int) {
-        NetworkManager.shared.fetchResults(api: TMDBRequest.search(value: SearchRequest(query: query, page: page)), type: Movie.self) { value in
-            if value.results.isEmpty {
-                self.searchView.noResultLabel.isHidden = false
-                self.movieList = []
-                self.searchView.collectionView.reloadData()
-                return
-            }
-            self.searchView.noResultLabel.isHidden = true
-            if page == 1 {
-                self.movieList = value.results
-            } else {
-                self.movieList.append(contentsOf: value.results)
-            }
-            if value.total_pages == page {
-                self.isEnd = true
-            }
-            for movie in value.results {
-                let id = String(movie.id)
-                if let likeState = UserDefaultsManager.shared.like[String(id)] {
-                    self.likeDictionary[id] = likeState
-                }
-            }
-            
-            self.searchView.collectionView.reloadData()
-            if self.isSearch && !self.movieList.isEmpty && self.page == 1 {
-                self.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
-            }
-        } failHandler: { error in
-            self.displayAlert(title: error.title, message: error.reason, isCancel: false)
-        }
-    }
+    
     
 }
 
@@ -118,40 +91,15 @@ final class SearchViewController: BaseViewController {
 extension SearchViewController: UICollectionViewDataSourcePrefetching {
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        
-        for indexPath in indexPaths {
-            if !isEnd && movieList.count-2 == indexPath.item {
-                page += 1
-                guard let searchText else { return }
-                callRequest(query: searchText, page: page)
-            }
-        }
-        
+        viewModel.input.prefetchItem.value = indexPaths
     }
 }
 
 // MARK: SearchBar Delegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let searchText = searchView.searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-        if searchText.isEmpty {
-            page = 1
-            isEnd = false
-            isSearch = true
-            callRequest(query: searchText, page: page)
-            return
-        }
+        viewModel.input.isSearchButtonTapped.value = searchView.searchBar.text
         view.endEditing(true)
-        if let previousSearchText {
-            guard searchText != previousSearchText else { return }
-        }
-        page = 1
-        isEnd = false
-        previousSearchText = searchText
-        self.searchText = searchText
-        isSearch = true
-        callRequest(query: searchText, page: page)
-        UserDefaultsManager.shared.searchResults.append(searchText)
     }
 }
 
@@ -160,19 +108,19 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = DetailViewController()
-        vc.movie = movieList[indexPath.item]
+        vc.movie = viewModel.output.movieList.value[indexPath.item]
         view.endEditing(true)
         navigationController?.pushViewController(vc, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        movieList.count
+        viewModel.output.movieList.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchViewCollectionViewCell.identifier, for: indexPath) as? SearchViewCollectionViewCell else { return UICollectionViewCell() }
-        let movie = movieList[indexPath.item]
-        let isLiked = likeDictionary[String(movie.id), default: false]
+        let movie = viewModel.output.movieList.value[indexPath.item]
+        let isLiked = viewModel.output.likeDictionary.value[String(movie.id), default: false]
         cell.configureData(movie, isLiked)
         return cell
     }

@@ -133,7 +133,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             navigationController?.pushViewController(vc, animated: true)
         default:
             let vc = SearchViewController()
-            vc.searchText = viewModel.output.searchList.value[indexPath.item]
+            vc.viewModel.input.searchTag.value = viewModel.output.searchList.value[indexPath.item]
             navigationController?.pushViewController(vc, animated: true)
         }
         
@@ -155,14 +155,12 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case mainView.collectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainCollectionViewCell.identifier, for: indexPath) as? MainCollectionViewCell else { return UICollectionViewCell() }
             let movie = viewModel.movieList[indexPath.item]
-            cell.backgroundColor = .black
             cell.configureData(movie)
             let isLiked = viewModel.output.likeDictionary.value[String(movie.id), default: false]
             cell.updateLikeButton(isLiked)
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchTagCollectionViewCell.identifier, for: indexPath) as? SearchTagCollectionViewCell else { return UICollectionViewCell() }
-            cell.backgroundColor = .maMooLightGray
             DispatchQueue.main.async {
                 cell.layer.cornerRadius = cell.frame.height / 2
             }

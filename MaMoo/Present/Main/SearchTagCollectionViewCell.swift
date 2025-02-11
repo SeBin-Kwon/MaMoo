@@ -29,7 +29,7 @@ final class SearchTagCollectionViewCell: BaseCollectionViewCell {
     override func configureHierarchy() {
         addSubview(removeButton)
         addSubview(searchLabel)
-        
+        backgroundColor = .maMooLightGray
     }
     override func configureLayout() {
         searchLabel.snp.makeConstraints { make in

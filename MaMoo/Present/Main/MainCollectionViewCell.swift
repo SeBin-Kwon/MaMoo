@@ -78,6 +78,7 @@ final class MainCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func configureHierarchy() {
+        backgroundColor = .black
         likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
         addSubview(imageView)
         addSubview(titleLabel)
