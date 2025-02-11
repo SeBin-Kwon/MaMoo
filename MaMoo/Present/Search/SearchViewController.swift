@@ -44,6 +44,9 @@ final class SearchViewController: BaseViewController {
             print("output.isScroll.lazyBind")
             self?.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
         }
+        viewModel.output.searchTagText.lazyBind { [weak self] text in
+            self?.searchView.searchBar.text = text
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -82,8 +85,6 @@ final class SearchViewController: BaseViewController {
     @objc func likeNotification(value: NSNotification) {
         viewModel.input.likeNotification.value = value
     }
-    
-    
     
 }
 

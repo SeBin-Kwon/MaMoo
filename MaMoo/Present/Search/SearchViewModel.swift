@@ -22,6 +22,7 @@ class SearchViewModel: BaseViewModel {
         var likeDictionary = Observable(UserDefaultsManager.shared.like)
         var movieList = Observable([MovieResults]())
         var isScroll: Observable<Void?> = Observable(nil)
+        var searchTagText = Observable("")
     }
     
     private var page = 1
@@ -63,6 +64,7 @@ class SearchViewModel: BaseViewModel {
         isSearch = false
         previousSearchText = searchText
         self.searchText = searchText
+        output.searchTagText.value = searchText
         callRequest(query: searchText, page: page)
     }
     
@@ -73,7 +75,6 @@ class SearchViewModel: BaseViewModel {
             page = 1
             isEnd = false
             isSearch = true
-//            callRequest(query: searchText, page: page) // ??
             return
         }
         
