@@ -32,16 +32,13 @@ final class SearchViewController: BaseViewController {
     
     private func bindData() {
         viewModel.output.likeDictionary.bind { [weak self] dict in
-            print("output.likeDictionary.bind")
-            self?.searchView.collectionView.reloadData() // 셀 하나만 리로드
+            self?.searchView.collectionView.reloadData()
         }
         viewModel.output.movieList.lazyBind { [weak self] list in
-            print("output.movieList.lazyBind")
             self?.searchView.noResultLabel.isHidden = list.isEmpty ? false : true
             self?.searchView.collectionView.reloadData()
         }
         viewModel.output.isScroll.lazyBind { [weak self] _ in
-            print("output.isScroll.lazyBind")
             self?.searchView.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
         }
         viewModel.output.searchTagText.lazyBind { [weak self] text in

@@ -40,19 +40,15 @@ class SearchViewModel: BaseViewModel {
     
     func transform() {
         input.searchTag.lazyBind { [weak self] text in
-            print("input.searchTag.lazyBind")
             self?.searchTagButtonTapped(text)
         }
         input.isSearchButtonTapped.lazyBind { [weak self] text in
-            print("input.isSearchButtonTapped.lazyBind")
             self?.searchButtonTapped(text)
         }
         input.likeNotification.lazyBind { [weak self] value in
-            print("input.likeNotification.lazyBind")
             self?.likeNotification(value)
         }
         input.prefetchItem.lazyBind { [weak self] value in
-            print("input.prefetchItem.lazyBind")
             self?.prefetchPagenation(value)
         }
     }

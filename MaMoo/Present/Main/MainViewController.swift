@@ -37,15 +37,12 @@ final class MainViewController: BaseViewController {
             self?.mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
         }
         viewModel.output.likeCount.bind { [weak self] num in
-            print(".output.likeCount.")
             self?.mainView.profileEditButton.movieBoxLabel.text = "\(num)개의 무비박스 보관중"
         }
         viewModel.output.nickname.bind { [weak self] text in
-            print(".output.nickname.")
             self?.mainView.profileEditButton.nicknameLabel.text = text
         }
         viewModel.output.profileImage.bind { [weak self] num in
-            print(".output.profileImage.")
             self?.mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(num)")
         }
         viewModel.output.reloadCollectionView.bind { [weak self] _ in
