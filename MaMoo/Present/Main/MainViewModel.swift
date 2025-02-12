@@ -75,20 +75,21 @@ class MainViewModel: BaseViewModel {
         }
     }
     
-    @objc private func likeNotification(_ value: NSNotification?) {
+    private func likeNotification(_ value: NSNotification?) {
         guard let value else { return }
-        print("..likeNotification")
+
         guard let id = value.userInfo!["id"] as? String,
-              let like = value.userInfo!["like"] as? Bool else { return }
-        output.likeDictionary.value[id] = like
+              let like = value.userInfo!["like"] as? Bool else {
+            return
+        }
         UserDefaultsManager.shared.like[id] = like
+        output.likeDictionary.value[id] = like
     }
     
-    @objc private func profileNotification(_ value: NSNotification?) {
+    private func profileNotification(_ value: NSNotification?) {
         guard let value else {
             return
         }
-        print("..profileNotification")
         guard let nickname = value.userInfo!["nickname"] as? String,
               let imageNum = value.userInfo!["profileImage"] as? Int else { return }
         output.nickname.value = nickname
@@ -97,7 +98,6 @@ class MainViewModel: BaseViewModel {
     
     private func removeButtonTapped(_ index: Int?) {
         guard let index else { return }
-        print("0. viewModel removeButtonTapped")
         output.searchList.value.remove(at: index)
         UserDefaultsManager.shared.searchResults = output.searchList.value
     }

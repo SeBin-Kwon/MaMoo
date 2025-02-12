@@ -84,6 +84,7 @@ final class SearchViewController: BaseViewController {
     
     
     @objc func likeNotification(value: NSNotification) {
+        print("서치뷰컨..likeNotification")
         viewModel.input.likeNotification.value = value
     }
     
@@ -110,7 +111,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = DetailViewController()
-        vc.movie = viewModel.output.movieList.value[indexPath.item]
+        vc.viewModel.input.movie.value = viewModel.output.movieList.value[indexPath.item]
         view.endEditing(true)
         navigationController?.pushViewController(vc, animated: true)
     }

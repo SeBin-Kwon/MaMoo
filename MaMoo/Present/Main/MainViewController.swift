@@ -32,7 +32,6 @@ final class MainViewController: BaseViewController {
             self?.mainView.collectionView.reloadData()
         }
         viewModel.output.searchList.bind { [weak self] list in
-            print("output searchList")
             self?.mainView.isSearchLabel.isHidden = list.isEmpty ? false : true
             self?.mainView.allRemoveButton.isHidden = list.isEmpty ? true : false
             self?.mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
@@ -131,7 +130,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView {
         case mainView.collectionView:
             let vc = DetailViewController()
-            vc.movie = viewModel.movieList[indexPath.item]
+            vc.viewModel.input.movie.value = viewModel.movieList[indexPath.item]
             navigationController?.pushViewController(vc, animated: true)
         default:
             let vc = SearchViewController()

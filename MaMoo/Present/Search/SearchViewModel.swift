@@ -124,9 +124,9 @@ class SearchViewModel: BaseViewModel {
         
     }
     
-    @objc private func likeNotification(_ value: NSNotification?) {
+    private func likeNotification(_ value: NSNotification?) {
         guard let value else { return }
-        print(#function)
+        print("서치뷰모델..likeNotification 메서드")
         guard let id = value.userInfo!["id"] as? String,
               let like = value.userInfo!["like"] as? Bool else { return }
         output.likeDictionary.value[id] = like
