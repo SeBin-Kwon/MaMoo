@@ -23,11 +23,11 @@ final class DetailView: BaseView {
         return scroll
     }()
     
-//    private let scrollView = {
-//        let scroll = UIScrollView()
-//        scroll.showsVerticalScrollIndicator = false
-//        return scroll
-//    }()
+    private let scrollView = {
+        let scroll = UIScrollView()
+        scroll.showsVerticalScrollIndicator = false
+        return scroll
+    }()
     
     private let smallLabelStackView = {
         let stack = UIStackView()
@@ -37,7 +37,7 @@ final class DetailView: BaseView {
         return stack
     }()
     
-//    private let uiView = UIView()
+    private let uiView = UIView()
     
     private lazy var synopsisLabel = configureLabel("Synopsis")
     
@@ -66,39 +66,21 @@ final class DetailView: BaseView {
     lazy var posterCollectionView = configurePosterFlowLayout()
     
     override func configureHierarchy() {
-//        addSubview(scrollView)
-//        scrollView.addSubview(uiView)
+        addSubview(scrollView)
+        scrollView.addSubview(uiView)
         [backdropScrollView, pageControl, smallLabelStackView, synopsisLabel, synopsisLine, moreButton, castLabel, castCollectionView, posterLabel, posterCollectionView, noBackdropLabel, noSynopsisLabel, noCastLabel, noPosterLabel].forEach {
-            addSubview($0)
+            uiView.addSubview($0)
         }
-        
-        
-        
-        
-//        addSubview(backdropScrollView)
-//        addSubview(pageControl)
-//        addSubview(smallLabelStackView)
-//        addSubview(synopsisLabel)
-//        addSubview(synopsisLine)
-//        addSubview(moreButton)
-//        addSubview(castLabel)
-//        addSubview(castCollectionView)
-//        addSubview(posterLabel)
-//        addSubview(posterCollectionView)
-//        addSubview(noBackdropLabel)
-//        addSubview(noSynopsisLabel)
-//        addSubview(noCastLabel)
-//        addSubview(noPosterLabel)
     }
+    
     override func configureLayout() {
-//        scrollView.snp.makeConstraints { make in
-//            make.edges.equalTo(safeAreaLayoutGuide)
-//        }
-//        uiView.snp.makeConstraints { make in
-//            make.edges.equalTo(scrollView)
-//            make.width.equalTo(scrollView.snp.width)
-//            make.verticalEdges.equalTo(scrollView)
-//        }
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(safeAreaLayoutGuide)
+        }
+        uiView.snp.makeConstraints { make in
+            make.width.equalTo(scrollView.snp.width)
+            make.verticalEdges.equalTo(scrollView)
+        }
         backdropScrollView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
             make.height.equalTo(280)
@@ -157,9 +139,9 @@ final class DetailView: BaseView {
         }
     }
     
-    func configureSynopsis(_ text: String) {
-        synopsisLine.text = text
-    }
+//    func configureSynopsis(_ text: String) {
+//        synopsisLine.text = text
+//    }
     
     func configureInfoData(_ date: String, _ vote: Double, _ genre: [Int]) {
         let dateLabel = configureInfoLabelButton(image: "calendar", contents: date)
@@ -176,15 +158,13 @@ final class DetailView: BaseView {
             }
         }
         let genreLabel = configureInfoLabelButton(image: "film.fill", contents: string)
-        smallLabelStackView.addArrangedSubview(dateLabel)
-        smallLabelStackView.addArrangedSubview(configureinfoLine())
-        smallLabelStackView.addArrangedSubview(voteLabel)
-        smallLabelStackView.addArrangedSubview(configureinfoLine())
-        smallLabelStackView.addArrangedSubview(genreLabel)
+        [dateLabel, configureinfoLine(), voteLabel, configureinfoLine(), genreLabel].forEach {
+            smallLabelStackView.addArrangedSubview($0)
+        }
     }
 }
 
-// MARK: Configure UI
+// MARK: Configure Methods
 extension DetailView {
     
     private func configureNoDataLabel(_ text: String) -> UILabel {

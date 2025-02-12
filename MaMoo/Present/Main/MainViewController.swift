@@ -54,15 +54,9 @@ final class MainViewController: BaseViewController {
         }
     }
     
-    private func configureAction() {
-        NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
-        mainView.allRemoveButton.addTarget(self, action: #selector(allRemoveButtonTapped), for: .touchUpInside)
-    }
-    
     private func configureNavigationBar() {
         navigationItem.title = "MAMOO"
-        let rightItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(rightItemTapped))
+        let rightItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(searchButtonTapped))
         rightItem.tintColor = .maMooPoint
         navigationItem.rightBarButtonItem = rightItem
     }
@@ -76,20 +70,30 @@ final class MainViewController: BaseViewController {
         mainView.searchCollectionView.dataSource = self
     }
     
-    @objc private func rightItemTapped() {
+    private func configureData() {
+        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
+        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
+        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
+        mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
+    }
+    
+    private func configureAction() {
+        NotificationCenter.default.addObserver(self, selector: #selector(profileNotification), name: .profileNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(likeNotification), name: .likeNotification, object: nil)
+        mainView.allRemoveButton.addTarget(self, action: #selector(allRemoveButtonTapped), for: .touchUpInside)
+    }
+}
+
+// MARK: ButtonTapped
+extension MainViewController {
+    
+    @objc private func searchButtonTapped() {
         let vc = SearchViewController()
-        vc.contents = { [weak self] value in
+        vc.sendLatestSearches = { [weak self] value in
             guard let value else { return }
             self?.viewModel.output.searchList.value = value
         }
         navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    @objc private func allRemoveButtonTapped() {
-        viewModel.input.isAllRemoveButtonTapped.value = ()
-        mainView.isSearchLabel.isHidden = false
-        mainView.allRemoveButton.isHidden = true
-        mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
     
     @objc private func profileEditButtontapped() {
@@ -103,13 +107,12 @@ final class MainViewController: BaseViewController {
     @objc private func removeButtonTapped(_ sender: UIButton) {
         viewModel.input.isRemoveButtonTapped.value = sender.tag
     }
-
     
-    private func configureData() {
-        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
-        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
-        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
-        mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
+    @objc private func allRemoveButtonTapped() {
+        viewModel.input.isAllRemoveButtonTapped.value = ()
+        mainView.isSearchLabel.isHidden = false
+        mainView.allRemoveButton.isHidden = true
+        mainView.searchCollectionView.reloadSections(IndexSet(integer: 0))
     }
 }
 
@@ -135,7 +138,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         default:
             let vc = SearchViewController()
             vc.viewModel.input.searchTag.value = viewModel.output.searchList.value[indexPath.item]
-            vc.contents = { [weak self] value in
+            vc.sendLatestSearches = { [weak self] value in
                 guard let value else { return }
                 self?.viewModel.output.searchList.value = value
             }

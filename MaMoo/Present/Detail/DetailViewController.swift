@@ -14,18 +14,14 @@ final class DetailViewController: BaseViewController {
     let viewModel = DetailViewModel()
     private let detailView = DetailView()
     private var isHide = true
-    private let scrollView = {
-        let scroll = UIScrollView()
-        scroll.showsVerticalScrollIndicator = false
-        return scroll
-    }()
+    
+    override func loadView() {
+        view = detailView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(scrollView)
-        scrollView.addSubview(detailView)
         configureNavigationBar()
-        configureLayout()
         configureDelegate()
         bindData()
         detailView.moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
@@ -39,7 +35,7 @@ final class DetailViewController: BaseViewController {
             self?.detailView.configureInfoData(date, vote, genre)
         }
         viewModel.output.synopsis.lazyBind { [weak self] text in
-            self?.detailView.configureSynopsis(text)
+            self?.detailView.synopsisLine.text = text
             self?.detailView.noSynopsisLabel.isHidden = text.isEmpty ? false : true
             self?.detailView.moreButton.isHidden = text.isEmpty ? true : false
         }
@@ -81,15 +77,15 @@ final class DetailViewController: BaseViewController {
         detailView.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
     }
     
-    private func configureLayout() {
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-        detailView.snp.makeConstraints { make in
-            make.width.equalTo(scrollView.snp.width)
-            make.verticalEdges.equalTo(scrollView)
-        }
-    }
+//    private func configureLayout() {
+//        scrollView.snp.makeConstraints { make in
+//            make.edges.equalTo(view.safeAreaLayoutGuide)
+//        }
+//        detailView.snp.makeConstraints { make in
+//            make.width.equalTo(scrollView.snp.width)
+//            make.verticalEdges.equalTo(scrollView)
+//        }
+//    }
     
     @objc private func likeButtonTapped() {
         viewModel.input.isLikeButtonTapped.value = ()
@@ -164,8 +160,6 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         }
         
     }
-    
-    
 }
 
 // MARK: ScrollView Delegate

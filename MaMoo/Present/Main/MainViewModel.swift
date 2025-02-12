@@ -75,6 +75,10 @@ class MainViewModel: BaseViewModel {
         }
     }
     
+    private func updateLikeCount() {
+        output.likeCount.value = UserDefaultsManager.shared.like.filter { $1 == true }.count
+    }
+    
     private func likeNotification(_ value: NSNotification?) {
         guard let value else { return }
 
@@ -105,11 +109,6 @@ class MainViewModel: BaseViewModel {
     private func allRemoveButtonTapped() {
         output.searchList.value.removeAll()
         UserDefaultsManager.shared.removeObject(key: .searchResults, type: [String].self)
-    }
-    
-    private func updateLikeCount() {
-        print(#function)
-        output.likeCount.value = UserDefaultsManager.shared.like.filter { $1 == true }.count
     }
     
 }

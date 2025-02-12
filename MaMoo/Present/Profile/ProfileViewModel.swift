@@ -30,15 +30,11 @@ class ProfileViewModel: BaseViewModel {
         var lastSelcetSection = Observable(0)
     }
     
-    
-    
     var mbtiList = [[MBTI(type: "E"), MBTI(type: "I")],
                     [MBTI(type: "S"), MBTI(type: "N")],
                     [MBTI(type: "T"), MBTI(type: "F")],
                     [MBTI(type: "J"), MBTI(type: "P")]]
     
-    
-
     init() {
         input = Input()
         output = Output()
@@ -46,9 +42,7 @@ class ProfileViewModel: BaseViewModel {
     }
     
     func transform() {
-        print(#function)
         input.completeButtonTapped.lazyBind { [weak self] text in
-            print("버튼 눌림")
             self?.completeButtonTapped(text)
         }
         input.text.lazyBind { [weak self] text in
@@ -59,12 +53,7 @@ class ProfileViewModel: BaseViewModel {
         }
     }
     
-    deinit {
-        print("ProfileViewModel Deinit")
-    }
-    
     private func updateOutputMBTISelectList(section: Int, item: Int) {
-                
         if mbtiList[section][item].isSelected {
             mbtiList[section][item].isSelected = false
         } else {

@@ -76,8 +76,8 @@ final class ProfileViewController: BaseViewController {
         bindData()
     }
     
-    deinit {
-        print("ProfileViewController Deinit")
+    override func viewDidAppear(_ animated: Bool) {
+        textField.becomeFirstResponder()
     }
     
     private func bindData() {
@@ -138,21 +138,15 @@ final class ProfileViewController: BaseViewController {
             navigationItem.leftBarButtonItem = leftItem
         }
     }
-    
+}
+
+// MARK: Button Tapped
+extension ProfileViewController {
     @objc private func tapGestureTapped() {
         view.endEditing(true)
     }
     
     @objc private func leftItemTapped() {
-        dismiss(animated: true)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        textField.becomeFirstResponder()
-    }
-    
-    @objc private func completeButtonTapped() {
-        viewModel.input.completeButtonTapped.value = textField.text
         dismiss(animated: true)
     }
     
@@ -167,7 +161,13 @@ final class ProfileViewController: BaseViewController {
         }
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    @objc private func completeButtonTapped() {
+        viewModel.input.completeButtonTapped.value = textField.text
+        dismiss(animated: true)
+    }
 }
+
 
 // MARK: TextField Delegate
 extension ProfileViewController: UITextFieldDelegate {

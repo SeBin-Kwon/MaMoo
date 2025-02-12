@@ -12,7 +12,7 @@ final class SearchViewController: BaseViewController {
     
     private let searchView = SearchView()
     let viewModel = SearchViewModel()
-    var contents: (([String]?) -> Void)?
+    var sendLatestSearches: (([String]?) -> Void)?
     
     override func loadView() {
         view = searchView
@@ -24,10 +24,6 @@ final class SearchViewController: BaseViewController {
         configureView()
         configureAction()
         bindData()
-    }
-    
-    deinit{
-        NotificationCenter.default.removeObserver(self)
     }
     
     private func bindData() {
@@ -78,13 +74,12 @@ final class SearchViewController: BaseViewController {
     
     
     @objc private func leftItemTapped() {
-        contents?(UserDefaultsManager.shared.searchResults)
+        sendLatestSearches?(UserDefaultsManager.shared.searchResults)
         navigationController?.popViewController(animated: true)
     }
     
     
     @objc func likeNotification(value: NSNotification) {
-        print("서치뷰컨..likeNotification")
         viewModel.input.likeNotification.value = value
     }
     

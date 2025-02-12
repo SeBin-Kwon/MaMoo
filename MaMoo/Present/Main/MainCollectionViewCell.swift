@@ -92,6 +92,7 @@ final class MainCollectionViewCell: BaseCollectionViewCell {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(10)
             make.leading.equalToSuperview()
+            make.width.equalToSuperview().inset(10)
         }
         likeButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)

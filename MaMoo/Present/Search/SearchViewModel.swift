@@ -67,7 +67,6 @@ class SearchViewModel: BaseViewModel {
     
     private func searchButtonTapped(_ text: String?) {
         guard let searchText = text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-        print(#function)
         if searchText.isEmpty {
             page = 1
             isEnd = false
@@ -126,7 +125,6 @@ class SearchViewModel: BaseViewModel {
     
     private func likeNotification(_ value: NSNotification?) {
         guard let value else { return }
-        print("서치뷰모델..likeNotification 메서드")
         guard let id = value.userInfo!["id"] as? String,
               let like = value.userInfo!["like"] as? Bool else { return }
         output.likeDictionary.value[id] = like

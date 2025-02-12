@@ -34,8 +34,4 @@ class ProfileImageViewModel: BaseViewModel {
         }
     }
     
-    deinit {
-        print("ProfileImageViewModel Deinit")
-    }
-    
 }
