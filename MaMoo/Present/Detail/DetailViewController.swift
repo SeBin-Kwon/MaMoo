@@ -13,13 +13,14 @@ final class DetailViewController: BaseViewController {
     
     let viewModel = DetailViewModel()
     private let detailView = DetailView()
-    var movie: MovieResults?
-    private var backdropsList = [Backdrops]()
+    
+//    var movie: MovieResults?
+//    private var backdropsList = [Backdrops]()
     private var isHide = true
-    private var castList = [Cast]()
-    private var posterList = [Posters]()
-    private var likeState = false
-    private var id: String?
+//    private var castList = [Cast]()
+//    private var posterList = [Posters]()
+//    private var likeState = false
+//    private var id: String?
     private let scrollView = {
         let scroll = UIScrollView()
         scroll.showsVerticalScrollIndicator = false
@@ -30,35 +31,74 @@ final class DetailViewController: BaseViewController {
         super.viewDidLoad()
         view.addSubview(scrollView)
         scrollView.addSubview(detailView)
+        configureNavigationBar()
         configureLayout()
         configureDelegate()
-        let rightItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(rightItemTapped))
-        rightItem.tintColor = .maMooPoint
-        navigationItem.rightBarButtonItem = rightItem
+        bindData()
         detailView.moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        guard let movie else { return }
-        navigationItem.title = movie.title
-        guard let date = movie.release_date,
-              let vote = movie.vote_average,
-              let genre = movie.genre_ids,
-              let synopsis = movie.overview else { return }
-        self.detailView.configureInfoData(date, vote, genre)
-        if !synopsis.isEmpty {
-            detailView.configureSynopsis(synopsis)
-            detailView.noSynopsisLabel.isHidden = true
-            detailView.moreButton.isHidden = false
-        } else {
-            detailView.noSynopsisLabel.isHidden = false
-            detailView.moreButton.isHidden = true
+    private func bindData() {
+        viewModel.output.movie.lazyBind { [weak self] value in
+            self?.navigationItem.title = value?.title
         }
-        
-        id = String(movie.id)
-        updateLikeButton(UserDefaultsManager.shared.like[String(movie.id), default: false])
-        callRequest()
+        viewModel.output.movieInfo.lazyBind { [weak self] (date, vote, genre) in
+            self?.detailView.configureInfoData(date, vote, genre)
+        }
+        viewModel.output.synopsis.lazyBind { [weak self] text in
+            self?.detailView.configureSynopsis(text)
+            self?.detailView.noSynopsisLabel.isHidden = text.isEmpty ? false : true
+            self?.detailView.moreButton.isHidden = text.isEmpty ? true : false
+        }
+        viewModel.output.likeState.lazyBind { [weak self] value in
+            guard let rightItem = self?.navigationItem.rightBarButtonItem else { return }
+            rightItem.image = value ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
+        }
+        viewModel.output.backdropsList.lazyBind { [weak self] value in
+            self?.detailView.noBackdropLabel.isHidden = value.isEmpty ? false : true
+            self?.configureBackdropScrollView(value)
+        }
+        viewModel.output.posterList.lazyBind { [weak self] value in
+            self?.detailView.noPosterLabel.isHidden = value.isEmpty ? false : true
+            self?.detailView.posterCollectionView.reloadData()
+        }
+        viewModel.output.castList.lazyBind { [weak self] value in
+            self?.detailView.noCastLabel.isHidden = value.isEmpty ? false : true
+            self?.detailView.castCollectionView.reloadData()
+        }
+        viewModel.output.error.lazyBind { [weak self] error in
+            guard let error else { return }
+            self?.displayAlert(title: error.title, message: error.reason, isCancel: false)
+        }
     }
+    
+    private func configureNavigationBar() {
+        let rightItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(likeButtonTapped))
+        rightItem.tintColor = .maMooPoint
+        navigationItem.rightBarButtonItem = rightItem
+    }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        guard let movie else { return }
+//        navigationItem.title = movie.title
+//        guard let date = movie.release_date,
+//              let vote = movie.vote_average,
+//              let genre = movie.genre_ids,
+//              let synopsis = movie.overview else { return }
+//        self.detailView.configureInfoData(date, vote, genre)
+//        if !synopsis.isEmpty {
+//            detailView.configureSynopsis(synopsis)
+//            detailView.noSynopsisLabel.isHidden = true
+//            detailView.moreButton.isHidden = false
+//        } else {
+//            detailView.noSynopsisLabel.isHidden = false
+//            detailView.moreButton.isHidden = true
+//        }
+        
+//        id = String(movie.id)
+//        updateLikeButton(UserDefaultsManager.shared.like[String(movie.id), default: false])
+//        callRequest()
+//    }
     
     private func configureDelegate() {
         detailView.backdropScrollView.delegate = self
@@ -70,10 +110,10 @@ final class DetailViewController: BaseViewController {
         detailView.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
     }
     
-    private func configureNoDataLabel() {
-        detailView.noBackdropLabel.isHidden = backdropsList.isEmpty ? false : true
-        detailView.noPosterLabel.isHidden = posterList.isEmpty ? false : true
-    }
+//    private func configureNoDataLabel() {
+//        detailView.noBackdropLabel.isHidden = backdropsList.isEmpty ? false : true
+//        detailView.noPosterLabel.isHidden = posterList.isEmpty ? false : true
+//    }
     
     private func configureLayout() {
         scrollView.snp.makeConstraints { make in
@@ -85,20 +125,10 @@ final class DetailViewController: BaseViewController {
         }
     }
     
-    @objc private func rightItemTapped() {
-        guard let id else { return }
-        likeState.toggle()
-        updateLikeButton(likeState)
-        UserDefaultsManager.shared.like[id] = likeState
-        NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
+    @objc private func likeButtonTapped() {
+        viewModel.input.isLikeButtonTapped.value = ()
     }
-    
-    private func updateLikeButton(_ isSelected: Bool) {
-        guard let rightItem = navigationItem.rightBarButtonItem else { return }
-        rightItem.image = isSelected ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
-        likeState = isSelected
-    }
-    
+
     @objc private func moreButtonTapped() {
         isHide.toggle()
         UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseOut]) { [self] in
@@ -110,55 +140,55 @@ final class DetailViewController: BaseViewController {
         }
     }
     
-    private func callRequest() {
-        guard let movie else { return }
-        let group = DispatchGroup()
-        group.enter()
-        NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { response in
-            
-            switch response {
-            case .success(let value):
-                if !value.backdrops.isEmpty {
-                    let count = min(value.backdrops.count, 5)
-                    self.backdropsList = Array(value.backdrops[0..<count])
-                    self.configureBackdropScrollView()
-                }
-                self.posterList = value.posters
-                group.leave()
-            case .failure(let error):
-                guard let code = error.responseCode,
-                      let errorType = ErrorType(rawValue: code) else { return }
-                self.displayAlert(title: errorType.title, message: errorType.reason, isCancel: false)
-                group.leave()
-            }
-            group.notify(queue: .main) {
-                self.configureNoDataLabel()
-                self.detailView.posterCollectionView.reloadData()
-            }
-        }
-        group.enter()
-        NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { response in
-            switch response {
-            case .success(let value):
-                self.castList = value.cast
-                group.leave()
-            case .failure(let error):
-                guard let code = error.responseCode,
-                      let errorType = ErrorType(rawValue: code) else { return }
-                self.displayAlert(title: errorType.title, message: errorType.reason, isCancel: false)
-                group.leave()
-            }
-        }
-        group.notify(queue: .main) {
-            self.detailView.noCastLabel.isHidden = self.castList.isEmpty ? false : true
-            self.detailView.castCollectionView.reloadData()
-        }
-    }
+//    private func callRequest() {
+//        guard let movie = viewModel.input.movie.value else { return }
+//        let group = DispatchGroup()
+//        group.enter()
+//        NetworkManager.shared.fetchResults(api: TMDBRequest.detailImage(id: movie.id), type: MovieImage.self) { response in
+//            
+//            switch response {
+//            case .success(let value):
+//                if !value.backdrops.isEmpty {
+//                    let count = min(value.backdrops.count, 5)
+//                    self.backdropsList = Array(value.backdrops[0..<count])
+//                    self.configureBackdropScrollView()
+//                }
+//                self.posterList = value.posters
+//                group.leave()
+//            case .failure(let error):
+//                guard let code = error.responseCode,
+//                      let errorType = ErrorType(rawValue: code) else { return }
+//                self.displayAlert(title: errorType.title, message: errorType.reason, isCancel: false)
+//                group.leave()
+//            }
+//            group.notify(queue: .main) {
+//                self.configureNoDataLabel()
+//                self.detailView.posterCollectionView.reloadData()
+//            }
+//        }
+//        group.enter()
+//        NetworkManager.shared.fetchResults(api: .Credit(id: movie.id), type: Casts.self) { response in
+//            switch response {
+//            case .success(let value):
+//                self.castList = value.cast
+//                group.leave()
+//            case .failure(let error):
+//                guard let code = error.responseCode,
+//                      let errorType = ErrorType(rawValue: code) else { return }
+//                self.displayAlert(title: errorType.title, message: errorType.reason, isCancel: false)
+//                group.leave()
+//            }
+//        }
+//        group.notify(queue: .main) {
+//            self.detailView.noCastLabel.isHidden = self.castList.isEmpty ? false : true
+//            self.detailView.castCollectionView.reloadData()
+//        }
+//    }
 }
 
 // MARK: Configure UI
 extension DetailViewController {
-    private func configureBackdropScrollView() {
+    private func configureBackdropScrollView(_ backdropsList: [Backdrops]) {
         for i in 0..<backdropsList.count {
             var imageView = UIImageView()
             if let image = backdropsList[i].file_path {
@@ -194,9 +224,9 @@ extension DetailViewController {
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == detailView.castCollectionView {
-            castList.count
+            viewModel.output.castList.value.count
         } else {
-            posterList.count
+            viewModel.output.posterList.value.count
         }
     }
     
@@ -204,11 +234,11 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         switch collectionView {
         case detailView.castCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.identifier, for: indexPath) as? CastCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureData(castList[indexPath.item])
+            cell.configureData(viewModel.output.castList.value[indexPath.item])
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.identifier, for: indexPath) as? PosterCollectionViewCell else { return UICollectionViewCell() }
-            cell.configureData(posterList[indexPath.item])
+            cell.configureData(viewModel.output.posterList.value[indexPath.item])
             return cell
         }
         

@@ -23,6 +23,12 @@ final class DetailView: BaseView {
         return scroll
     }()
     
+//    private let scrollView = {
+//        let scroll = UIScrollView()
+//        scroll.showsVerticalScrollIndicator = false
+//        return scroll
+//    }()
+    
     private let smallLabelStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -30,6 +36,8 @@ final class DetailView: BaseView {
         stack.distribution = .fillProportionally
         return stack
     }()
+    
+//    private let uiView = UIView()
     
     private lazy var synopsisLabel = configureLabel("Synopsis")
     
@@ -58,22 +66,39 @@ final class DetailView: BaseView {
     lazy var posterCollectionView = configurePosterFlowLayout()
     
     override func configureHierarchy() {
-        addSubview(backdropScrollView)
-        addSubview(pageControl)
-        addSubview(smallLabelStackView)
-        addSubview(synopsisLabel)
-        addSubview(synopsisLine)
-        addSubview(moreButton)
-        addSubview(castLabel)
-        addSubview(castCollectionView)
-        addSubview(posterLabel)
-        addSubview(posterCollectionView)
-        addSubview(noBackdropLabel)
-        addSubview(noSynopsisLabel)
-        addSubview(noCastLabel)
-        addSubview(noPosterLabel)
+//        addSubview(scrollView)
+//        scrollView.addSubview(uiView)
+        [backdropScrollView, pageControl, smallLabelStackView, synopsisLabel, synopsisLine, moreButton, castLabel, castCollectionView, posterLabel, posterCollectionView, noBackdropLabel, noSynopsisLabel, noCastLabel, noPosterLabel].forEach {
+            addSubview($0)
+        }
+        
+        
+        
+        
+//        addSubview(backdropScrollView)
+//        addSubview(pageControl)
+//        addSubview(smallLabelStackView)
+//        addSubview(synopsisLabel)
+//        addSubview(synopsisLine)
+//        addSubview(moreButton)
+//        addSubview(castLabel)
+//        addSubview(castCollectionView)
+//        addSubview(posterLabel)
+//        addSubview(posterCollectionView)
+//        addSubview(noBackdropLabel)
+//        addSubview(noSynopsisLabel)
+//        addSubview(noCastLabel)
+//        addSubview(noPosterLabel)
     }
     override func configureLayout() {
+//        scrollView.snp.makeConstraints { make in
+//            make.edges.equalTo(safeAreaLayoutGuide)
+//        }
+//        uiView.snp.makeConstraints { make in
+//            make.edges.equalTo(scrollView)
+//            make.width.equalTo(scrollView.snp.width)
+//            make.verticalEdges.equalTo(scrollView)
+//        }
         backdropScrollView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
             make.height.equalTo(280)
