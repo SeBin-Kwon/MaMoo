@@ -11,6 +11,7 @@ import Kingfisher
 
 final class DetailViewController: BaseViewController {
     
+    let viewModel = DetailViewModel()
     private let detailView = DetailView()
     var movie: MovieResults?
     private var backdropsList = [Backdrops]()
@@ -161,8 +162,7 @@ extension DetailViewController {
         for i in 0..<backdropsList.count {
             var imageView = UIImageView()
             if let image = backdropsList[i].file_path {
-                let newUrl = "https://image.tmdb.org/t/p/w500" + image
-                guard let url = URL(string: newUrl) else { return }
+                let url = TMDBImageRequest.big(path: image).endPoint
                 imageView = configureImage()
                 imageView.kf.setImage(with: url)
                 imageView.contentMode = .scaleAspectFill
