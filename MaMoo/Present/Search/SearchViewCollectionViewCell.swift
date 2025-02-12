@@ -78,8 +78,7 @@ final class SearchViewCollectionViewCell: BaseCollectionViewCell {
             genreStackView.removeAll()
         }
         if let poster = item.poster_path {
-            let newUrl = "https://image.tmdb.org/t/p/w500" + poster
-            guard let url = URL(string: newUrl) else { return }
+            let url = TMDBImageRequest.small(path: poster).endPoint
             imageView.kf.setImage(with: url)
             imageView.contentMode = .scaleAspectFill
         } else {

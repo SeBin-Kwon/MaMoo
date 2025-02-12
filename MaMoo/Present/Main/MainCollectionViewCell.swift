@@ -56,8 +56,7 @@ final class MainCollectionViewCell: BaseCollectionViewCell {
     
     func configureData(_ item: MovieResults) {
         if let poster = item.poster_path {
-            let newUrl = "https://image.tmdb.org/t/p/w500" + poster
-            guard let url = URL(string: newUrl) else { return }
+            let url = TMDBImageRequest.big(path: poster).endPoint
             imageView.kf.setImage(with: url)
             imageView.contentMode = .scaleAspectFill
         } else {

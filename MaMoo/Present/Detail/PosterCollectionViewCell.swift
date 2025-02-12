@@ -30,8 +30,7 @@ final class PosterCollectionViewCell: BaseCollectionViewCell {
     
     func configureData(_ item: Posters) {
         if let image = item.file_path {
-            let newUrl = "https://image.tmdb.org/t/p/w500" + image
-            guard let url = URL(string: newUrl) else { return }
+            let url = TMDBImageRequest.small(path: image).endPoint
             imageView.kf.setImage(with: url)
             imageView.contentMode = .scaleAspectFill
         } else {

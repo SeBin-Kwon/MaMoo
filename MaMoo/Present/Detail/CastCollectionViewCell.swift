@@ -64,8 +64,7 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
     
     func configureData(_ item: Cast) {
         if let image = item.profile_path {
-            let newUrl = "https://image.tmdb.org/t/p/w500" + image
-            guard let url = URL(string: newUrl) else { return }
+            let url = TMDBImageRequest.small(path: image).endPoint
             imageView.kf.setImage(with: url)
             imageView.contentMode = .scaleAspectFill
         } else {
