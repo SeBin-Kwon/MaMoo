@@ -24,7 +24,7 @@ class ProfileViewModel: BaseViewModel {
     }
     
     struct Output {
-        var num = Observable(UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.profileImage : Int.random(in: 0...11))
+        var num = Observable(UserDefaultsManager.isDisplayedOnboarding ? UserDefaultsManager.profileImage : Int.random(in: 0...11))
         var isValid = Observable((false, ""))
         var isValidMBTI = Observable((false, ""))
         var lastSelcetSection = Observable(0)
@@ -111,16 +111,16 @@ class ProfileViewModel: BaseViewModel {
         guard let text else { return }
         guard output.isValidMBTI.value.0 else {
             return }
-        if !UserDefaultsManager.shared.isDisplayedOnboarding {
-            UserDefaultsManager.shared.isDisplayedOnboarding = true
-            UserDefaultsManager.shared.nickname = text
-            UserDefaultsManager.shared.profileImage = output.num.value
-            UserDefaultsManager.shared.signUpDate = DateFormatterManager.shared.dateFormatted(Date()) + " 가입"
+        if !UserDefaultsManager.isDisplayedOnboarding {
+            UserDefaultsManager.isDisplayedOnboarding = true
+            UserDefaultsManager.nickname = text
+            UserDefaultsManager.profileImage = output.num.value
+            UserDefaultsManager.signUpDate = DateFormatterManager.shared.dateFormatted(Date()) + " 가입"
             ProfileViewController.changeRootViewController(rootView: TabBarController())
         } else {
             NotificationCenter.default.post(name: .profileNotification, object: nil, userInfo: ["nickname": text, "profileImage": output.num.value])
-            UserDefaultsManager.shared.nickname = text
-            UserDefaultsManager.shared.profileImage = output.num.value
+            UserDefaultsManager.nickname = text
+            UserDefaultsManager.profileImage = output.num.value
         }
     }
 }

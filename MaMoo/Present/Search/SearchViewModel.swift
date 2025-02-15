@@ -19,7 +19,7 @@ class SearchViewModel: BaseViewModel {
         var prefetchItem: Observable<[IndexPath]?> = Observable(nil)
     }
     struct Output {
-        var likeDictionary = Observable(UserDefaultsManager.shared.like)
+        var likeDictionary = Observable(UserDefaultsManager.like)
         var movieList = Observable([MovieResults]())
         var isScroll: Observable<Void?> = Observable(nil)
         var searchTagText = Observable("")
@@ -83,7 +83,7 @@ class SearchViewModel: BaseViewModel {
         self.searchText = searchText
         isSearch = true
         callRequest(query: searchText, page: page)
-        UserDefaultsManager.shared.searchResults.append(searchText)
+        UserDefaultsManager.searchResults.append(searchText)
     }
     
     private func callRequest(query: String, page: Int) {
@@ -106,7 +106,7 @@ class SearchViewModel: BaseViewModel {
                 
                 for movie in value.results {
                     let id = String(movie.id)
-                    if let likeState = UserDefaultsManager.shared.like[String(id)] {
+                    if let likeState = UserDefaultsManager.like[String(id)] {
                         self?.output.likeDictionary.value[id] = likeState
                     }
                 }
@@ -128,7 +128,7 @@ class SearchViewModel: BaseViewModel {
         guard let id = value.userInfo!["id"] as? String,
               let like = value.userInfo!["like"] as? Bool else { return }
         output.likeDictionary.value[id] = like
-        UserDefaultsManager.shared.like[id] = like
+        UserDefaultsManager.like[id] = like
     }
     
     private func prefetchPagenation(_ indexPaths: [IndexPath]?) {

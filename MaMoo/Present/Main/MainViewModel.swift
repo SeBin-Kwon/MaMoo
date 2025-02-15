@@ -21,11 +21,11 @@ class MainViewModel: BaseViewModel {
     }
     
     struct Output {
-        var searchList = Observable(UserDefaultsManager.shared.searchResults)
-        var likeDictionary = Observable(UserDefaultsManager.shared.like)
+        var searchList = Observable(UserDefaultsManager.searchResults)
+        var likeDictionary = Observable(UserDefaultsManager.like)
         var likeCount = Observable(0)
-        var nickname = Observable(UserDefaultsManager.shared.nickname)
-        var profileImage = Observable(UserDefaultsManager.shared.profileImage)
+        var nickname = Observable(UserDefaultsManager.nickname)
+        var profileImage = Observable(UserDefaultsManager.profileImage)
         var reloadCollectionView: Observable<Void?> = Observable(())
         var error: Observable<ErrorType?> = Observable(nil)
     }
@@ -76,7 +76,7 @@ class MainViewModel: BaseViewModel {
     }
     
     private func updateLikeCount() {
-        output.likeCount.value = UserDefaultsManager.shared.like.filter { $1 == true }.count
+        output.likeCount.value = UserDefaultsManager.like.filter { $1 == true }.count
     }
     
     private func likeNotification(_ value: NSNotification?) {
@@ -86,7 +86,7 @@ class MainViewModel: BaseViewModel {
               let like = value.userInfo!["like"] as? Bool else {
             return
         }
-        UserDefaultsManager.shared.like[id] = like
+        UserDefaultsManager.like[id] = like
         output.likeDictionary.value[id] = like
     }
     
@@ -103,12 +103,12 @@ class MainViewModel: BaseViewModel {
     private func removeButtonTapped(_ index: Int?) {
         guard let index else { return }
         output.searchList.value.remove(at: index)
-        UserDefaultsManager.shared.searchResults = output.searchList.value
+        UserDefaultsManager.searchResults = output.searchList.value
     }
     
     private func allRemoveButtonTapped() {
         output.searchList.value.removeAll()
-        UserDefaultsManager.shared.removeObject(key: .searchResults, type: [String].self)
+        UserDefaultsManager.removeObject(key: .searchResults, type: [String].self)
     }
     
 }

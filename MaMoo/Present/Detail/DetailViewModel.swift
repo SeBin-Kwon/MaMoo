@@ -40,7 +40,7 @@ class DetailViewModel: BaseViewModel {
             guard let value else { return }
             self?.output.movie.value = value
             self?.id = value.id
-            self?.output.likeState.value = UserDefaultsManager.shared.like[String(value.id)] ?? false
+            self?.output.likeState.value = UserDefaultsManager.like[String(value.id)] ?? false
             guard let date = value.release_date,
                   let vote = value.vote_average,
                   let genre = value.genre_ids,
@@ -56,7 +56,7 @@ class DetailViewModel: BaseViewModel {
     
     private func likeButtonTapped() {
         output.likeState.value.toggle()
-        UserDefaultsManager.shared.like[String(id)] = output.likeState.value
+        UserDefaultsManager.like[String(id)] = output.likeState.value
         
         NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": String(id) , "like": output.likeState.value])
     }

@@ -50,7 +50,7 @@ final class MainCollectionViewCell: BaseCollectionViewCell {
         guard let id else { return }
         likeState.toggle()
         updateLikeButton(likeState)
-        UserDefaultsManager.shared.like[id] = likeState
+        UserDefaultsManager.like[id] = likeState
         NotificationCenter.default.post(name: .likeNotification, object: nil, userInfo: ["id": id , "like": likeState])
     }
     
@@ -67,7 +67,7 @@ final class MainCollectionViewCell: BaseCollectionViewCell {
         titleLabel.text = item.title
         overviewLabel.text = item.overview
         id = String(item.id)
-        likeState = UserDefaultsManager.shared.like[String(item.id), default: false]
+        likeState = UserDefaultsManager.like[String(item.id), default: false]
         updateLikeButton(likeState)
     }
     

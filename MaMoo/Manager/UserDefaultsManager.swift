@@ -7,12 +7,9 @@
 
 import Foundation
 
-final class UserDefaultsManager {
-    static let shared = UserDefaultsManager()
-    private init() {}
-    private let userDefaults = UserDefaults.standard
+enum UserDefaultsManager {
     
-    enum UserDefaultsKey: String {
+    enum Key: String {
         case isDisplayedOnboarding
         case nickname
         case profileImage
@@ -21,53 +18,26 @@ final class UserDefaultsManager {
         case like
     }
     
-    func getter<T: UserDefaultsProtocol>(key: UserDefaultsKey, defaultValue: T) -> T {
-        userDefaults.object(forKey: key.rawValue) as? T ?? defaultValue
+    static func removeObject<T: Hashable>(key: Key, type: T.Type) {
+        UserDefaults.standard.removeObject(forKey: key.rawValue)
     }
-    
-    func setter<T: UserDefaultsProtocol>(value: T, key: UserDefaultsKey) {
-        userDefaults.set(value, forKey: key.rawValue)
-    }
-    
-    func removeObject<T: UserDefaultsProtocol>(key: UserDefaultsKey, type: T.Type) {
-        userDefaults.removeObject(forKey: key.rawValue)
-    }
-    
-    var isDisplayedOnboarding: Bool {
-        get { getter(key: .isDisplayedOnboarding, defaultValue: false) }
-        set { setter(value: newValue, key: .isDisplayedOnboarding) }
-    }
-    
-    var nickname: String {
-        get { getter(key: .nickname, defaultValue: "No Name") }
-        set { setter(value: newValue, key: .nickname) }
-    }
-    
-    var profileImage: Int {
-        get { getter(key: .profileImage, defaultValue: 0) }
-        set { setter(value: newValue, key: .profileImage) }
-    }
-    
-    var signUpDate: String {
-        get { getter(key: .signUpDate, defaultValue: "No Date") }
-        set { setter(value: newValue, key: .signUpDate) }
-    }
-    
-    var searchResults: [String] {
-        get { getter(key: .searchResults, defaultValue: [String]()) }
-        set { setter(value: newValue, key: .searchResults) }
-    }
-    
-    var like: [String: Bool] {
-        get { getter(key: .like, defaultValue: [String: Bool]()) }
-        set { setter(value: newValue, key: .like) }
-    }
+
+    @MaMooUserDefaults(key: Key.isDisplayedOnboarding.rawValue, defaultValue: false) static var isDisplayedOnboarding
+    @MaMooUserDefaults(key: Key.nickname.rawValue, defaultValue: "No Name") static var nickname
+    @MaMooUserDefaults(key: Key.profileImage.rawValue, defaultValue: 0) static var profileImage
+    @MaMooUserDefaults(key: Key.signUpDate.rawValue, defaultValue: "No Date") static var signUpDate
+    @MaMooUserDefaults(key: Key.searchResults.rawValue, defaultValue: [String]()) static var searchResults
+    @MaMooUserDefaults(key: Key.like.rawValue, defaultValue:  [String: Bool]()) static var like
     
 }
 
-protocol UserDefaultsProtocol {}
-extension String: UserDefaultsProtocol {}
-extension Bool: UserDefaultsProtocol {}
-extension Int: UserDefaultsProtocol {}
-extension Array: UserDefaultsProtocol {}
-extension Dictionary: UserDefaultsProtocol {}
+@propertyWrapper struct MaMooUserDefaults<T: Hashable> {
+    let key: String
+    let defaultValue: T
+    private let userDefaults = UserDefaults.standard
+    
+    var wrappedValue: T {
+        get { userDefaults.object(forKey: key) as? T ?? defaultValue }
+        set { userDefaults.set(newValue, forKey: key) }
+    }
+}

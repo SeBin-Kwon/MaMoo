@@ -49,7 +49,7 @@ final class ProfileViewController: BaseViewController {
     private let completeButton = {
         var btn = MaMooButton(title: "완료")
         btn.isEnabled = false
-        btn.isHidden = UserDefaultsManager.shared.isDisplayedOnboarding
+        btn.isHidden = UserDefaultsManager.isDisplayedOnboarding
         
         let buttonStateHandler: UIButton.ConfigurationUpdateHandler = { button in
             switch button.state {
@@ -125,16 +125,16 @@ final class ProfileViewController: BaseViewController {
     }
     
     private func configureNavigationBar() {
-        navigationItem.title = UserDefaultsManager.shared.isDisplayedOnboarding ? "프로필 편집" : "프로필 설정"
+        navigationItem.title = UserDefaultsManager.isDisplayedOnboarding ? "프로필 편집" : "프로필 설정"
         let rightItem = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(completeButtonTapped))
         rightItem.setTitleTextAttributes([.foregroundColor: UIColor.maMooPoint, .font: UIFont.systemFont(ofSize: 16, weight: .bold)], for: .normal)
-        rightItem.isHidden = !UserDefaultsManager.shared.isDisplayedOnboarding
+        rightItem.isHidden = !UserDefaultsManager.isDisplayedOnboarding
         rightItem.isEnabled = false
         navigationItem.rightBarButtonItem = rightItem
         
         let leftItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(leftItemTapped))
         leftItem.tintColor = .maMooPoint
-        if UserDefaultsManager.shared.isDisplayedOnboarding {
+        if UserDefaultsManager.isDisplayedOnboarding {
             navigationItem.leftBarButtonItem = leftItem
         }
     }
@@ -239,7 +239,7 @@ extension ProfileViewController {
         let textfield = UITextField()
         textfield.borderStyle = .none
         textfield.backgroundColor = .none
-        textfield.text = UserDefaultsManager.shared.isDisplayedOnboarding ? UserDefaultsManager.shared.nickname : ""
+        textfield.text = UserDefaultsManager.isDisplayedOnboarding ? UserDefaultsManager.nickname : ""
         textfield.textColor = .white
         textfield.font = .systemFont(ofSize: 14)
         textfield.attributedPlaceholder = NSAttributedString(string: "닉네임을 입력해주세요", attributes: [
@@ -254,7 +254,7 @@ extension ProfileViewController {
         }
         
         profileImageButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(UserDefaultsManager.shared.isDisplayedOnboarding ? 30 : 60)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(UserDefaultsManager.isDisplayedOnboarding ? 30 : 60)
             make.centerX.equalToSuperview()
         }
         textField.snp.makeConstraints { make in

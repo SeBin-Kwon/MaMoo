@@ -33,7 +33,7 @@ final class SettingViewController: BaseViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        likeDictionary = UserDefaultsManager.shared.like
+        likeDictionary = UserDefaultsManager.like
         updateLikeCount()
     }
     
@@ -46,9 +46,9 @@ final class SettingViewController: BaseViewController {
     }
     
     private func configureData() {
-        profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
-        profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
-        profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
+        profileEditButton.nicknameLabel.text = UserDefaultsManager.nickname
+        profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.profileImage)")
+        profileEditButton.dateLabel.text = UserDefaultsManager.signUpDate
         profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
     }
     
@@ -87,7 +87,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 3 {
             self.displayAlert(title: "탈퇴하기", message: "탈퇴를 하면 데이터가 모두 초기화됩니다. 탈퇴 하시겠습니까?", isCancel: true) { _ in
-                UserDefaultsManager.shared.isDisplayedOnboarding = false
+                UserDefaultsManager.isDisplayedOnboarding = false
                 for key in UserDefaults.standard.dictionaryRepresentation().keys {
                     UserDefaults.standard.removeObject(forKey: key.description)
                 }

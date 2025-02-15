@@ -74,7 +74,7 @@ final class SearchViewController: BaseViewController {
     
     
     @objc private func leftItemTapped() {
-        sendLatestSearches?(UserDefaultsManager.shared.searchResults)
+        sendLatestSearches?(UserDefaultsManager.searchResults)
         navigationController?.popViewController(animated: true)
     }
     

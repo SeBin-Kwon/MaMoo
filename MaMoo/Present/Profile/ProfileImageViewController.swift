@@ -49,7 +49,7 @@ final class ProfileImageViewController: BaseViewController {
         view.addSubview(profileImageButton)
         view.addSubview(collectionView)
         profileImageButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(UserDefaultsManager.shared.isDisplayedOnboarding ? 30 : 60)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(UserDefaultsManager.isDisplayedOnboarding ? 30 : 60)
             make.centerX.equalToSuperview()
         }
         collectionView.snp.makeConstraints { make in
@@ -59,7 +59,7 @@ final class ProfileImageViewController: BaseViewController {
     }
     
     private func configureNavigationBar() {
-        navigationItem.title = UserDefaultsManager.shared.isDisplayedOnboarding ? "프로필 이미지 편집" : "프로필 이미지 설정"
+        navigationItem.title = UserDefaultsManager.isDisplayedOnboarding ? "프로필 이미지 편집" : "프로필 이미지 설정"
         let leftItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(leftItemTapped))
         leftItem.tintColor = .maMooPoint
         navigationItem.leftBarButtonItem = leftItem

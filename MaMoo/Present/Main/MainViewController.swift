@@ -71,9 +71,9 @@ final class MainViewController: BaseViewController {
     }
     
     private func configureData() {
-        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.shared.nickname
-        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.shared.profileImage)")
-        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.shared.signUpDate
+        mainView.profileEditButton.nicknameLabel.text = UserDefaultsManager.nickname
+        mainView.profileEditButton.profileImage.image = UIImage(named: "profile_\(UserDefaultsManager.profileImage)")
+        mainView.profileEditButton.dateLabel.text = UserDefaultsManager.signUpDate
         mainView.profileEditButton.addTarget(self, action: #selector(profileEditButtontapped), for: .touchUpInside)
     }
     

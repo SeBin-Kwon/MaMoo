@@ -77,16 +77,6 @@ final class DetailViewController: BaseViewController {
         detailView.posterCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: PosterCollectionViewCell.identifier)
     }
     
-//    private func configureLayout() {
-//        scrollView.snp.makeConstraints { make in
-//            make.edges.equalTo(view.safeAreaLayoutGuide)
-//        }
-//        detailView.snp.makeConstraints { make in
-//            make.width.equalTo(scrollView.snp.width)
-//            make.verticalEdges.equalTo(scrollView)
-//        }
-//    }
-    
     @objc private func likeButtonTapped() {
         viewModel.input.isLikeButtonTapped.value = ()
     }
